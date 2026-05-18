@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Partner companies — Sales Tracking System</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+
+:root{
+--navy-deep:#0c1228;
+--navy:#151d3d;
+--purple:#6a5cff;
+--purple-light:#8f7bff;
+--text-muted:#94a3b8;
+--card-shadow:0 4px 24px rgba(15,23,42,0.06);
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+background:#f0f4fb;
+color:#1e293b;
+min-height:100vh;
+display:flex;
+overflow-x:hidden;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+width:260px;
+min-height:100vh;
+background:linear-gradient(180deg,var(--navy-deep),var(--navy));
+color:#fff;
+padding:24px 16px;
+display:flex;
+flex-direction:column;
+flex-shrink:0;
+transition:0.3s;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+padding:8px 8px 24px;
+border-bottom:1px solid rgba(255,255,255,0.08);
+margin-bottom:16px;
+}
+
+.brand-icon{
+width:40px;
+height:40px;
+background:linear-gradient(135deg,#3b82f6,var(--purple));
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.nav{
+list-style:none;
+flex:1;
+}
+
+.nav li{
+padding:12px 14px;
+margin:4px 0;
+border-radius:12px;
+color:rgba(255,255,255,0.6);
+cursor:pointer;
+font-size:15px;
+transition:0.3s;
+}
+
+.nav li:hover{
+background:rgba(255,255,255,0.08);
+color:#fff;
+}
+
+.nav li.active{
+background:linear-gradient(90deg,var(--purple),var(--purple-light));
+color:#fff;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+flex:1;
+padding:28px;
+width:100%;
+}
+
+.main h1{
+font-size:32px;
+margin-bottom:25px;
+}
+
+/* ================= GRID ================= */
+
+.company-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+gap:20px;
+}
+
+/* ================= CARD ================= */
+
+.partner-card{
+background:#fff;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 6px 22px rgba(15,23,42,0.10);
+transition:0.3s ease;
+}
+
+.partner-card:hover{
+transform:translateY(-6px);
+box-shadow:0 16px 40px rgba(15,23,42,0.18);
+}
+
+/* ================= IMAGE AREA ================= */
+
+.partner-visual{
+height:170px;
+position:relative;
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+background-color:#ffffff;
+border-bottom:1px solid #eef2f7;
+}
+
+.partner-visual::after{
+content:"";
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.15);
+}
+
+/* ================= IMAGES ================= */
+
+.v-parle{
+background-image:url("https://cosmocashcarry.com/wp-content/uploads/2024/10/Parle-G-Biscuits.jpg");
+}
+
+.v-nirma{
+background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUI3NRj91mPkYXrWMJ92i9XOsKon48Q4n85A&s");
+}
+
+.v-amul{
+background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoTAP8gbMQH60mu3nHcq1OvVcF8EbCYDSBdw&s&s");
+}
+
+.v-coke{
+background-image:url("https://t4.ftcdn.net/jpg/02/84/65/61/360_F_284656117_sPF8gVWaX627bq5qKrlrvCz1eFfowdBf.jpg");
+}
+
+/* ================= BODY ================= */
+
+.partner-body{
+padding:20px;
+}
+
+.partner-body h2{
+font-size:18px;
+margin-bottom:8px;
+color:#0f172a;
+}
+
+.partner-body p{
+font-size:14px;
+color:#64748b;
+margin-bottom:15px;
+line-height:1.5;
+}
+
+/* ================= BUTTON ================= */
+
+.btn-primary{
+background:linear-gradient(90deg,var(--purple),var(--purple-light));
+color:#fff;
+padding:10px 16px;
+border-radius:10px;
+text-decoration:none;
+display:inline-block;
+font-weight:600;
+transition:0.3s;
+}
+
+.btn-primary:hover{
+transform:scale(1.05);
+}
+
+/* ================= TABLET VIEW ================= */
+
+@media(max-width:992px){
+
+.sidebar{
+width:220px;
+}
+
+.main{
+padding:20px;
+}
+
+.main h1{
+font-size:28px;
+}
+
+.company-grid{
+grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+}
+
+}
+
+/* ================= MOBILE VIEW ================= */
+
+@media(max-width:768px){
+
+body{
+flex-direction:column;
+}
+
+/* TOP MOBILE SIDEBAR */
+
+.sidebar{
+width:100%;
+min-height:auto;
+padding:15px;
+}
+
+.brand{
+padding-bottom:15px;
+margin-bottom:12px;
+}
+
+.nav{
+display:flex;
+gap:10px;
+overflow-x:auto;
+padding-bottom:5px;
+}
+
+.nav::-webkit-scrollbar{
+display:none;
+}
+
+.nav li{
+white-space:nowrap;
+margin:0;
+padding:10px 14px;
+font-size:14px;
+}
+
+/* MAIN */
+
+.main{
+padding:16px;
+}
+
+.main h1{
+font-size:24px;
+margin-bottom:18px;
+}
+
+/* GRID */
+
+.company-grid{
+grid-template-columns:1fr;
+gap:16px;
+}
+
+/* CARD */
+
+.partner-card{
+border-radius:14px;
+}
+
+.partner-visual{
+height:180px;
+}
+
+.partner-body{
+padding:16px;
+}
+
+.partner-body h2{
+font-size:17px;
+}
+
+.partner-body p{
+font-size:13px;
+}
+
+/* BUTTON */
+
+.btn-primary{
+width:100%;
+text-align:center;
+padding:12px;
+font-size:14px;
+}
+
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media(max-width:480px){
+
+.main{
+padding:12px;
+}
+
+.main h1{
+font-size:22px;
+}
+
+.partner-visual{
+height:160px;
+}
+
+.partner-body{
+padding:14px;
+}
+
+.partner-body h2{
+font-size:16px;
+}
+
+.partner-body p{
+font-size:12px;
+}
+
+.btn-primary{
+font-size:13px;
+padding:11px;
+}
+
+.nav li{
+font-size:13px;
+padding:9px 12px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+<div class="brand">
+
+<div class="brand-icon">
+<i class="fas fa-chart-bar"></i>
+</div>
+
+<div>Sales System</div>
+
+</div>
+
+<ul class="nav">
+
+<li onclick="location.href='CompanyDashboard.html'">
+<i class="fas fa-home"></i> Dashboard
+</li>
+
+<li onclick="location.href='OurCompany.html'">
+<i class="fas fa-building"></i> Business Portal
+</li>
+
+<li class="active">
+<i class="fas fa-handshake"></i> Companies
+</li>
+
+</ul>
+
+</aside>
+
+<main class="main">
+
+<h1>Partner Companies</h1>
+
+<div class="company-grid">
+
+<div class="partner-card">
+
+<div class="partner-visual v-parle"></div>
+
+<div class="partner-body">
+
+<h2>Parle Biscuits</h2>
+
+<p>Famous biscuit brand in India.</p>
+
+<a class="btn-primary"
+href="CompanyProductReport.html?company=parle">
+
+View
+
+</a>
+
+</div>
+
+</div>
+
+<div class="partner-card">
+
+<div class="partner-visual v-nirma"></div>
+
+<div class="partner-body">
+
+<h2>Nirma</h2>
+
+<p>Popular detergent brand.</p>
+
+<a class="btn-primary"
+href="CompanyProductReport.html?company=nirma">
+
+View
+
+</a>
+
+</div>
+
+</div>
+
+<div class="partner-card">
+
+<div class="partner-visual v-amul"></div>
+
+<div class="partner-body">
+
+<h2>Amul</h2>
+
+<p>Dairy products company.</p>
+
+<a class="btn-primary"
+href="CompanyProductReport.html?company=amul">
+
+View
+
+</a>
+
+</div>
+
+</div>
+
+<div class="partner-card">
+
+<div class="partner-visual v-coke"></div>
+
+<div class="partner-body">
+
+<h2>Coca Cola</h2>
+
+<p>Beverage company.</p>
+
+<a class="btn-primary"
+href="CompanyProductReport.html?company=cocacola">
+
+View
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+</body>
+</html>

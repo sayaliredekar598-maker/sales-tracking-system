@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Business Portal — Sales Tracking System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<style>
+:root {
+  --navy-deep: #0c1228;
+  --navy: #151d3d;
+  --purple: #6a5cff;
+  --purple-light: #8f7bff;
+  --purple-soft: #ede9ff;
+  --success: #22c55e;
+  --text-muted: #94a3b8;
+  --card-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: #f0f4fb;
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--navy-deep), var(--navy));
+  color: #fff;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 16px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6, var(--purple));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.nav { list-style: none; flex: 1; }
+
+.nav li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin: 4px 0;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav li:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.nav li.active {
+  background: linear-gradient(90deg, var(--purple), var(--purple-light));
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(106, 92, 255, 0.35);
+}
+
+.nav li i { width: 20px; text-align: center; font-size: 15px; }
+
+.sidebar-user {
+  margin-top: auto;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-user .avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.sidebar-user .name { font-weight: 600; font-size: 14px; }
+.sidebar-user .role { font-size: 12px; color: var(--text-muted); }
+
+.main {
+  flex: 1;
+  padding: 28px 32px 48px;
+  overflow-x: auto;
+}
+
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.greeting h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.greeting p { color: #64748b; margin-top: 6px; font-size: 15px; }
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.date-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  border: none;
+  font-size: 14px;
+  color: #334155;
+  cursor: default;
+}
+
+.date-pick i { color: var(--purple); }
+
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 22px;
+  max-width: 1100px;
+}
+
+@media (max-width: 900px) {
+  .portal-grid { grid-template-columns: 1fr; }
+  body { flex-direction: column; }
+  .sidebar { width: 100%; min-height: auto; }
+}
+
+.portal-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  padding: 28px 26px 26px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.portal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+}
+
+.portal-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.portal-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.portal-icon--company {
+  background: var(--purple-soft);
+  color: var(--purple);
+}
+
+.portal-icon--dist {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.portal-card h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.portal-card p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #64748b;
+  flex: 1;
+  margin-bottom: 22px;
+}
+
+.portal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, var(--purple), var(--purple-light));
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(106, 92, 255, 0.3);
+}
+
+.btn-primary:hover { filter: brightness(1.05); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-secondary:hover { background: #f8fafc; }
+
+.hint {
+  margin-top: 28px;
+  padding: 16px 18px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+  color: #64748b;
+  max-width: 1100px;
+  box-shadow: var(--card-shadow);
+}
+
+.hint i { color: var(--purple); margin-right: 8px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i class="fas fa-chart-bar" aria-hidden="true"></i></div>
+    <div class="brand-title">Sales Tracking System</div>
+  </div>
+  <ul class="nav">
+    <li onclick="location.href='CompanyDashboard.html'"><i class="fas fa-home"></i> Dashboard</li>
+    <li class="active"><i class="fas fa-building"></i> Business portal</li>
+    <li onclick="location.href='OurCompanyCardPage.html'"><i class="fas fa-handshake"></i> Partner companies</li>
+    <li onclick="location.href='AddRemainingProducts.html'"><i class="fas fa-boxes-stacked"></i> Inventory</li>
+  </ul>
+  <div class="sidebar-user">
+    <div class="avatar" id="sidebarAvatar">MA</div>
+    <div>
+      <div class="name" id="sidebarName">Manager</div>
+      <div class="role" id="sidebarRole">Administrator</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top-bar">
+    <div class="greeting">
+      <h1>Business portal</h1>
+      <p>Select how you want to work today — company operations or distributor workflows.</p>
+    </div>
+    <div class="controls">
+      <div class="date-pick" title="Local time">
+        <i class="fas fa-calendar-day" aria-hidden="true"></i>
+        <span id="clockText"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="portal-grid">
+    <article class="portal-card">
+      <div class="portal-card-head">
+        <div>
+          <h2>Our company</h2>
+        </div>
+        <div class="portal-icon portal-icon--company" aria-hidden="true">
+          <i class="fas fa-building"></i>
+        </div>
+      </div>
+      <p>
+        Open the partner directory, compare brands, and jump into dashboards aligned with your
+        territory and product lines.
+      </p>
+      <div class="portal-actions">
+        <a class="btn-primary" href="OurCompanyCardPage.html"><i class="fas fa-arrow-right"></i> Enter company</a>
+        <a class="btn-secondary" href="CompanyDashboard.html"><i class="fas fa-chart-line"></i> Main dashboard</a>
+      </div>
+    </article>
+
+    <article class="portal-card">
+      <div class="portal-card-head">
+        <div>
+          <h2>For distributor</h2>
+        </div>
+        <div class="portal-icon portal-icon--dist" aria-hidden="true">
+          <i class="fas fa-truck-fast"></i>
+        </div>
+      </div>
+      <p>
+        Record stock, remaining quantities, and allocations — the same tools your operations team
+        uses on the inventory workspace.
+      </p>
+      <div class="portal-actions">
+        <a class="btn-primary" href="RemainingProducts.html"><i class="fas fa-clipboard-list"></i> Enter distributor</a>
+        <a class="btn-secondary" href="CompanyDashboard.html"><i class="fas fa-chart-line"></i> Main dashboard</a>
+      </div>
+    </article>
+  </div>
+
+</main>
+
+<script>
+function initialsOf(name) {
+  return String(name || "")
+    .split(" ")
+    .filter(Boolean)
+    .map((p) => p[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function titleCaseFromEmail(email) {
+  const localPart = String(email || "").split("@")[0] || "User";
+  return localPart
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+    .join(" ");
+}
+
+(function userContext() {
+  let u = {};
+  try {
+    u = JSON.parse(sessionStorage.getItem("stsUser") || "{}");
+  } catch (_e) {
+    u = {};
+  }
+  const av = document.getElementById("sidebarAvatar");
+  const nm = document.getElementById("sidebarName");
+  const rl = document.getElementById("sidebarRole");
+  if (!u || !u.email) {
+    if (av) av.textContent = "STS";
+    if (nm) nm.textContent = "Business portal";
+    if (rl) rl.textContent = "Public pages";
+    return;
+  }
+  const name = u.name || titleCaseFromEmail(u.email);
+  const roleLabel = u.role === "company" ? "Company account" : "Signed-in user";
+  if (av) av.textContent = initialsOf(name);
+  if (nm) nm.textContent = name;
+  if (rl) rl.textContent = roleLabel;
+})();
+
+(function clock() {
+  const el = document.getElementById("clockText");
+  const fmt = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  });
+  function tick() {
+    if (el) el.textContent = fmt.format(new Date());
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>

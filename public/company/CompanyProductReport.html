@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Company Product Report</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<!-- PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<!-- EXCEL -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+
+:root{
+  --purple:#6a5cff;
+  --purple2:#8f7bff;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI",sans-serif;
+}
+
+body{
+  background:#f0f4fb;
+  min-height:100vh;
+  padding:40px 20px;
+}
+
+.container{
+  width:100%;
+  max-width:1400px;
+  margin:auto;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:20px;
+  margin-bottom:30px;
+}
+
+.top h1{
+  color:black;
+  font-size:34px;
+}
+
+.btnBox{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:none;
+  padding:12px 18px;
+  border-radius:12px;
+  color:black;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  font-size:14px;
+}
+
+.addBtn{
+  background:linear-gradient(90deg,#2563eb,#06b6d4);
+}
+
+.pdfBtn{
+  background:linear-gradient(90deg,#16a34a,#22c55e);
+}
+
+.btn:hover{
+  transform:scale(1.05);
+}
+
+.tableBox{
+  background:white;
+  border-radius:20px;
+  overflow:auto;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1300px;
+}
+
+thead{
+  background:linear-gradient(90deg,var(--purple),var(--purple2));
+}
+
+th{
+  color:white;
+  padding:18px;
+  font-size:15px;
+}
+
+td{
+  padding:14px;
+  border-bottom:1px solid #eee;
+}
+
+tbody tr:hover{
+  background:#f8f9ff;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  border:none;
+  outline:none;
+  border-radius:10px;
+  background:#f3f4f6;
+  color:black;
+}
+
+.deleteBtn{
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.deleteBtn:hover{
+  background:#dc2626;
+}
+
+@media(max-width:768px){
+
+  .top{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .top h1{
+    font-size:28px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="top">
+
+<h1>Parle Products Report</h1>
+
+<div class="btnBox">
+
+<button class="btn addBtn" onclick="addRow()">
+<i class="fa-solid fa-plus"></i>
+Add Row
+</button>
+
+<button class="btn pdfBtn" onclick="downloadPDF()">
+<i class="fa-solid fa-file-pdf"></i>
+Download PDF
+</button>
+
+<label class="btn addBtn">
+
+<i class="fa-solid fa-file-excel"></i>
+Upload Excel
+
+<input
+type="file"
+id="excelFile"
+accept=".xlsx,.xls"
+hidden>
+
+</label>
+
+</div>
+</div>
+
+<div class="tableBox">
+
+<table id="reportTable">
+
+<thead>
+
+<tr>
+<th>Sr.No</th>
+<th>P.Name</th>
+<th>Date</th>
+<th>Time</th>
+<th>Exit Product</th>
+<th>Product Amount</th>
+<th>Remaining Amount</th>
+<th>Total Amount</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="tableBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+/* SAVE DATA */
+
+function saveTableData(){
+
+let rows = [];
+
+document.querySelectorAll("#tableBody tr")
+.forEach((tr)=>{
+
+let inputs = tr.querySelectorAll("input");
+
+rows.push({
+
+pname: inputs[0].value,
+date: inputs[1].value,
+time: inputs[2].value,
+exit: inputs[3].value,
+amount: inputs[4].value,
+remaining: inputs[5].value,
+total: inputs[6].value
+
+});
+
+});
+
+localStorage.setItem(
+"companyTableData",
+JSON.stringify(rows)
+);
+
+}
+
+/* LOAD DATA */
+
+function loadTableData(){
+
+let savedData = JSON.parse(
+localStorage.getItem("companyTableData")
+);
+
+let table =
+document.getElementById("tableBody");
+
+table.innerHTML = "";
+
+if(!savedData || savedData.length === 0){
+
+addRow();
+return;
+
+}
+
+savedData.forEach((item,index)=>{
+
+let row = `
+
+<tr>
+
+<td>${index + 1}</td>
+
+<td>
+<input type="text"
+value="${item.pname || ''}">
+</td>
+
+<td>
+<input type="text"
+value="${item.date || ''}"
+readonly>
+</td>
+
+<td>
+<input type="text"
+value="${item.time || ''}"
+readonly>
+</td>
+
+<td>
+<input type="number"
+value="${item.exit || ''}">
+</td>
+
+<td>
+<input type="number"
+value="${item.amount || ''}">
+</td>
+
+<td>
+<input type="number"
+value="${item.remaining || ''}">
+</td>
+
+<td>
+<input type="number"
+class="totalAmount"
+value="${item.total || ''}"
+readonly>
+</td>
+
+<td>
+<button class="deleteBtn"
+onclick="deleteRow(this)">
+Delete
+</button>
+</td>
+
+</tr>
+
+`;
+
+table.insertAdjacentHTML("beforeend", row);
+
+});
+
+autoSaveInputs();
+
+}
+
+/* AUTO SAVE + TOTAL */
+
+function autoSaveInputs(){
+
+document.querySelectorAll("#tableBody tr")
+.forEach((row)=>{
+
+let inputs = row.querySelectorAll("input");
+
+inputs.forEach((input)=>{
+
+input.oninput = function(){
+
+let amount =
+parseFloat(inputs[4].value) || 0;
+
+let remaining =
+parseFloat(inputs[5].value) || 0;
+
+inputs[6].value =
+amount + remaining;
+
+saveTableData();
+
+};
+
+});
+
+});
+
+}
+
+/* ADD ROW */
+
+function addRow(){
+
+let table =
+document.getElementById("tableBody");
+
+let rowCount = table.rows.length + 1;
+
+let row = `
+
+<tr>
+
+<td>${rowCount}</td>
+
+<td>
+<input type="text"
+placeholder="Enter Product">
+</td>
+
+<td>
+<input type="text"
+value="${getCurrentDate()}"
+readonly>
+</td>
+
+<td>
+<input type="text"
+value="${getCurrentTime()}"
+readonly>
+</td>
+
+<td>
+<input type="number"
+placeholder="Exit Product">
+</td>
+
+<td>
+<input type="number"
+placeholder="Product Amount">
+</td>
+
+<td>
+<input type="number"
+placeholder="Remaining Amount">
+</td>
+
+<td>
+<input type="number"
+class="totalAmount"
+placeholder="Total"
+readonly>
+</td>
+
+<td>
+<button class="deleteBtn"
+onclick="deleteRow(this)">
+Delete
+</button>
+</td>
+
+</tr>
+
+`;
+
+/* FIXED LINE */
+table.insertAdjacentHTML("beforeend", row);
+
+autoSaveInputs();
+
+saveTableData();
+
+}
+
+/* DELETE */
+
+function deleteRow(btn){
+
+btn.parentElement.parentElement.remove();
+
+updateSerialNumbers();
+
+saveTableData();
+
+}
+
+/* UPDATE SERIAL */
+
+function updateSerialNumbers(){
+
+document.querySelectorAll("#tableBody tr")
+.forEach((tr,index)=>{
+
+tr.cells[0].innerText = index + 1;
+
+});
+
+}
+
+/* DATE */
+
+function getCurrentDate(){
+
+let now = new Date();
+
+return now.toISOString().split("T")[0];
+
+}
+
+/* TIME */
+
+function getCurrentTime(){
+
+let now = new Date();
+
+return now.toLocaleTimeString();
+
+}
+
+/* PDF */
+
+function downloadPDF(){
+
+const { jsPDF } = window.jspdf;
+
+const doc = new jsPDF();
+
+doc.setFontSize(18);
+
+doc.text("Company Product Report", 14, 20);
+
+let tableData = [];
+
+document.querySelectorAll("#tableBody tr")
+.forEach((tr)=>{
+
+let inputs = tr.querySelectorAll("input");
+
+tableData.push([
+
+tr.cells[0].innerText,
+inputs[0].value,
+inputs[1].value,
+inputs[2].value,
+inputs[3].value,
+inputs[4].value,
+inputs[5].value,
+inputs[6].value
+
+]);
+
+});
+
+doc.autoTable({
+
+startY:30,
+
+head:[[
+"Sr.No",
+"P.Name",
+"Date",
+"Time",
+"Exit Product",
+"Product Amount",
+"Remaining Amount",
+"Total Amount"
+]],
+
+body:tableData,
+
+theme:"grid",
+
+styles:{
+fontSize:10,
+cellPadding:3
+},
+
+headStyles:{
+fillColor:[106,92,255]
+}
+
+});
+
+doc.save("Company_Report.pdf");
+
+}
+
+/* EXCEL */
+
+document.getElementById("excelFile")
+.addEventListener("change", handleExcel, false);
+
+function handleExcel(e){
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(event){
+
+const data =
+new Uint8Array(event.target.result);
+
+const workbook =
+XLSX.read(data, { type:'array' });
+
+const sheetName =
+workbook.SheetNames[0];
+
+const worksheet =
+workbook.Sheets[sheetName];
+
+const excelData =
+XLSX.utils.sheet_to_json(worksheet);
+
+insertExcelData(excelData);
+
+};
+
+reader.readAsArrayBuffer(file);
+
+}
+
+/* INSERT EXCEL */
+
+function insertExcelData(data){
+
+let table =
+document.getElementById("tableBody");
+
+table.innerHTML = "";
+
+data.forEach((item,index)=>{
+
+let total =
+Number(item['Product Amount'] || 0)
++
+Number(item['Remaining Amount'] || 0);
+
+let row = `
+
+<tr>
+
+<td>${index + 1}</td>
+
+<td>
+<input type="text"
+value="${item['P.Name'] || ''}">
+</td>
+
+<td>
+<input type="text"
+value="${item['Date'] || getCurrentDate()}"
+readonly>
+</td>
+
+<td>
+<input type="text"
+value="${item['Time'] || getCurrentTime()}"
+readonly>
+</td>
+
+<td>
+<input type="number"
+value="${item['Exit Product'] || ''}">
+</td>
+
+<td>
+<input type="number"
+value="${item['Product Amount'] || ''}">
+</td>
+
+<td>
+<input type="number"
+value="${item['Remaining Amount'] || ''}">
+</td>
+
+<td>
+<input type="number"
+class="totalAmount"
+value="${total}"
+readonly>
+</td>
+
+<td>
+<button class="deleteBtn"
+onclick="deleteRow(this)">
+Delete
+</button>
+</td>
+
+</tr>
+
+`;
+
+table.insertAdjacentHTML("beforeend", row);
+
+});
+
+autoSaveInputs();
+
+saveTableData();
+
+}
+
+/* PAGE LOAD */
+
+window.onload = function(){
+
+loadTableData();
+
+}
+
+</script>
+</body>
+</html>

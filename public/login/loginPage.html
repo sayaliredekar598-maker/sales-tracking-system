@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sales Tracking System | Login</title>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
+<style>
+:root {
+  --navy-deep: #0c1228;
+  --navy: #151d3d;
+  --purple: #6a5cff;
+  --purple-light: #8f7bff;
+  --purple-soft: #ede9ff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --danger: #ef4444;
+  --success: #16a34a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(143, 123, 255, 0.25), transparent 38%),
+    radial-gradient(circle at 88% 12%, rgba(59, 130, 246, 0.25), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.18), transparent 45%),
+    linear-gradient(135deg, var(--navy-deep), var(--navy));
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.shell {
+  width: 100%;
+  max-width: 980px;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+}
+
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; }
+  .brand-side { display: none; }
+}
+
+/* ===== LEFT BRAND PANEL ===== */
+.brand-side {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 45%),
+    linear-gradient(160deg, var(--navy-deep), #271c5e 70%, #5b3aa5);
+  color: #fff;
+  padding: 42px 38px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-side::after {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(143, 123, 255, 0.18);
+  bottom: -120px;
+  right: -100px;
+  filter: blur(10px);
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 1;
+}
+
+.brand-row .brand-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3b82f6, var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.brand-row h1 {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.brand-row p {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 2px;
+}
+
+.brand-text {
+  position: relative;
+  z-index: 1;
+}
+
+.brand-text h2 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+
+.brand-text p {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 360px;
+}
+
+.brand-features {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.brand-feat {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.brand-feat i {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #c4b8ff;
+  flex-shrink: 0;
+}
+
+/* ===== RIGHT FORM PANEL ===== */
+.form-side {
+  padding: 42px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 5px;
+  margin-bottom: 26px;
+}
+
+.tab {
+  flex: 1;
+  padding: 11px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 9px;
+  transition: 0.2s;
+  background: transparent;
+  border: none;
+}
+
+.tab.active {
+  background: #fff;
+  color: var(--purple);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+.form-grid { display: flex; flex-direction: column; gap: 14px; }
+
+.field { display: flex; flex-direction: column; }
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap i {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fafbff;
+  color: var(--text);
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(106, 92, 255, 0.18);
+  background: #fff;
+}
+
+.role-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.role-card {
+  border: 1.5px solid var(--border);
+  background: #fafbff;
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.role-card i {
+  font-size: 18px;
+  color: var(--purple);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.role-card span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.role-card.active {
+  border-color: var(--purple);
+  background: var(--purple-soft);
+  box-shadow: 0 4px 14px rgba(106, 92, 255, 0.22);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--purple), var(--purple-light));
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(106, 92, 255, 0.35);
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover { transform: translateY(-1px); }
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.foot {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.foot a {
+  color: var(--purple);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.alert {
+  margin-bottom: 14px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert.show { display: flex; }
+
+.alert.error {
+  background: #fef2f2;
+  color: var(--danger);
+  border: 1px solid #fecaca;
+}
+
+.alert.success {
+  background: #f0fdf4;
+  color: var(--success);
+  border: 1px solid #bbf7d0;
+}
+
+.hidden { display: none !important; }
+
+.password-toggle {
+  position: absolute;
+  right: 14px;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 13px;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.helper {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ==================== BRAND PANEL ==================== -->
+  <aside class="brand-side">
+    <div class="brand-row">
+      <div class="brand-icon"><i class="fas fa-chart-bar"></i></div>
+      <div>
+        <h1>Sales Tracking System</h1>
+        <p>Field force &amp; sales operations</p>
+      </div>
+    </div>
+
+    <div class="brand-text">
+      <h2>Track. Manage. Grow.</h2>
+      <p>
+        One platform for managers, employees, and partner companies to stay in
+        sync — from live GPS tracking to real-time sales reports.
+      </p>
+    </div>
+
+    <div class="brand-features">
+      <div class="brand-feat">
+        <i class="fas fa-user-tie"></i>
+        <div><b>Managers</b> get a full company dashboard with live activity.</div>
+      </div>
+      <div class="brand-feat">
+        <i class="fas fa-user-clock"></i>
+        <div><b>Employees</b> submit daily reports and share live location.</div>
+      </div>
+      <div class="brand-feat">
+        <i class="fas fa-building"></i>
+        <div><b>Companies</b> update their remaining product stock in real time.</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== FORM PANEL ==================== -->
+  <section class="form-side">
+
+    <div class="tabs">
+      <button class="tab active" data-tab="login" type="button">Sign In</button>
+      <button class="tab" data-tab="signup" type="button">Create Account</button>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm" autocomplete="on">
+      <div class="title">Welcome back</div>
+      <div class="subtitle">Log in with your email and password.</div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope"></i>
+            <input
+              id="loginEmail"
+              type="email"
+              placeholder="you@company.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock"></i>
+            <input
+              id="loginPassword"
+              type="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              data-target="loginPassword"
+              aria-label="Show password"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="loginBtn">
+          <i class="fas fa-right-to-bracket"></i> Sign In
+        </button>
+      </div>
+
+      <div class="foot">
+        Don't have an account?
+        <a data-switch="signup">Create one</a>
+      </div>
+    </form>
+
+    <!-- SIGNUP FORM -->
+    <form id="signupForm" class="hidden" autocomplete="on">
+      <div class="title">Create your account</div>
+      <div class="subtitle">Pick an account type to get started.</div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Account Type</label>
+          <div class="role-cards" id="roleCards">
+            <div class="role-card active" data-role="manager">
+              <i class="fas fa-user-tie"></i>
+              <span>Manager</span>
+            </div>
+            <div class="role-card" data-role="employee">
+              <i class="fas fa-user-clock"></i>
+              <span>Employee</span>
+            </div>
+            <div class="role-card" data-role="company">
+              <i class="fas fa-building"></i>
+              <span>Company</span>
+            </div>
+          </div>
+          <div class="helper" id="roleHelper">
+            Managers get full access to the Company Dashboard.
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupName">Full Name</label>
+          <div class="input-wrap">
+            <i class="fas fa-user"></i>
+            <input
+              id="signupName"
+              type="text"
+              placeholder="Jane Doe"
+              autocomplete="name"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="field hidden" id="companyNameField">
+          <label for="signupCompany">Company Name</label>
+          <div class="input-wrap">
+            <i class="fas fa-building"></i>
+            <input
+              id="signupCompany"
+              type="text"
+              placeholder="ABC Pvt Ltd"
+              autocomplete="organization"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupEmail">Email</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope"></i>
+            <input
+              id="signupEmail"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupPassword">Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock"></i>
+            <input
+              id="signupPassword"
+              type="password"
+              placeholder="At least 6 characters"
+              autocomplete="new-password"
+              minlength="6"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              data-target="signupPassword"
+              aria-label="Show password"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="signupBtn">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+      </div>
+
+      <div class="foot">
+        Already have an account?
+        <a data-switch="login">Sign in</a>
+      </div>
+    </form>
+
+  </section>
+</div>
+
+<script>
+(function () {
+  /* ============================================================
+     CONFIG
+     ============================================================ */
+  const API_BASE = "http://localhost:5000";
+
+  const ROLE_DESTINATIONS = {
+    manager: "../company/CompanyDashboard.html",
+    employee: "../employees/EmployeesDashboard.html",
+    company: "../company/AddRemainingProducts.html"
+  };
+
+  const ROLE_HELPERS = {
+    manager: "Managers get full access to the Company Dashboard.",
+    employee:
+      "Employees can submit daily reports and share live location with managers.",
+    company:
+      "Company accounts land directly on the Add Remaining Products page."
+  };
+
+  /* ============================================================
+     CLEAN UP ANY LEGACY localStorage SESSION (used to be shared
+     across all tabs and prevented multiple users from logging in
+     at the same time). Sessions now live in sessionStorage so
+     each tab/window is fully independent.
+     ============================================================ */
+  try {
+    localStorage.removeItem("stsUser");
+    localStorage.removeItem("employeeId");
+    localStorage.removeItem("employeeName");
+  } catch (_err) {
+    /* ignore */
+  }
+
+  /* ============================================================
+     IF THIS TAB ALREADY HAS A SESSION -> REDIRECT
+     (only this tab; other tabs/browsers are independent now)
+     ============================================================ */
+  try {
+    const existing = JSON.parse(sessionStorage.getItem("stsUser") || "null");
+    if (existing && existing.role && ROLE_DESTINATIONS[existing.role]) {
+      window.location.replace(ROLE_DESTINATIONS[existing.role]);
+      return;
+    }
+  } catch (_err) {
+    /* ignore */
+  }
+
+  /* ============================================================
+     DOM
+     ============================================================ */
+  const tabs = document.querySelectorAll(".tab");
+  const loginForm = document.getElementById("loginForm");
+  const signupForm = document.getElementById("signupForm");
+  const switches = document.querySelectorAll("[data-switch]");
+  const alertBox = document.getElementById("alertBox");
+  const roleCards = document.querySelectorAll(".role-card");
+  const companyNameField = document.getElementById("companyNameField");
+  const roleHelper = document.getElementById("roleHelper");
+  let selectedRole = "manager";
+
+  /* ============================================================
+     TAB SWITCHING
+     ============================================================ */
+  function showTab(name) {
+    tabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+    if (name === "login") {
+      loginForm.classList.remove("hidden");
+      signupForm.classList.add("hidden");
+    } else {
+      loginForm.classList.add("hidden");
+      signupForm.classList.remove("hidden");
+    }
+    hideAlert();
+  }
+
+  tabs.forEach((t) => t.addEventListener("click", () => showTab(t.dataset.tab)));
+  switches.forEach((a) =>
+    a.addEventListener("click", () => showTab(a.dataset.switch))
+  );
+
+  /* ============================================================
+     ROLE SELECTION
+     ============================================================ */
+  function selectRole(role) {
+    selectedRole = role;
+    roleCards.forEach((c) =>
+      c.classList.toggle("active", c.dataset.role === role)
+    );
+    companyNameField.classList.toggle("hidden", role !== "company");
+    roleHelper.textContent = ROLE_HELPERS[role] || "";
+  }
+
+  roleCards.forEach((c) =>
+    c.addEventListener("click", () => selectRole(c.dataset.role))
+  );
+
+  /* ============================================================
+     PASSWORD TOGGLE
+     ============================================================ */
+  document.querySelectorAll(".password-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const input = document.getElementById(btn.dataset.target);
+      if (!input) return;
+      const icon = btn.querySelector("i");
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    });
+  });
+
+  /* ============================================================
+     ALERT HELPERS
+     ============================================================ */
+  function showAlert(message, type) {
+    alertBox.className = "alert show " + (type || "error");
+    alertBox.innerHTML =
+      (type === "success"
+        ? '<i class="fas fa-circle-check"></i>'
+        : '<i class="fas fa-circle-exclamation"></i>') +
+      "<span>" +
+      message +
+      "</span>";
+  }
+
+  function hideAlert() {
+    alertBox.className = "alert";
+    alertBox.innerHTML = "";
+  }
+
+  function setLoading(btn, loading, defaultLabelHtml) {
+    btn.disabled = loading;
+    btn.innerHTML = loading
+      ? '<i class="fas fa-spinner fa-spin"></i> Please wait...'
+      : defaultLabelHtml;
+  }
+
+  /* ============================================================
+     SUBMIT: SIGN UP
+     ============================================================ */
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    hideAlert();
+
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+    const companyName = document
+      .getElementById("signupCompany")
+      .value.trim();
+
+    if (!name || !email || !password) {
+      showAlert("Please fill in all required fields.", "error");
+      return;
+    }
+    if (password.length < 6) {
+      showAlert("Password must be at least 6 characters.", "error");
+      return;
+    }
+    if (selectedRole === "company" && !companyName) {
+      showAlert("Please enter your company name.", "error");
+      return;
+    }
+
+    const btn = document.getElementById("signupBtn");
+    setLoading(btn, true);
+
+    try {
+      const res = await fetch(API_BASE + "/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          role: selectedRole,
+          companyName
+        })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || "Could not create account.");
+      }
+
+      showAlert(
+        "Account created! Redirecting to your dashboard...",
+        "success"
+      );
+      persistAndRedirect(data.user);
+    } catch (err) {
+      showAlert(err.message || "Could not create account.", "error");
+      setLoading(
+        btn,
+        false,
+        '<i class="fas fa-user-plus"></i> Create Account'
+      );
+    }
+  });
+
+  /* ============================================================
+     SUBMIT: LOG IN
+     ============================================================ */
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    hideAlert();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    if (!email || !password) {
+      showAlert("Please enter your email and password.", "error");
+      return;
+    }
+
+    const btn = document.getElementById("loginBtn");
+    setLoading(btn, true);
+
+    try {
+      const res = await fetch(API_BASE + "/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || "Invalid email or password.");
+      }
+
+      showAlert("Login successful! Redirecting...", "success");
+      persistAndRedirect(data.user);
+    } catch (err) {
+      showAlert(err.message || "Login failed.", "error");
+      setLoading(
+        btn,
+        false,
+        '<i class="fas fa-right-to-bracket"></i> Sign In'
+      );
+    }
+  });
+
+  /* ============================================================
+     PERSIST USER + REDIRECT BY ROLE
+     ============================================================ */
+  function persistAndRedirect(user) {
+    if (!user || !user.role) {
+      showAlert("Unexpected response from server.", "error");
+      return;
+    }
+
+    try {
+      sessionStorage.clear();
+    } catch (_err) {
+      /* ignore */
+    }
+
+    sessionStorage.setItem("stsUser", JSON.stringify(user));
+    if (user.role === "employee") {
+      sessionStorage.setItem("employeeName", user.name);
+      if (user.empId) sessionStorage.setItem("employeeId", user.empId);
+    }
+
+    const dest = ROLE_DESTINATIONS[user.role];
+    if (!dest) {
+      showAlert("No dashboard configured for this account type.", "error");
+      return;
+    }
+    setTimeout(() => window.location.replace(dest), 400);
+  }
+})();
+</script>
+</body>
+</html>

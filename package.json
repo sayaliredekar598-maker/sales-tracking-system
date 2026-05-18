@@ -1,0 +1,19 @@
+{
+  "name": "sales-tracking-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sales tracking with Express, Socket.IO, and static HTML dashboards",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mysql2": "^3.22.3",
+    "socket.io": "^4.8.3"
+  }
+}

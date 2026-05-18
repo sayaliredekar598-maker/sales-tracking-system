@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Remaining Products</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial;
+background:#f4f7fb;
+padding:15px;
+}
+
+/* ================= MAIN BOX ================= */
+
+.box{
+background:white;
+padding:20px;
+border-radius:10px;
+max-width:1100px;
+margin:auto;
+}
+
+/* ================= TOP ================= */
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.top h1{
+font-size:28px;
+}
+
+.clock{
+background:#2563eb;
+color:white;
+padding:10px 20px;
+border-radius:10px;
+font-weight:bold;
+font-size:14px;
+text-align:center;
+}
+
+.top-right{
+display:flex;
+align-items:center;
+gap:12px;
+flex-wrap:wrap;
+}
+
+#userBadge{
+background:#f1f5f9;
+color:#334155;
+padding:10px 14px;
+border-radius:10px;
+font-size:13px;
+font-weight:600;
+}
+
+/* ================= FORM ================= */
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:5px;
+font-size:15px;
+}
+
+button{
+padding:12px 20px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:16px;
+transition:0.3s;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.logout-btn{
+background:#ef4444;
+padding:10px 14px;
+font-size:13px;
+}
+
+.logout-btn:hover{
+background:#dc2626;
+}
+
+/* ================= TABLE ================= */
+
+.table-box{
+margin-top:30px;
+overflow-x:auto;
+border-radius:10px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+min-width:850px;
+}
+
+table th{
+background:#2563eb;
+color:white;
+padding:12px;
+text-align:left;
+font-size:14px;
+}
+
+table td{
+padding:12px;
+border-bottom:1px solid #ddd;
+font-size:14px;
+}
+
+.delete-btn{
+background:red;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:5px;
+cursor:pointer;
+font-size:13px;
+}
+
+.delete-btn:hover{
+background:darkred;
+}
+
+.no-data{
+text-align:center;
+padding:20px;
+}
+
+/* ================= MOBILE VIEW ================= */
+
+@media(max-width:768px){
+
+body{
+padding:10px;
+}
+
+.box{
+padding:15px;
+}
+
+.top{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.top h1{
+font-size:22px;
+}
+
+.top-right{
+width:100%;
+flex-direction:column;
+align-items:stretch;
+}
+
+.clock,
+#userBadge,
+.logout-btn{
+width:100%;
+text-align:center;
+}
+
+button{
+width:100%;
+}
+
+table th,
+table td{
+padding:10px;
+font-size:13px;
+}
+
+}
+
+@media(max-width:480px){
+
+.top h1{
+font-size:20px;
+}
+
+input{
+padding:10px;
+font-size:14px;
+}
+
+button{
+padding:11px;
+font-size:14px;
+}
+
+.clock{
+font-size:13px;
+padding:10px;
+}
+
+#userBadge{
+font-size:12px;
+}
+
+table{
+min-width:750px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<!-- ================= TOP ================= -->
+
+<div class="top">
+
+<h1>Remaining Products</h1>
+
+<div class="top-right">
+
+<div class="clock" id="dateTime"></div>
+
+<div id="userBadge"></div>
+
+<button
+type="button"
+onclick="stsLogout()"
+class="logout-btn">
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+<!-- ================= FORM ================= -->
+
+<input
+type="text"
+id="companyName"
+placeholder="Company Name">
+
+<input
+type="number"
+id="soldProducts"
+placeholder="Sold Products">
+
+<input
+type="number"
+id="totalProducts"
+placeholder="Total Products">
+
+<button onclick="saveData()">
+Save Data
+</button>
+
+<!-- ================= TABLE ================= -->
+
+<div class="table-box">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Date & Time</th>
+
+<th>Company Name</th>
+
+<th>Sold Products</th>
+
+<th>Remaining Products</th>
+
+<th>Total Products</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<script>
+
+/* ============================================================
+AUTH GUARD
+============================================================ */
+
+(function authGuard(){
+
+let user = null;
+
+try{
+
+user = JSON.parse(
+sessionStorage.getItem("stsUser") || "null"
+);
+
+}catch(_err){
+
+user = null;
+
+}
+
+if(!user || !user.email){
+
+window.location.replace(
+"../login/loginPage.html"
+);
+
+return;
+
+}
+
+if(user.role === "employee"){
+
+window.location.replace(
+"../employees/EmployeesDashboard.html"
+);
+
+return;
+
+}
+
+})();
+
+/* ============================================================
+LOGOUT
+============================================================ */
+
+function stsLogout(){
+
+sessionStorage.removeItem("stsUser");
+
+sessionStorage.removeItem("employeeId");
+
+sessionStorage.removeItem("employeeName");
+
+window.location.replace(
+"../login/loginPage.html"
+);
+
+}
+
+/* ============================================================
+USER CONTEXT
+============================================================ */
+
+(function applyUserContext(){
+
+let user = null;
+
+try{
+
+user = JSON.parse(
+sessionStorage.getItem("stsUser") || "null"
+);
+
+}catch(_err){
+
+user = null;
+
+}
+
+if(!user) return;
+
+const badge =
+document.getElementById("userBadge");
+
+if(badge){
+
+const roleLabel =
+user.role === "company"
+? "Company"
+: "Manager";
+
+badge.textContent =
+roleLabel + ": " +
+(user.name || user.email);
+
+}
+
+if(
+user.role === "company" &&
+user.companyName
+){
+
+const el =
+document.getElementById(
+"companyName"
+);
+
+if(el){
+
+el.value = user.companyName;
+
+el.readOnly = true;
+
+el.style.background = "#eef2ff";
+
+el.title =
+"Locked to your company account";
+
+}
+
+}
+
+})();
+
+/* ============================================================
+CLOCK
+============================================================ */
+
+function updateClock(){
+
+const now = new Date();
+
+document.getElementById(
+"dateTime"
+).innerHTML =
+now.toLocaleString();
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+/* ============================================================
+STORAGE
+============================================================ */
+
+let companies =
+JSON.parse(
+localStorage.getItem("companies")
+) || [];
+
+let inventorySocket = null;
+
+/* ============================================================
+REALTIME SOCKET
+============================================================ */
+
+function initInventoryRealtime(){
+
+if(inventorySocket){
+return;
+}
+
+inventorySocket = io(
+"http://localhost:5000",
+{
+transports:["websocket","polling"]
+}
+);
+
+inventorySocket.on("connect",()=>{
+
+console.log("Inventory Connected");
+
+inventorySocket.emit(
+"inventory:subscribe"
+);
+
+});
+
+inventorySocket.on(
+"inventory:snapshot",
+(list)=>{
+
+companies =
+Array.isArray(list)
+? list.slice()
+: [];
+
+try{
+
+localStorage.setItem(
+"companies",
+JSON.stringify(companies)
+);
+
+}catch(_e){}
+
+renderTable();
+
+}
+);
+
+}
+
+/* ============================================================
+QUERY PREFILL
+============================================================ */
+
+(function applyCompanyQueryPrefill(){
+
+try{
+
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+const cn =
+params.get("companyName");
+
+if(!cn) return;
+
+const el =
+document.getElementById(
+"companyName"
+);
+
+if(
+el &&
+!String(el.value || "").trim()
+){
+
+el.value = cn;
+
+}
+
+}catch(_err){}
+
+})();
+
+/* ============================================================
+SAVE DATA
+============================================================ */
+
+function saveData(){
+
+const companyName =
+document.getElementById(
+"companyName"
+).value;
+
+const soldProducts =
+Number(
+document.getElementById(
+"soldProducts"
+).value
+);
+
+const totalProducts =
+Number(
+document.getElementById(
+"totalProducts"
+).value
+);
+
+if(
+!companyName ||
+!totalProducts
+){
+
+alert(
+"Please fill all fields"
+);
+
+return;
+
+}
+
+const remainingProducts =
+totalProducts - soldProducts;
+
+const currentDateTime =
+new Date().toLocaleString();
+
+const newCompany = {
+
+id: Date.now(),
+
+dateTime: currentDateTime,
+
+companyName,
+
+soldProducts,
+
+remainingProducts,
+
+totalProducts
+
+};
+
+if(
+inventorySocket &&
+inventorySocket.connected
+){
+
+inventorySocket.emit(
+"inventory:add",
+newCompany
+);
+
+}else{
+
+companies.push(newCompany);
+
+localStorage.setItem(
+"companies",
+JSON.stringify(companies)
+);
+
+renderTable();
+
+}
+
+document.getElementById(
+"soldProducts"
+).value = "";
+
+document.getElementById(
+"totalProducts"
+).value = "";
+
+}
+
+/* ============================================================
+RENDER TABLE
+============================================================ */
+
+function renderTable(){
+
+const tableBody =
+document.getElementById(
+"tableBody"
+);
+
+tableBody.innerHTML = "";
+
+if(companies.length === 0){
+
+tableBody.innerHTML = `
+
+<tr>
+
+<td colspan="7"
+class="no-data">
+
+No Data Found
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+}
+
+companies.forEach((company)=>{
+
+tableBody.innerHTML += `
+
+<tr>
+
+<td>${company.id}</td>
+
+<td>${company.dateTime}</td>
+
+<td>${company.companyName}</td>
+
+<td>${company.soldProducts}</td>
+
+<td>${company.remainingProducts}</td>
+
+<td>${company.totalProducts}</td>
+
+<td>
+
+<button
+class="delete-btn"
+onclick="deleteData(${company.id})">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+/* ============================================================
+DELETE
+============================================================ */
+
+function deleteData(id){
+
+if(
+inventorySocket &&
+inventorySocket.connected
+){
+
+inventorySocket.emit(
+"inventory:delete",
+{ id }
+);
+
+return;
+
+}
+
+companies =
+companies.filter(
+(company)=>
+company.id !== id
+);
+
+localStorage.setItem(
+"companies",
+JSON.stringify(companies)
+);
+
+renderTable();
+
+}
+
+/* ============================================================
+START
+============================================================ */
+
+renderTable();
+
+initInventoryRealtime();
+
+</script>
+
+</body>
+</html>

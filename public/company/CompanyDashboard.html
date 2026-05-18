@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Tracking System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+:root {
+  --navy-deep: #0c1228;
+  --navy: #151d3d;
+  --purple: #6a5cff;
+  --purple-light: #8f7bff;
+  --purple-soft: #ede9ff;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --text-muted: #94a3b8;
+  --card-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: #f0f4fb;
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ----- Sidebar ----- */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--navy-deep), var(--navy));
+  color: #fff;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 16px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6, var(--purple));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.nav {
+  list-style: none;
+  flex: 1;
+}
+
+.nav li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin: 4px 0;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav li:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.nav li.active {
+  background: linear-gradient(90deg, var(--purple), var(--purple-light));
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(106, 92, 255, 0.35);
+}
+
+.nav li i {
+  width: 20px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+.sidebar-user {
+  margin-top: auto;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-user .avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.sidebar-user .name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sidebar-user .role {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ----- Main ----- */
+.main {
+  flex: 1;
+  padding: 28px 32px 100px;
+  overflow-x: auto;
+}
+
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.greeting h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.greeting p {
+  color: #64748b;
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.date-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  border: none;
+  font-size: 14px;
+  color: #334155;
+  cursor: pointer;
+}
+
+.date-pick i {
+  color: var(--purple);
+}
+
+.notify-btn {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  border: none;
+  background: #fff;
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  font-size: 18px;
+  color: #475569;
+}
+
+.notify-btn .dot-n {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, var(--purple), var(--purple-light));
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(106, 92, 255, 0.35);
+}
+
+/* ----- Metric cards ----- */
+.cards-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 1400px) {
+  .cards-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .cards-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+.metric-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+}
+
+.metric-card--clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.metric-card--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
+}
+
+.metric-card--clickable:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+}
+
+.metric-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.metric-head .mc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.mc-purple { background: var(--purple-soft); color: var(--purple); }
+.mc-green { background: #ecfdf5; color: var(--success); }
+.mc-blue { background: #eff6ff; color: #3b82f6; }
+.mc-amber { background: #fffbeb; color: var(--warn); }
+
+.metric-card h4 {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.metric-card .value {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.metric-meta {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trend-up {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.dot-live {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+/* ----- Map + Activity ----- */
+.map-activity-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 1100px) {
+  .map-activity-row { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.panel-h {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.panel-h h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.panel-h .link-all {
+  color: var(--purple);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.map-wrap {
+  height: 360px;
+  padding: 16px;
+}
+
+.live-map {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 12px;
+}
+
+.active-users-list {
+  max-height: 116px;
+  overflow-y: auto;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+}
+
+.active-user-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.active-user-item:last-child {
+  border-bottom: none;
+}
+
+.activity-list {
+  padding: 8px 0 12px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.act-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  padding: 14px 18px;
+  align-items: center;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.act-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-moving { background: #dcfce7; color: #15803d; }
+.badge-idle { background: #fef3c7; color: #b45309; }
+.badge-active { background: #dbeafe; color: #1d4ed8; }
+
+.act-name { font-weight: 600; font-size: 14px; }
+.act-loc { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+.act-time { font-size: 12px; color: #cbd5e1; text-align: right; }
+
+/* ----- Charts row ----- */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 1200px) {
+  .charts-row { grid-template-columns: 1fr; }
+}
+
+.chart-panel {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+}
+
+.chart-panel h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.chart-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.chart-canvas-wrap {
+  position: relative;
+  height: 240px;
+}
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  padding-bottom: 8px;
+}
+
+.donut-center small {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.donut-center strong {
+  font-size: 18px;
+  margin-top: 4px;
+}
+
+/* ----- Leaderboard ----- */
+.lb-list {
+  list-style: none;
+}
+
+.lb-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+
+.lb-rank {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--purple);
+}
+
+.lb-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.lb-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lb-sales { font-weight: 700; }
+.lb-grow { color: var(--success); font-size: 12px; font-weight: 600; }
+.lb-grow-down { color: #ef4444; font-size: 12px; font-weight: 600; }
+
+/* ----- Table ----- */
+.table-panel {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.table-panel .panel-h {
+  margin: 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.report-table th {
+  text-align: left;
+  padding: 14px 20px;
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.report-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.emp-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.emp-cell .tiny-av {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--purple-soft);
+  color: var(--purple);
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-sub {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.fab {
+  position: fixed;
+  bottom: 28px;
+  right: 32px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--purple), var(--purple-light));
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(106, 92, 255, 0.45);
+  z-index: 100;
+}
+.fab:hover { transform: scale(1.05); transition: transform 0.15s; }
+
+.leaflet-div-icon.emp-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i class="fas fa-chart-bar"></i></div>
+    <div class="brand-title">Sales Tracking System</div>
+  </div>
+  <ul class="nav">
+    <li class="active"><i class="fas fa-home"></i> Dashboard</li>
+    <li onclick="location.href='OurCompany.html'" style="cursor:pointer;"><i class="fas fa-building"></i> Business portal</li>
+    <li><i class="fas fa-location-crosshairs"></i> Live Tracking</li>
+    <li><i class="fas fa-users"></i> Employees</li>
+    <li><i class="fas fa-file-lines"></i> Reports</li>
+    
+    <li onclick="stsLogout()" style="cursor:pointer;"><i class="fas fa-right-from-bracket"></i> Logout</li>
+  </ul>
+  <div class="sidebar-user">
+    <div class="avatar" id="managerAvatar">MA</div>
+    <div>
+      <div class="name" id="managerName">Manager</div>
+      <div class="role">Administrator</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top-bar">
+    <div class="greeting">
+      <h1 id="managerGreeting">Welcome back, Manager!</h1>
+      <p>Here's what's happening with your sales team today.</p>
+    </div>
+    <div class="controls">
+      <button type="button" class="date-pick" title="Current local date and time" aria-live="polite"><i class="fas fa-calendar-day" aria-hidden="true"></i> <span id="dashboardDateTime"></span></button>
+    </div>
+  </div>
+
+  <div class="cards-row">
+    <div class="metric-card">
+      <div class="metric-head">
+        <div>
+          <h4>Total Employees</h4>
+          <div class="value" id="totalEmployeesValue">0</div>
+        </div>
+        <div class="mc-icon mc-purple"><i class="fas fa-user-group"></i></div>
+      </div>
+      <div class="metric-meta"><span class="dot-live"></span> <span id="activeEmployeesMeta">0 Active Now</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-head">
+        <div>
+          <h4>Today's Total Sales</h4>
+          <div class="value" id="todaySalesValue">₹ 0</div>
+        </div>
+        <div class="mc-icon mc-green"><i class="fas fa-indian-rupee-sign"></i></div>
+      </div>
+      <div class="metric-meta"><span class="trend-up">↑ 18.5%</span> vs yesterday</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-head">
+        <div>
+          <h4>Products Sold</h4>
+          <div class="value" id="productsSoldValue">0</div>
+        </div>
+        <div class="mc-icon mc-blue"><i class="fas fa-box-archive"></i></div>
+      </div>
+      <div class="metric-meta"><span class="trend-up">↑ 12.7%</span> vs yesterday</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-head">
+        <div>
+          <h4>Target Achievement</h4>
+          <div class="value">78%</div>
+        </div>
+        <div class="mc-icon mc-amber"><i class="fas fa-bullseye"></i></div>
+      </div>
+      <div class="metric-meta">This Month</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-head">
+        <div>
+          <h4>Reports Submitted</h4>
+          <div class="value" id="reportsSubmittedValue">0</div>
+        </div>
+        <div class="mc-icon mc-purple"><i class="fas fa-clipboard-check"></i></div>
+      </div>
+      <div class="metric-meta">All submitted</div>
+    </div>
+    <div
+      class="metric-card metric-card--clickable"
+      id="businessPortalCard"
+      role="button"
+      tabindex="0"
+      title="Open business portal"
+      aria-label="Business portal, open partner directory"
+    >
+      <div class="metric-head">
+        <div>
+          <h4>Business Portal</h4>
+        </div>
+        <div class="mc-icon mc-purple"><i class="fas fa-building"></i></div>
+      </div>
+      <div class="metric-meta">Partner companies and distributor entry · click to open</div>
+    </div>
+  </div>
+
+  <div class="map-activity-row">
+    <div class="panel">
+      <div class="panel-h">
+        <h3>Live Employee Status</h3>
+      </div>
+      <div class="map-wrap">
+        <div id="dashMap" class="live-map"></div>
+        <div class="active-users-list" id="activeUsersList"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-h">
+        <h3>Live Activity</h3>
+        <a href="#" class="link-all">View All</a>
+      </div>
+      <div class="activity-list" id="activityList"></div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-panel">
+      <div class="chart-h">
+        <h3>Today's Sales Overview</h3>
+      </div>
+      <div class="chart-canvas-wrap">
+        <canvas id="lineChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-panel">
+      <div class="chart-h">
+        <h3>Sales by Product</h3>
+      </div>
+      <div class="chart-canvas-wrap" style="position:relative">
+        <canvas id="donutChart"></canvas>
+        <div class="donut-center">
+          <small>Total Products Sold</small>
+          <strong id="donutTotalProducts">0</strong>
+        </div>
+      </div>
+    </div>
+    <div class="chart-panel">
+      <div class="chart-h">
+        <h3>Top Performers (By Sales)</h3>
+        <a href="#" class="link-all">View All</a>
+      </div>
+      <ul class="lb-list" id="topPerformersList"></ul>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="panel-h">
+      <h3>Recent Reports</h3>
+    </div>
+    <div class="table-scroll">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Products Sold</th>
+            <th>Total Sales</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="recentReportsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<button type="button" class="fab" aria-label="Add"><i class="fas fa-plus"></i></button>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<script>
+
+/* ============================================================
+   AUTH GUARD: only managers may view this dashboard.
+   ============================================================ */
+(function authGuard() {
+  let user = null;
+  try {
+    user = JSON.parse(sessionStorage.getItem("stsUser") || "null");
+  } catch (_err) {
+    user = null;
+  }
+
+  if (!user || !user.email) {
+    window.location.replace("../login/loginPage.html");
+    return;
+  }
+
+  if (user.role === "employee") {
+    window.location.replace("../employees/EmployeesDashboard.html");
+    return;
+  }
+
+  if (user.role === "company") {
+    window.location.replace("AddRemainingProducts.html");
+    return;
+  }
+})();
+
+function stsLogout() {
+  sessionStorage.removeItem("stsUser");
+  sessionStorage.removeItem("employeeId");
+  sessionStorage.removeItem("employeeName");
+  window.location.replace("../login/loginPage.html");
+}
+
+(function () {
+  function initialsOf(name) {
+    return String(name || "")
+      .split(" ")
+      .filter(Boolean)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  }
+
+  function titleCaseFromEmail(email) {
+    const localPart = String(email || "").split("@")[0] || "Manager";
+    return localPart
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  }
+
+  
+
+  const loggedInUser = JSON.parse(sessionStorage.getItem("stsUser") || "{}");
+  
+  const managerName = loggedInUser.name || titleCaseFromEmail(loggedInUser.email);
+  const managerNameEl = document.getElementById("managerName");
+  const managerGreetingEl = document.getElementById("managerGreeting");
+  const managerAvatarEl = document.getElementById("managerAvatar");
+  
+
+  if (managerNameEl) managerNameEl.textContent = managerName;
+  if (managerGreetingEl) managerGreetingEl.textContent = `Welcome back, ${managerName}!`;
+  if (managerAvatarEl) managerAvatarEl.textContent = initialsOf(managerName);
+
+  const dashboardDateTimeEl = document.getElementById("dashboardDateTime");
+  const dashboardDateTimeFmt = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  });
+  function updateDashboardDateTime() {
+    if (!dashboardDateTimeEl) return;
+    dashboardDateTimeEl.textContent = dashboardDateTimeFmt.format(new Date());
+  }
+  updateDashboardDateTime();
+  setInterval(updateDashboardDateTime, 1000);
+
+  const map = L.map("dashMap").setView([20.5937, 78.9629], 5);
+  
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    attribution: "&copy; OpenStreetMap &copy; CartoDB",
+    subdomains: "abcd",
+    maxZoom: 19
+  }).addTo(map);
+
+  const employeeById = new Map();
+  const markerByEmployee = new Map();
+  const activityFeed = [];
+  const reports = [];
+
+  const els = {
+    totalEmployees: document.getElementById("totalEmployeesValue"),
+    activeEmployeesMeta: document.getElementById("activeEmployeesMeta"),
+    todaySales: document.getElementById("todaySalesValue"),
+    productsSold: document.getElementById("productsSoldValue"),
+    reportsSubmitted: document.getElementById("reportsSubmittedValue"),
+    donutTotalProducts: document.getElementById("donutTotalProducts"),
+    activeUsersList: document.getElementById("activeUsersList"),
+    activityList: document.getElementById("activityList"),
+    recentReportsBody: document.getElementById("recentReportsBody"),
+    topPerformersList: document.getElementById("topPerformersList")
+  };
+
+  const lineChartLabels = [
+    "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM",
+    "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM",
+    "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM",
+    "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"
+  ];
+
+  const lineCtx = document.getElementById("lineChart");
+  const donutCtx = document.getElementById("donutChart");
+
+  const lineChart = new Chart(lineCtx, {
+    type: "line",
+    data: {
+      labels: lineChartLabels,
+      datasets: [{
+        label: "Sales",
+        data: new Array(24).fill(0),
+        borderColor: "#6a5cff",
+        backgroundColor: "rgba(106, 92, 255, 0.2)",
+        fill: true,
+        borderWidth: 3,
+        pointRadius: 2,
+        pointHoverRadius: 4,
+        tension: 0.35
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` Sales: ${formatINR(ctx.raw)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 7 }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: "rgba(148,163,184,0.18)" },
+          ticks: {
+            callback: (value) => {
+              const amount = Number(value);
+              if (amount >= 1000) return `${Math.round(amount / 1000)}k`;
+              return amount;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  const donutChart = new Chart(donutCtx, {
+    type: "doughnut",
+    data: {
+      labels: ["Product A", "Product B", "Product C", "Product D"],
+      datasets: [{
+        data: [1, 0, 0, 0],
+        backgroundColor: ["#6a5cff", "#3b82f6", "#22c55e", "#fbbf24"],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "68%",
+      plugins: {
+        legend: {
+          position: "right",
+          labels: {
+            boxWidth: 12,
+            boxHeight: 12,
+            usePointStyle: true,
+            pointStyle: "rectRounded",
+            padding: 16
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const total = ctx.dataset.data.reduce((sum, value) => sum + Number(value || 0), 0);
+              const qty = Number(ctx.raw || 0);
+              const percent = total > 0 ? Math.round((qty / total) * 100) : 0;
+              return ` ${ctx.label}: ${qty} (${percent}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  const statusToBadgeClass = {
+    Moving: "badge-moving",
+    Active: "badge-active",
+    Idle: "badge-idle",
+    Offline: "badge-idle"
+  };
+
+  function formatINR(value) {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0
+    }).format(Number(value || 0));
+  }
+
+  function timeAgo(ts) {
+    const delta = Math.max(1, Math.floor((Date.now() - Number(ts || Date.now())) / 60000));
+    if (delta < 60) return `${delta} min ago`;
+    const hrs = Math.floor(delta / 60);
+    return `${hrs} hr ago`;
+  }
+
+  function renderActivity() {
+    if (!activityFeed.length) {
+      els.activityList.innerHTML = `<div class="act-item"><div class="act-avatar">--</div><div><div class="act-name">Waiting for activity</div><div class="act-loc">Employees will appear when GPS/report updates arrive</div></div><div><span class="badge badge-idle">Idle</span><div class="act-time">just now</div></div></div>`;
+      return;
+    }
+
+    els.activityList.innerHTML = activityFeed.slice(0, 12).map((item) => {
+      const badgeClass = statusToBadgeClass[item.status] || "badge-idle";
+      return `<div class="act-item">
+        <div class="act-avatar">${item.initials}</div>
+        <div>
+          <div class="act-name">${item.name}</div>
+          <div class="act-loc">${item.message}</div>
+        </div>
+        <div>
+          <span class="badge ${badgeClass}">${item.status}</span>
+          <div class="act-time">${timeAgo(item.timestamp)}</div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function renderActiveUsers() {
+    const activeUsers = [...employeeById.values()].filter((emp) => !!emp.isGpsOn);
+    if (!activeUsers.length) {
+      els.activeUsersList.innerHTML = `<div class="active-user-item"><div class="act-avatar">--</div><div><div class="act-name">No active users</div><div class="act-loc">Users appear here when they turn GPS on</div></div><span class="badge badge-idle">Idle</span></div>`;
+      return;
+    }
+
+    els.activeUsersList.innerHTML = activeUsers.map((emp) => {
+      const badgeClass = statusToBadgeClass[emp.status] || "badge-active";
+      const hasCoords = typeof emp.lat === "number" && typeof emp.lng === "number";
+      const locationText = hasCoords
+        ? `Lat ${emp.lat.toFixed(5)}, Lng ${emp.lng.toFixed(5)}`
+        : `Last ping: ${timeAgo(emp.lastSeen)}`;
+      return `<div class="active-user-item">
+        <div class="act-avatar">${emp.initials || initialsOf(emp.name)}</div>
+        <div>
+          <div class="act-name">${emp.name}</div>
+          <div class="act-loc">${locationText}</div>
+        </div>
+        <span class="badge ${badgeClass}">${emp.status || "Active"}</span>
+      </div>`;
+    }).join("");
+  }
+
+  function markerIcon(name, initials) {
+    return L.divIcon({
+      className: "emp-marker",
+      html: `<div style="display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-100%);">
+      <span style="background:#fff;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,.1);margin-bottom:5px;">${name}</span>
+      <span style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#6a5cff,#a855f7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid #fff;">${initials}</span>
+    </div>`,
+      iconSize: [0, 0],
+      iconAnchor: [16, 0]
+    });
+  }
+
+  function upsertMapMarker(emp) {
+    if (typeof emp.lat !== "number" || typeof emp.lng !== "number") return;
+
+    const marker = markerByEmployee.get(emp.id);
+
+    if (marker) {
+      marker.setLatLng([emp.lat, emp.lng]);
+    } else {
+      markerByEmployee.set(
+        emp.id,
+        L.marker([emp.lat, emp.lng], {
+          icon: markerIcon(emp.name, emp.initials || initialsOf(emp.name))
+        }).addTo(map)
+      );
+    }
+
+    // Keep map focused on latest active employee location.
+    map.setView([emp.lat, emp.lng], 15);
+  }
+
+  function renderReports() {
+    if (!reports.length) {
+      els.recentReportsBody.innerHTML = `<tr><td colspan="6">No live reports yet</td></tr>`;
+      return;
+    }
+
+    els.recentReportsBody.innerHTML = reports.slice(0, 20).map((r) => {
+      return `<tr>
+        <td><div class="emp-cell"><div class="tiny-av">${initialsOf(r.employeeName)}</div> ${r.employeeName}</div></td>
+        <td>${new Date(r.dateTime).toLocaleString("en-IN")}</td>
+        <td>${r.location}</td>
+        <td>${Number(r.quantity || 0)}</td>
+        <td>${formatINR(r.sales)}</td>
+        <td><span class="badge-sub">${r.status || "Submitted"}</span></td>
+      </tr>`;
+    }).join("");
+  }
+
+  function reportDate(r) {
+    const dt = new Date(r.dateTime || r.createdAt || Date.now());
+    return Number.isNaN(dt.getTime()) ? new Date() : dt;
+  }
+
+  function salesValue(r) {
+    return Number(r.sales || r.totalSales || 0);
+  }
+
+  function productQty(r) {
+    const qty = Number(r.quantity || r.products || r.productCount || 0);
+    return qty > 0 ? qty : 1;
+  }
+
+  function productName(r) {
+    return String(r.product || r.productName || "Unknown Product").trim() || "Unknown Product";
+  }
+
+  function employeeNameOf(r) {
+    return String(r.employeeName || r.name || "Employee").trim() || "Employee";
+  }
+
+  function renderAnalyticsFromReports() {
+    const now = new Date();
+    const todayY = now.getFullYear();
+    const todayM = now.getMonth();
+    const todayD = now.getDate();
+
+    const hourlySales = new Array(24).fill(0);
+    const productTotals = new Map();
+    const performerSales = new Map();
+    const performerPrevSales = new Map();
+
+    reports.forEach((report) => {
+      const dt = reportDate(report);
+      const amount = salesValue(report);
+      const qty = productQty(report);
+      const pname = productName(report);
+      const ename = employeeNameOf(report);
+
+      const isToday =
+        dt.getFullYear() === todayY &&
+        dt.getMonth() === todayM &&
+        dt.getDate() === todayD;
+
+      if (isToday) {
+        hourlySales[dt.getHours()] += amount;
+        productTotals.set(pname, (productTotals.get(pname) || 0) + qty);
+        performerSales.set(ename, (performerSales.get(ename) || 0) + amount);
+      } else {
+        performerPrevSales.set(ename, (performerPrevSales.get(ename) || 0) + amount);
+      }
+    });
+
+    lineChart.data.datasets[0].data = hourlySales.map((v) => Math.round(v));
+    lineChart.update("none");
+
+    const sortedProducts = [...productTotals.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4);
+
+    const fallbackProducts = sortedProducts.length
+      ? sortedProducts
+      : [["No Products", 1]];
+
+    donutChart.data.labels = fallbackProducts.map(([name]) => name);
+    donutChart.data.datasets[0].data = fallbackProducts.map(([, total]) => total);
+    donutChart.update("none");
+
+    const totalSold = [...productTotals.values()].reduce((sum, total) => sum + Number(total || 0), 0);
+    els.donutTotalProducts.textContent = String(totalSold);
+
+    const performers = [...performerSales.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    if (!performers.length) {
+      els.topPerformersList.innerHTML = `<li class="lb-item"><span class="lb-rank">-</span><div class="lb-name-cell"><div class="lb-avatar">--</div><span>No performers yet</span></div><span class="lb-sales">₹0</span><span class="lb-grow">0%</span></li>`;
+      return;
+    }
+
+    els.topPerformersList.innerHTML = performers.map(([name, totalSales], idx) => {
+      const previousSales = Number(performerPrevSales.get(name) || 0);
+      const growth = previousSales > 0
+        ? Math.round(((totalSales - previousSales) / previousSales) * 100)
+        : 100;
+      const growthPrefix = growth >= 0 ? "↑" : "↓";
+      const growthClass = growth >= 0 ? "lb-grow" : "lb-grow-down";
+      return `<li class="lb-item">
+        <span class="lb-rank">${idx + 1}</span>
+        <div class="lb-name-cell">
+          <div class="lb-avatar">${initialsOf(name)}</div>
+          <span>${name}</span>
+        </div>
+        <span class="lb-sales">${formatINR(totalSales)}</span>
+        <span class="${growthClass}">${growthPrefix} ${Math.abs(growth)}%</span>
+      </li>`;
+    }).join("");
+  }
+
+  function upsertEmployee(emp) {
+    if (!emp || !emp.id) return;
+    employeeById.set(emp.id, emp);
+    upsertMapMarker(emp);
+    renderActiveUsers();
+  }
+
+  function removeEmployee(empId) {
+    employeeById.delete(empId);
+    const marker = markerByEmployee.get(empId);
+    if (marker) {
+      map.removeLayer(marker);
+      markerByEmployee.delete(empId);
+    }
+    renderActiveUsers();
+  }
+
+  function applySummary(summary) {
+    if (!summary) return;
+    els.totalEmployees.textContent = Number(summary.totalEmployees || 0);
+    els.activeEmployeesMeta.textContent = `${Number(summary.activeEmployees || 0)} Active Now`;
+    els.todaySales.textContent = formatINR(summary.todaySales);
+    const products = Number(summary.todayProducts || 0);
+    els.productsSold.textContent = products;
+    els.donutTotalProducts.textContent = products;
+    els.reportsSubmitted.textContent = Number(summary.todayReports || 0);
+  }
+
+  function goBusinessPortalPage() {
+    window.location.href = "OurCompany.html";
+  }
+
+  const businessPortalCard = document.getElementById("businessPortalCard");
+  if (businessPortalCard) {
+    businessPortalCard.addEventListener("click", goBusinessPortalPage);
+    businessPortalCard.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        goBusinessPortalPage();
+      }
+    });
+  }
+
+  function addActivityFromServer(activity) {
+    if (!activity) return;
+    const employee = activity.employee || {};
+    const status = activity.type === "gps_on" ? "Active" : "Moving";
+    activityFeed.unshift({
+      name: employee.name || "Employee",
+      initials: employee.initials || initialsOf(employee.name || "Employee"),
+      message: activity.message || "Update received",
+      status,
+      timestamp: activity.timestamp || Date.now()
+    });
+    if (activityFeed.length > 40) activityFeed.pop();
+    renderActivity();
+  }
+
+  const socket = io("http://localhost:5000");
+  socket.on("connect", () => {
+    socket.emit("admin:join");
+  });
+
+  socket.on("admin:snapshot", (payload) => {
+    employeeById.clear();
+    (payload.employees || []).forEach(upsertEmployee);
+    reports.length = 0;
+    reports.push(...(payload.recentReports || []));
+    applySummary(payload.summary);
+    renderReports();
+    renderAnalyticsFromReports();
+    renderActivity();
+    renderActiveUsers();
+  });
+
+  socket.on("admin:employeeUpdate", (employee) => {
+    upsertEmployee(employee);
+  });
+
+  socket.on("admin:employeeOffline", (data) => {
+    removeEmployee(data?.id);
+    activityFeed.unshift({
+      name: "Employee",
+      initials: "--",
+      message: "Employee went offline",
+      status: "Idle",
+      timestamp: Date.now()
+    });
+    renderActivity();
+  });
+
+  socket.on("admin:summary", applySummary);
+  socket.on("admin:activity", addActivityFromServer);
+  socket.on("admin:reportSubmitted", (report) => {
+    reports.unshift(report);
+    if (reports.length > 50) reports.pop();
+    renderReports();
+    renderAnalyticsFromReports();
+  });
+
+  renderActivity();
+  renderReports();
+  renderAnalyticsFromReports();
+  renderActiveUsers();
+
+})();
+</script>
+</body>
+</html>

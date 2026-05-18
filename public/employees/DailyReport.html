@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Report Form</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
+
+body{
+    background:#f1f5f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:400px;
+    background:#fff;
+    padding:22px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    animation:fade 0.5s ease;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.title{
+    text-align:center;
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:#111827;
+}
+
+label{
+    display:block;
+    margin-top:14px;
+    margin-bottom:6px;
+    font-size:14px;
+    color:#374151;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    outline:none;
+    font-size:14px;
+    transition:0.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+textarea{
+    resize:none;
+    height:80px;
+}
+
+.error{
+    color:red;
+    font-size:12px;
+    margin-top:4px;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(to right,#2563eb,#1d4ed8);
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    margin-top:20px;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.02);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">Submit Daily Report</div>
+
+    <form id="reportForm">
+
+        <!-- DATE + TIME -->
+
+        <label>Date & Time</label>
+
+        <input type="datetime-local" id="dateTime">
+
+        <div class="error" id="dateTimeError"></div>
+
+        <!-- LOCATION -->
+
+        <label>Location</label>
+
+        <input type="text" id="location" placeholder="Enter location">
+
+        <div class="error" id="locationError"></div>
+
+        <!-- PRODUCT -->
+
+        <label>Select Product</label>
+
+        <select id="product">
+
+            <option value="">Select Product</option>
+            <option>Product A</option>
+            <option>Product B</option>
+            <option>Product C</option>
+
+        </select>
+
+        <div class="error" id="productError"></div>
+
+        <!-- QUANTITY -->
+
+        <label>Quantity Sold</label>
+
+        <input type="number" id="quantity" placeholder="Enter quantity">
+
+        <div class="error" id="quantityError"></div>
+
+        <!-- SALES -->
+
+        <label>Total Sales (₹)</label>
+
+        <input type="number" id="sales" placeholder="Enter total sales">
+
+        <div class="error" id="salesError"></div>
+
+        <!-- NOTES -->
+
+        <label>Notes</label>
+
+        <textarea id="notes" placeholder="Enter notes"></textarea>
+
+        <!-- BUTTON -->
+
+        <button type="submit">Submit Report</button>
+
+    </form>
+
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+
+const loggedInUser =
+JSON.parse(sessionStorage.getItem("stsUser") || "{}");
+
+if (!loggedInUser.email) {
+    window.location.replace("../login/loginPage.html");
+} else if (loggedInUser.role !== "employee") {
+    if (loggedInUser.role === "manager") {
+        window.location.replace("../company/CompanyDashboard.html");
+    } else if (loggedInUser.role === "company") {
+        window.location.replace("../company/AddRemainingProducts.html");
+    } else {
+        window.location.replace("../login/loginPage.html");
+    }
+} else {
+
+function nameFromEmail(email){
+    const localPart = String(email || "").split("@")[0] || "Employee";
+    return localPart
+        .split(/[._-]+/)
+        .filter(Boolean)
+        .map((part)=>part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+}
+
+const employeeName =
+loggedInUser.name ||
+sessionStorage.getItem("employeeName") ||
+nameFromEmail(loggedInUser.email) ||
+"Employee";
+
+const employeeId =
+loggedInUser.empId ||
+sessionStorage.getItem("employeeId") ||
+employeeName.toLowerCase().replace(/\s+/g, "-");
+
+sessionStorage.setItem("employeeId", employeeId);
+sessionStorage.setItem("employeeName", employeeName);
+
+function stsReportsStorageKey(id) {
+    return "stsEmployeeReports:" + String(id || "");
+}
+
+function stsLoadEmployeeReports(id) {
+    const key = stsReportsStorageKey(id);
+    let list = [];
+    try {
+        const raw = localStorage.getItem(key);
+        if (raw) list = JSON.parse(raw);
+    } catch (_e) {
+        list = [];
+    }
+    if (!Array.isArray(list)) list = [];
+    if (list.length) return list;
+    try {
+        const legacy = JSON.parse(localStorage.getItem("employeeReports") || "[]");
+        if (!Array.isArray(legacy) || !legacy.length) return [];
+        const mine = legacy.filter(
+            (r) => String(r.employeeId || "") === String(id)
+        );
+        if (mine.length) {
+            localStorage.setItem(key, JSON.stringify(mine));
+        }
+        return mine;
+    } catch (_e) {
+        return [];
+    }
+}
+
+function stsSaveEmployeeReports(id, reports) {
+    localStorage.setItem(
+        stsReportsStorageKey(id),
+        JSON.stringify(reports)
+    );
+}
+
+const form = document.getElementById("reportForm");
+const socket = io("http://localhost:5000");
+
+// AUTO CURRENT DATE & TIME
+
+window.onload = function(){
+
+    const now = new Date();
+
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+    document.getElementById("dateTime").value =
+    now.toISOString().slice(0,16);
+
+};
+
+// FORM SUBMIT
+
+form.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    // INPUT VALUES
+
+    const dateTime = document.getElementById("dateTime").value;
+    const location = document.getElementById("location").value.trim();
+    const product = document.getElementById("product").value;
+    const quantity = document.getElementById("quantity").value;
+    const sales = document.getElementById("sales").value;
+    const notes = document.getElementById("notes").value;
+
+    // CLEAR ERRORS
+
+    document.getElementById("dateTimeError").innerHTML = "";
+    document.getElementById("locationError").innerHTML = "";
+    document.getElementById("productError").innerHTML = "";
+    document.getElementById("quantityError").innerHTML = "";
+    document.getElementById("salesError").innerHTML = "";
+
+    let isValid = true;
+
+    // VALIDATION
+
+    if(dateTime === ""){
+        document.getElementById("dateTimeError").innerHTML =
+        "Please select date & time";
+        isValid = false;
+    }
+
+    if(location === ""){
+        document.getElementById("locationError").innerHTML =
+        "Please enter location";
+        isValid = false;
+    }
+
+    if(product === ""){
+        document.getElementById("productError").innerHTML =
+        "Please select product";
+        isValid = false;
+    }
+
+    if(quantity === "" || quantity <= 0){
+        document.getElementById("quantityError").innerHTML =
+        "Enter valid quantity";
+        isValid = false;
+    }
+
+    if(sales === "" || sales <= 0){
+        document.getElementById("salesError").innerHTML =
+        "Enter valid sales amount";
+        isValid = false;
+    }
+
+    if(!isValid){
+        return;
+    }
+
+    // SAVE DATA
+
+    const reportData = {
+        employeeId,
+        employeeName,
+        dateTime,
+        location,
+        product,
+        quantity,
+        sales,
+        notes
+    };
+
+    let reports = stsLoadEmployeeReports(employeeId);
+
+    reports.push(reportData);
+
+    stsSaveEmployeeReports(employeeId, reports);
+
+    // SUCCESS MESSAGE
+    socket.emit("employee:report", reportData);
+
+    alert("Report Submitted Successfully");
+
+    // REDIRECT TO REPORT PAGE
+
+    window.location.href = "reports.html";
+
+});
+
+}
+
+</script>
+
+</body>
+</html>

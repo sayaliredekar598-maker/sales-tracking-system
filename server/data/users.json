@@ -1,0 +1,68 @@
+[
+  {
+    "id": "064558ce-bf32-4177-8877-6fa486e934dc",
+    "name": "Manager",
+    "email": "manager@company.com",
+    "passwordSalt": "4b3f7e268327f5cb61d57e473bf588b2",
+    "passwordHash": "04f7fc27bab92405900b5e5cf004bde856cbdcf64c75016036866c0714c31d43193f794d812c329509446e4ba5acb103b46d02fb1902819b55a17994845b3301",
+    "role": "manager",
+    "companyName": null,
+    "empId": null,
+    "createdAt": "2026-05-13T09:55:19.844Z"
+  },
+  {
+    "id": "de42af1f-c363-4990-b55d-1b96e2ffb3ad",
+    "name": "Sayali",
+    "email": "sayali@gmail.com",
+    "passwordSalt": "e29f6eae6a386271ea71140d5e02a2b2",
+    "passwordHash": "e122c8a07545a29eb3900738cdf4b722bd832cde9cae3236b2159f897dd042b1d65c7994ff7cf529a4a8b2de18af00ba38edd5088b2649d597a1e26773743ab2",
+    "role": "employee",
+    "companyName": null,
+    "empId": "sayali",
+    "createdAt": "2026-05-13T09:57:02.880Z"
+  },
+  {
+    "id": "e1b30fa2-af2f-4a3f-bab6-50d07488c696",
+    "name": "ABC",
+    "email": "abc@gamil.com",
+    "passwordSalt": "06aec74745e799141b29ef0f877e6394",
+    "passwordHash": "ec814e5a0ce655558e30deaf278ff31bb712128151b8950dbc90534d83450d69c5c18befc300a40bcb6582ba7db9b8ecfdd5337d784ec68b05977837c7e6f736",
+    "role": "company",
+    "companyName": "ABC PVT LTD",
+    "empId": null,
+    "createdAt": "2026-05-13T09:58:18.669Z"
+  },
+  {
+    "id": "e001f617-f052-4819-b7af-b79e79be7030",
+    "name": "ABC",
+    "email": "abc123@gamil.com",
+    "passwordSalt": "60444b46bd453876bfc28807b9243059",
+    "passwordHash": "563598fdebe345a4a337eacf376d1b39f3e82790c885621e201d5da1b00bfef9b03e24ec9e7650a41ee43b0ae00fbebc4626c054dec64038e786faef60ef1cbb",
+    "role": "company",
+    "companyName": "ABC PVT LTD",
+    "empId": null,
+    "createdAt": "2026-05-13T10:12:15.245Z"
+  },
+  {
+    "id": "43012dd9-45c3-43d5-9668-89449000e87a",
+    "name": "Qweez",
+    "email": "qweez@gmail.com",
+    "passwordSalt": "d7fe280ae70fd36d2e082e078feba13e",
+    "passwordHash": "443569e3b809a87a51ce5bcb8803a06d5162c6656b32fda3f27e6671be8a1a5530ceb8dfc061b3b506667ba038cfb37a9b0d4dd5caaaba0af4a367c34b0a3b8f",
+    "role": "company",
+    "companyName": "Qweez technology",
+    "empId": null,
+    "createdAt": "2026-05-13T10:17:35.378Z"
+  },
+  {
+    "id": "8f941fe4-3e7d-4319-bb85-77bd362c6abf",
+    "name": "Pranali",
+    "email": "pranali@gmail.com",
+    "passwordSalt": "13381df288146c166b5596ed3429eea0",
+    "passwordHash": "2cceb7d4640f06f0818d37336d09bd89ed23c666cc935b3f886f3289bf8346ef9d3e83cf948991eabc452062c9f0f1a53565c0bb06f100acf037fd960c7b7133",
+    "role": "employee",
+    "companyName": null,
+    "empId": "pranali",
+    "createdAt": "2026-05-13T10:32:42.954Z"
+  }
+]
