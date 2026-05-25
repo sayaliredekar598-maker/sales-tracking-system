@@ -655,6 +655,232 @@ table.report-table {
   border: none !important;
 }
 
+/* ===================================================
+   MOBILE RESPONSIVE
+=================================================== */
+
+@media (max-width: 1200px){
+
+  .cards-row{
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .charts-row{
+    grid-template-columns:1fr;
+  }
+
+  .map-activity-row{
+    grid-template-columns:1fr;
+  }
+
+}
+
+
+/* ================= TABLET ================= */
+
+@media (max-width: 900px){
+
+  body{
+    flex-direction:column;
+  }
+
+  .sidebar{
+    width:100%;
+    min-height:auto;
+    padding:14px;
+  }
+
+  .brand{
+    margin-bottom:12px;
+    padding-bottom:14px;
+  }
+
+  .nav{
+    display:flex;
+    overflow-x:auto;
+    gap:10px;
+    padding-bottom:8px;
+  }
+
+  .nav li{
+    white-space:nowrap;
+    min-width:max-content;
+    margin:0;
+  }
+
+  .sidebar-user{
+    margin-top:14px;
+  }
+
+  .main{
+    padding:18px;
+  }
+
+  .top-bar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .controls{
+    width:100%;
+  }
+
+  .date-pick{
+    width:100%;
+    justify-content:center;
+  }
+
+  .cards-row{
+    grid-template-columns:1fr;
+  }
+
+  .metric-card{
+    width:100%;
+  }
+
+  .map-activity-row{
+    grid-template-columns:1fr;
+  }
+
+  .charts-row{
+    grid-template-columns:1fr;
+  }
+
+  .chart-canvas-wrap{
+    height:260px;
+  }
+
+  .live-map{
+    height:260px;
+  }
+
+  .table-scroll{
+    overflow-x:auto;
+  }
+
+  table.report-table{
+    min-width:850px;
+  }
+
+  .fab{
+    right:20px;
+    bottom:20px;
+  }
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 600px){
+
+  .main{
+    padding:12px;
+  }
+
+  .greeting h1{
+    font-size:20px;
+  }
+
+  .greeting p{
+    font-size:13px;
+  }
+
+  .metric-card{
+    padding:16px;
+  }
+
+  .metric-card .value{
+    font-size:22px;
+  }
+
+  .panel-h{
+    padding:14px;
+  }
+
+  .panel-h h3{
+    font-size:14px;
+  }
+
+  .chart-panel{
+    padding:14px;
+  }
+
+  .activity-list{
+    max-height:300px;
+  }
+
+  .active-users-list{
+    max-height:200px;
+  }
+
+  .act-item{
+    grid-template-columns:auto 1fr;
+  }
+
+  .act-time{
+    display:none;
+  }
+
+  .active-user-item{
+    grid-template-columns:auto 1fr;
+  }
+
+  .badge{
+    margin-top:6px;
+  }
+
+  .sidebar-user .avatar{
+    width:38px;
+    height:38px;
+    font-size:12px;
+  }
+
+  .sidebar-user .name{
+    font-size:13px;
+  }
+
+  .sidebar-user .role{
+    font-size:11px;
+  }
+
+  .fab{
+    width:50px;
+    height:50px;
+    font-size:18px;
+  }
+
+}
+
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 400px){
+
+  .brand-title{
+    font-size:13px;
+  }
+
+  .nav li{
+    padding:10px 12px;
+    font-size:13px;
+  }
+
+  .metric-card .value{
+    font-size:20px;
+  }
+
+  .greeting h1{
+    font-size:18px;
+  }
+
+  .date-pick{
+    font-size:13px;
+    padding:10px;
+  }
+
+}
+
 
 </style>
 </head>
@@ -726,15 +952,27 @@ table.report-table {
       <div class="metric-meta"><span class="trend-up">↑ 12.7%</span> vs yesterday</div>
     </div>
     <div class="metric-card">
-      <div class="metric-head">
-        <div>
-          <h4>Target Achievement</h4>
-          <div class="value">78%</div>
-        </div>
-        <div class="mc-icon mc-amber"><i class="fas fa-bullseye"></i></div>
+  <div class="metric-head">
+    <div>
+      <h4>Target Achievement</h4>
+
+      <div class="value" id="targetAchievementValue">
+        0%
       </div>
-      <div class="metric-meta">This Month</div>
     </div>
+
+    <div class="mc-icon mc-amber">
+      <i class="fas fa-bullseye"></i>
+    </div>
+  </div>
+
+  <div class="metric-meta">
+    <span id="targetStatusText">
+      Live Progress
+    </span>
+  </div>
+</div>
+        
     <div class="metric-card">
       <div class="metric-head">
         <div>
@@ -944,6 +1182,8 @@ function stsLogout() {
     todaySales: document.getElementById("todaySalesValue"),
     productsSold: document.getElementById("productsSoldValue"),
     reportsSubmitted: document.getElementById("reportsSubmittedValue"),
+    targetAchievement: document.getElementById("targetAchievementValue"),
+    targetStatusText: document.getElementById("targetStatusText"),
     donutTotalProducts: document.getElementById("donutTotalProducts"),
     activeUsersList: document.getElementById("activeUsersList"),
     activityList: document.getElementById("activityList"),
@@ -1236,6 +1476,53 @@ function stsLogout() {
 
     const totalSold = [...productTotals.values()].reduce((sum, total) => sum + Number(total || 0), 0);
     els.donutTotalProducts.textContent = String(totalSold);
+
+    /*/* ===============================
+   DAILY TARGET ACHIEVEMENT
+================================ */
+
+const dailyTarget = 100000; // Daily target amount
+
+const todaySalesAmount = reports
+  .filter((report) => {
+    const dt = reportDate(report);
+
+    return (
+      dt.getFullYear() === todayY &&
+      dt.getMonth() === todayM &&
+      dt.getDate() === todayD
+    );
+  })
+  .reduce((sum, report) => {
+    return sum + salesValue(report);
+  }, 0);
+
+const targetPercent =
+  dailyTarget > 0
+    ? Math.min(
+        100,
+        Math.round(
+          (todaySalesAmount / dailyTarget) * 100
+        )
+      )
+    : 0;
+
+els.targetAchievement.textContent =
+  `${targetPercent}%`;
+
+if (targetPercent >= 100) {
+
+  els.targetStatusText.textContent =
+    "Today's Target Completed 🎉";
+
+} else {
+
+  const remaining =
+    dailyTarget - todaySalesAmount;
+
+  els.targetStatusText.textContent =
+    `${formatINR(remaining)} remaining today`;
+}
 
     const performers = [...performerSales.entries()]
       .sort((a, b) => b[1] - a[1])
