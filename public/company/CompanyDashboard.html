@@ -1323,7 +1323,7 @@ function stsLogout() {
     renderActivity();
   }
 
-  const socket = io("http://localhost:5000");
+  const socket =io("https://sales-tracking-system-n9am.onrender.com");
   socket.on("connect", () => {
     socket.emit("admin:join");
   });

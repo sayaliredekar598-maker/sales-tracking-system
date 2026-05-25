@@ -126,7 +126,10 @@ function normalizeCompanyId(value) {
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" }
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
 const connectedEmployees = new Map();
@@ -567,5 +570,8 @@ app.get("/auth/me", (req, res) => {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Static UI: http://localhost:${PORT}/`);
+  console.log(
+`Render Backend Running:
+https://sales-tracking-system-n9am.onrender.com`
+);
 });
