@@ -36,6 +36,7 @@ app.get("/", (_req, res) => {
 });
 
 app.use(express.static(PUBLIC_DIR));
+app.use("/images", express.static(path.join(ROOT_DIR, "images")));
 
 /* ============================================================
    AUTH STORAGE (file-based JSON store, no DB dependency)
