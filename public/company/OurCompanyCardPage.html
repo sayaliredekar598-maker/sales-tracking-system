@@ -114,88 +114,61 @@ grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
 gap:20px;
 }
 
-/* ================= CARD ================= */
-
 .partner-card{
 background:#fff;
 border-radius:16px;
 overflow:hidden;
-box-shadow:0 6px 22px rgba(15,23,42,0.10);
-transition:0.3s ease;
+box-shadow:0 6px 22px rgba(15,23,42,.10);
+transition:0.3s;
 }
 
 .partner-card:hover{
 transform:translateY(-6px);
-box-shadow:0 16px 40px rgba(15,23,42,0.18);
+box-shadow:0 16px 40px rgba(15,23,42,.18);
 }
-
-/* ================= IMAGE AREA ================= */
 
 .partner-visual{
-height:170px;
-position:relative;
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
-background-color:#ffffff;
-border-bottom:1px solid #eef2f7;
+height:350px;   /* हवी तितकी वाढव */
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
 }
 
-.partner-visual::after{
-content:"";
-position:absolute;
-inset:0;
-background:rgba(0,0,0,0.15);
+.partner-visual img{
+width:100%;
+height:100%;
+object-fit:contain;
+display:block;
 }
-
-/* ================= IMAGES ================= */
-
-.v-parle{
-background-image:url("https://cosmocashcarry.com/wp-content/uploads/2024/10/Parle-G-Biscuits.jpg");
-}
-
-.v-nirma{
-background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUI3NRj91mPkYXrWMJ92i9XOsKon48Q4n85A&s");
-}
-
-.v-amul{
-background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoTAP8gbMQH60mu3nHcq1OvVcF8EbCYDSBdw&s&s");
-}
-
-.v-coke{
-background-image:url("https://t4.ftcdn.net/jpg/02/84/65/61/360_F_284656117_sPF8gVWaX627bq5qKrlrvCz1eFfowdBf.jpg");
-}
-
-/* ================= BODY ================= */
 
 .partner-body{
-padding:20px;
+padding:15px;
 }
 
-.partner-body h2{
-font-size:18px;
-margin-bottom:8px;
+.card-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+}
+
+.card-header h2{
+font-size:16px;
+margin:0;
 color:#0f172a;
 }
 
-.partner-body p{
-font-size:14px;
-color:#64748b;
-margin-bottom:15px;
-line-height:1.5;
-}
-
-/* ================= BUTTON ================= */
-
 .btn-primary{
-background:linear-gradient(90deg,var(--purple),var(--purple-light));
+background:linear-gradient(90deg,#6a5cff,#8f7bff);
 color:#fff;
-padding:10px 16px;
-border-radius:10px;
+padding:6px 12px;
+border-radius:8px;
 text-decoration:none;
-display:inline-block;
+font-size:13px;
 font-weight:600;
-transition:0.3s;
+transition:.3s;
 }
 
 .btn-primary:hover{
@@ -269,7 +242,9 @@ font-size:14px;
 padding:16px;
 }
 
+
 .main h1{
+    text-align: center;
 font-size:24px;
 margin-bottom:18px;
 }
@@ -354,133 +329,302 @@ padding:9px 12px;
 
 }
 
+.page-header{
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+margin-bottom:30px;
+}
+
+.page-header h1{
+margin:0;
+font-size:32px;
+font-weight:700;
+}
+
+.back-btn{
+position:absolute;
+left:0;
+display:flex;
+align-items:center;
+gap:8px;
+padding:10px 18px;
+background:linear-gradient(135deg,#6a5cff,#8f7bff);
+color:#fff;
+text-decoration:none;
+border-radius:50px;
+font-weight:600;
+box-shadow:0 8px 20px rgba(106,92,255,.35);
+transition:.3s;
+animation:floatBtn 2s infinite ease-in-out;
+}
+
+.back-btn:hover{
+transform:translateY(-3px);
+}
+
+@keyframes floatBtn{
+0%,100%{
+transform:translateY(0);
+}
+50%{
+transform:translateY(-5px);
+}
+}
 </style>
 </head>
 
 <body>
 
-<aside class="sidebar">
 
-<div class="brand">
-
-<div class="brand-icon">
-<i class="fas fa-chart-bar"></i>
-</div>
-
-<div>Sales System</div>
-
-</div>
-
-<ul class="nav">
-
-<li onclick="location.href='CompanyDashboard.html'">
-<i class="fas fa-home"></i> Dashboard
-</li>
-
-<li onclick="location.href='OurCompany.html'">
-<i class="fas fa-building"></i> Business Portal
-</li>
-
-<li class="active">
-<i class="fas fa-handshake"></i> Companies
-</li>
-
-</ul>
-
-</aside>
 
 <main class="main">
+<div class="page-header">
 
-<h1>Partner Companies</h1>
+    <a href="CompanyDashboard.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+    </a>
+
+    <h1>Our Product</h1>
+
+</div>
 
 <div class="company-grid">
 
 <div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/GravyBaseMix.jpeg" alt="GRAVY BASE MIX">
+    </div>
+    <div class="partner-body">
 
-<div class="partner-visual v-parle"></div>
-
-<div class="partner-body">
-
-<h2>Parle Biscuits</h2>
-
-<p>Famous biscuit brand in India.</p>
-
-<a class="btn-primary"
-href="CompanyProductReport.html?company=parle">
-
-View
-
-</a>
-
-</div>
-
+        <div class="card-header">
+            <h2>GRAVY BASE MIX</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
 </div>
 
 <div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/GingerPowder.jpeg" alt="GINGER POWDER">
+    </div>
+    <div class="partner-body">
 
-<div class="partner-visual v-nirma"></div>
-
-<div class="partner-body">
-
-<h2>Nirma</h2>
-
-<p>Popular detergent brand.</p>
-
-<a class="btn-primary"
-href="CompanyProductReport.html?company=nirma">
-
-View
-
-</a>
-
-</div>
-
+        <div class="card-header">
+            <h2>GINGER POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
 </div>
 
 <div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/TurMericPowder.jpeg" alt="TURMERIC POWDER">
+    </div>
+    <div class="partner-body">
 
-<div class="partner-visual v-amul"></div>
-
-<div class="partner-body">
-
-<h2>Amul</h2>
-
-<p>Dairy products company.</p>
-
-<a class="btn-primary"
-href="CompanyProductReport.html?company=amul">
-
-View
-
-</a>
-
-</div>
-
+        <div class="card-header">
+            <h2>TURMERIC POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
 </div>
 
 <div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/GarlicPowder.jpeg" alt="GARLIC POWDER">
+    </div>
+    <div class="partner-body">
 
-<div class="partner-visual v-coke"></div>
+        <div class="card-header">
+            <h2>GARLIC POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/TomatoPowder.jpeg" alt="TOMATO POWDER">
+    </div>
+    <div class="partner-body">
 
-<div class="partner-body">
+        <div class="card-header">
+            <h2>TOMATO POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/OnionPowder.jpeg" alt="OnionPowder">
+    </div>
+    <div class="partner-body">
 
-<h2>Coca Cola</h2>
+        <div class="card-header">
+            <h2>ONION POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/CorianderPowder.jpeg" alt="CorianderPowder">
+    </div>
+    <div class="partner-body">
 
-<p>Beverage company.</p>
+        <div class="card-header">
+            <h2>CORIANDER POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/ChikenMasala.jpeg" alt="ChikenMasala">
+    </div>
+    <div class="partner-body">
 
-<a class="btn-primary"
-href="CompanyProductReport.html?company=cocacola">
+        <div class="card-header">
+            <h2>CHIKEN MASALA</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/RedChilliPowder.jpeg" alt="RedChilliPowder">
+    </div>
+    <div class="partner-body">
 
-View
+        <div class="card-header">
+            <h2>RED CHILLI POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/KasuriMethi.jpeg" alt="KasuriMethi">
+    </div>
+    <div class="partner-body">
 
-</a>
+        <div class="card-header">
+            <h2>KASURI METHI</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/PaneerMasala.jpeg" alt="PaneerMasala">
+    </div>
+    <div class="partner-body">
 
+        <div class="card-header">
+            <h2>PANEER MASALA</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/Ginger.jpeg" alt="Ginger">
+    </div>
+    <div class="partner-body">
+
+        <div class="card-header">
+            <h2>GINGER-GARLIC MIX POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/BeetRootPowder.jpeg" alt="BeetRootPowder">
+    </div>
+    <div class="partner-body">
+
+        <div class="card-header">
+            <h2>BEETROOT POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/MoringaPowder.jpeg" alt="MoringaPowder">
+    </div>
+    <div class="partner-body">
+
+        <div class="card-header">
+            <h2>MORINGA POWDER</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
+</div>
+<div class="partner-card">
+    <div class="partner-visual">
+        <img src="images/ShahisabziMasala.jpeg" alt="ShahisabziMasala">
+    </div>
+    <div class="partner-body">
+
+        <div class="card-header">
+            <h2>SHAHISABZI MASALA</h2>
+            <a class="btn-primary"
+               href="CompanyProductReport.html?company=gravybasemix">
+               View
+            </a>
+        </div>
+    </div>
 </div>
 
-</div>
+
 
 </div>
-
 </main>
 
 </body>
