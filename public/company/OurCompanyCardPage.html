@@ -8,372 +8,296 @@
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-
+</head>
 <style>
-
 :root{
---navy-deep:#0c1228;
---navy:#151d3d;
---purple:#6a5cff;
---purple-light:#8f7bff;
---text-muted:#94a3b8;
---card-shadow:0 4px 24px rgba(15,23,42,0.06);
+    --navy-deep:#0c1228;
+    --navy:#151d3d;
+    --purple:#6a5cff;
+    --purple-light:#8f7bff;
 }
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 body{
-font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
-background:#f0f4fb;
-color:#1e293b;
-min-height:100vh;
-display:flex;
-overflow-x:hidden;
-}
-
-/* ================= SIDEBAR ================= */
-
-.sidebar{
-width:260px;
-min-height:100vh;
-background:linear-gradient(180deg,var(--navy-deep),var(--navy));
-color:#fff;
-padding:24px 16px;
-display:flex;
-flex-direction:column;
-flex-shrink:0;
-transition:0.3s;
-}
-
-.brand{
-display:flex;
-align-items:center;
-gap:12px;
-padding:8px 8px 24px;
-border-bottom:1px solid rgba(255,255,255,0.08);
-margin-bottom:16px;
-}
-
-.brand-icon{
-width:40px;
-height:40px;
-background:linear-gradient(135deg,#3b82f6,var(--purple));
-border-radius:10px;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.nav{
-list-style:none;
-flex:1;
-}
-
-.nav li{
-padding:12px 14px;
-margin:4px 0;
-border-radius:12px;
-color:rgba(255,255,255,0.6);
-cursor:pointer;
-font-size:15px;
-transition:0.3s;
-}
-
-.nav li:hover{
-background:rgba(255,255,255,0.08);
-color:#fff;
-}
-
-.nav li.active{
-background:linear-gradient(90deg,var(--purple),var(--purple-light));
-color:#fff;
-}
-
-/* ================= MAIN ================= */
-
-.main{
-flex:1;
-padding:28px;
-width:100%;
-}
-
-.main h1{
-font-size:32px;
-margin-bottom:25px;
-}
-
-/* ================= GRID ================= */
-
-.company-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-gap:20px;
-}
-
-.partner-card{
-background:#fff;
-border-radius:16px;
-overflow:hidden;
-box-shadow:0 6px 22px rgba(15,23,42,.10);
-transition:0.3s;
-}
-
-.partner-card:hover{
-transform:translateY(-6px);
-box-shadow:0 16px 40px rgba(15,23,42,.18);
-}
-
-.partner-visual{
-height:350px;   /* हवी तितकी वाढव */
-background:#fff;
-display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden;
-}
-
-.partner-visual img{
-width:100%;
-height:100%;
-object-fit:contain;
-display:block;
-}
-
-.partner-body{
-padding:15px;
-}
-
-.card-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-}
-
-.card-header h2{
-font-size:16px;
-margin:0;
-color:#0f172a;
-}
-
-.btn-primary{
-background:linear-gradient(90deg,#6a5cff,#8f7bff);
-color:#fff;
-padding:6px 12px;
-border-radius:8px;
-text-decoration:none;
-font-size:13px;
-font-weight:600;
-transition:.3s;
-}
-
-.btn-primary:hover{
-transform:scale(1.05);
-}
-
-/* ================= TABLET VIEW ================= */
-
-@media(max-width:992px){
-
-.sidebar{
-width:220px;
-}
-
-.main{
-padding:20px;
-}
-
-.main h1{
-font-size:28px;
-}
-
-.company-grid{
-grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-}
-
-}
-
-/* ================= MOBILE VIEW ================= */
-
-@media(max-width:768px){
-
-body{
-flex-direction:column;
-}
-
-/* TOP MOBILE SIDEBAR */
-
-.sidebar{
-width:100%;
-min-height:auto;
-padding:15px;
-}
-
-.brand{
-padding-bottom:15px;
-margin-bottom:12px;
-}
-
-.nav{
-display:flex;
-gap:10px;
-overflow-x:auto;
-padding-bottom:5px;
-}
-
-.nav::-webkit-scrollbar{
-display:none;
-}
-
-.nav li{
-white-space:nowrap;
-margin:0;
-padding:10px 14px;
-font-size:14px;
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+    background:#f0f4fb;
+    color:#1e293b;
+    min-height:100vh;
+    display:flex;
+    overflow-x:hidden;
 }
 
 /* MAIN */
 
 .main{
-padding:16px;
+    flex:1;
+    padding:28px;
+    width:100%;
 }
 
-
 .main h1{
-    text-align: center;
-font-size:24px;
-margin-bottom:18px;
+    font-size:32px;
+    margin-bottom:25px;
 }
 
 /* GRID */
 
 .company-grid{
-grid-template-columns:1fr;
-gap:16px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:20px;
 }
 
-/* CARD */
-
 .partner-card{
-border-radius:14px;
+    background:#fff;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 6px 22px rgba(15,23,42,.10);
+    transition:.3s;
+}
+
+.partner-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 16px 40px rgba(15,23,42,.18);
 }
 
 .partner-visual{
-height:180px;
+    height:350px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+.partner-visual img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
 }
 
 .partner-body{
-padding:16px;
+    padding:15px;
 }
 
-.partner-body h2{
-font-size:17px;
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
 }
 
-.partner-body p{
-font-size:13px;
+.card-header h2{
+    font-size:16px;
+    margin:0;
+    color:#0f172a;
 }
-
-/* BUTTON */
 
 .btn-primary{
-width:100%;
-text-align:center;
-padding:12px;
-font-size:14px;
+    background:linear-gradient(90deg,#6a5cff,#8f7bff);
+    color:#fff;
+    padding:6px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    transition:.3s;
 }
 
+.btn-primary:hover{
+    transform:scale(1.05);
 }
 
-/* ================= SMALL MOBILE ================= */
+/* PRICE TABLE */
+
+.price-table{
+    margin-top:10px;
+}
+
+.price-table table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+
+.price-table th{
+    padding:6px 4px;
+    text-align:center;
+    font-weight:700;
+    color:#475569;
+    border-bottom:2px solid #e2e8f0;
+}
+
+.price-table td{
+    padding:5px 4px;
+    text-align:center;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.price-table tbody tr:last-child td{
+    border-bottom:none;
+}
+
+.price-table td:last-child{
+    color:#6a5cff;
+    font-weight:600;
+}
+
+/* TABLET */
+
+@media(max-width:992px){
+
+    .main{
+        padding:20px;
+    }
+
+    .main h1{
+        font-size:28px;
+    }
+
+    .company-grid{
+        grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    body{
+        flex-direction:column;
+    }
+
+    .main{
+        padding:16px;
+    }
+
+    .main h1{
+        text-align:center;
+        font-size:24px;
+        margin-bottom:18px;
+    }
+
+    .company-grid{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .partner-card{
+        border-radius:14px;
+    }
+
+    .partner-visual{
+        height:180px;
+    }
+
+    .partner-body{
+        padding:16px;
+    }
+
+    .partner-body h2{
+        font-size:17px;
+    }
+
+    .partner-body p{
+        font-size:13px;
+    }
+
+    .btn-primary{
+        width:100%;
+        text-align:center;
+        padding:12px;
+        font-size:14px;
+    }
+}
+
+/* SMALL MOBILE */
 
 @media(max-width:480px){
 
-.main{
-padding:12px;
+    .main{
+        padding:12px;
+    }
+
+    .main h1{
+        font-size:22px;
+    }
+
+    .partner-visual{
+        height:160px;
+    }
+
+    .partner-body{
+        padding:14px;
+    }
+
+    .partner-body h2{
+        font-size:16px;
+    }
+
+    .partner-body p{
+        font-size:12px;
+    }
+
+    .btn-primary{
+        font-size:13px;
+        padding:11px;
+    }
 }
 
-.main h1{
-font-size:22px;
-}
-
-.partner-visual{
-height:160px;
-}
-
-.partner-body{
-padding:14px;
-}
-
-.partner-body h2{
-font-size:16px;
-}
-
-.partner-body p{
-font-size:12px;
-}
-
-.btn-primary{
-font-size:13px;
-padding:11px;
-}
-
-.nav li{
-font-size:13px;
-padding:9px 12px;
-}
-
-}
+/* PAGE HEADER */
 
 .page-header{
-display:flex;
-align-items:center;
-justify-content:center;
-position:relative;
-margin-bottom:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    margin-bottom:30px;
 }
 
 .page-header h1{
-margin:0;
-font-size:32px;
-font-weight:700;
+    margin:0;
+    font-size:32px;
+    font-weight:700;
 }
 
 .back-btn{
-position:absolute;
-left:0;
-display:flex;
-align-items:center;
-gap:8px;
-padding:10px 18px;
-background:linear-gradient(135deg,#6a5cff,#8f7bff);
-color:#fff;
-text-decoration:none;
-border-radius:50px;
-font-weight:600;
-box-shadow:0 8px 20px rgba(106,92,255,.35);
-transition:.3s;
-animation:floatBtn 2s infinite ease-in-out;
+    position:absolute;
+    left:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    background:linear-gradient(135deg,#6a5cff,#8f7bff);
+    color:#fff;
+    text-decoration:none;
+    border-radius:50px;
+    font-weight:600;
+    box-shadow:0 8px 20px rgba(106,92,255,.35);
+    transition:.3s;
+    animation:floatBtn 2s infinite ease-in-out;
 }
 
 .back-btn:hover{
-transform:translateY(-3px);
+    transform:translateY(-3px);
 }
 
 @keyframes floatBtn{
-0%,100%{
-transform:translateY(0);
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-5px);
+    }
 }
-50%{
-transform:translateY(-5px);
-}
-}
+
 </style>
-</head>
 
 <body>
 
@@ -382,7 +306,7 @@ transform:translateY(-5px);
 <main class="main">
 <div class="page-header">
 
-    <a href="CompanyDashboard.html" class="back-btn">
+    <a href="OurCompany.html" class="back-btn">
         <i class="fas fa-arrow-left"></i>
         Back to Dashboard
     </a>
@@ -399,14 +323,39 @@ transform:translateY(-5px);
     </div>
     <div class="partner-body">
 
-        <div class="card-header">
-            <h2>GRAVY BASE MIX</h2>
-            <a class="btn-primary"
-               href="CompanyProductReport.html?company=gravybasemix">
-               View
-            </a>
-        </div>
+    <div class="card-header">
+        <h2>GRAVY BASE MIX</h2>
+        <a class="btn-primary"
+           href="CompanyProductReport.html?company=gravybasemix">
+           View
+        </a>
     </div>
+    <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            
+
+            <tr>
+                <td>50g</td>
+                <td>₹60</td>
+                <td>₹47.60</td>
+            </tr>
+
+            
+        </tbody>
+    </table>
+</div>
+    
+</div>
+
 </div>
 
 <div class="partner-card">
@@ -422,6 +371,25 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+          
+                <td>100g</td>
+                <td>₹90</td>
+                <td>₹71.10</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 
@@ -438,6 +406,38 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>15g</td>
+                <td>₹10</td>
+                <td>₹8.20</td>
+            </tr>
+
+            <tr>
+                <td>50g</td>
+                <td>₹40</td>
+                <td>₹31.60</td>
+            </tr>
+
+            <tr>
+                <td>100g</td>
+                <td>₹70</td>
+                <td>₹55.30</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
     </div>
 </div>
 
@@ -454,6 +454,33 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            
+
+            <tr>
+                <td>50g</td>
+                <td>₹45</td>
+                <td>₹35.55</td>
+            </tr>
+
+            <tr>
+                <td>100g</td>
+                <td>₹80</td>
+                <td>₹63.20</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -469,6 +496,31 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>50g</td>
+                <td>₹55</td>
+                <td>₹43.45</td>
+            </tr>
+
+            <tr>
+                <td>100g</td>
+                <td>₹105</td>
+                <td>₹82.95</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -484,6 +536,25 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>100g</td>
+                <td>₹95</td>
+                <td>₹75.05</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -499,6 +570,37 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>15g</td>
+                <td>₹10</td>
+                <td>₹8.20</td>
+            </tr>
+
+            <tr>
+                <td>50g</td>
+                <td>₹35</td>
+                <td>₹27.65</td>
+            </tr>
+
+            <tr>
+                <td>100g</td>
+                <td>₹70</td>
+                <td>₹55.30</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -514,6 +616,31 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>10g</td>
+                <td>₹10</td>
+                <td>₹8.20</td>
+            </tr>
+
+            <tr>
+                <td>50g</td>
+                <td>₹45</td>
+                <td>₹35.55</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -530,6 +657,37 @@ transform:translateY(-5px);
             </a>
         </div>
     </div>
+<div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>10g</td>
+                <td>₹10</td>
+                <td>₹8.20</td>
+            </tr>
+
+            <tr>
+                <td>50g</td>
+                <td>₹45</td>
+                <td>₹35.55</td>
+            </tr>
+
+            <tr>
+                <td>100g</td>
+                <td>₹80</td>
+                <td>₹63.20</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </div>
 <div class="partner-card">
     <div class="partner-visual">
@@ -544,6 +702,26 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>25g</td>
+                <td>₹30</td>
+                <td>₹23.70</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -559,6 +737,31 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>10g</td>
+                <td>₹10</td>
+                <td>₹8.20</td>
+            </tr>
+
+            <tr>
+                <td>50g</td>
+                <td>₹45</td>
+                <td>₹35.55</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -574,6 +777,31 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>15g</td>
+                <td>₹10</td>
+                <td>₹8.20</td>
+            </tr>
+
+            <tr>
+                <td>50g</td>
+                <td>₹40</td>
+                <td>₹31.60</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -589,6 +817,31 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>50g</td>
+                <td>₹55</td>
+                <td>₹43.45</td>
+            </tr>
+
+            <tr>
+                <td>100g</td>
+                <td>₹80</td>
+                <td>₹63.20</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -604,6 +857,25 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>100g</td>
+                <td>₹145</td>
+                <td>₹114.55</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 <div class="partner-card">
@@ -619,6 +891,31 @@ transform:translateY(-5px);
                View
             </a>
         </div>
+        <div class="price-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Gm</th>
+                <th>MRP</th>
+                <th>Retail</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>10g</td>
+                <td>₹10</td>
+                <td>₹8.20</td>
+            </tr>
+
+            <tr>
+                <td>50g</td>
+                <td>₹45</td>
+                <td>₹35.55</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     </div>
 </div>
 
