@@ -88,7 +88,7 @@ function stsLogout() {
   sessionStorage.clear();
   location.replace("../login/loginPage.html");
 }
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://sales-tracking-system-n9am.onrender.com/api";
 const liveIds = new Set();
 
 function delBtn(url) {
@@ -120,7 +120,7 @@ async function loadEmployees() {
   }
 }
 
-const socket = io("http://localhost:5000/");
+const socket = io("https://sales-tracking-system-n9am.onrender.com/");
 socket.on("connect", () => socket.emit("admin:join"));
 socket.on("admin:snapshot", (p) => {
   liveIds.clear();

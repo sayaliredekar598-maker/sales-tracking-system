@@ -140,7 +140,7 @@ th{background:#f8fafc}
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
 (function () {
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://sales-tracking-system-n9am.onrender.com/api";
 const loggedInUser = StsAuth.requireRole("superstockist");
 if (!loggedInUser) return;
 
@@ -435,7 +435,7 @@ document.getElementById("requestStockBtn").addEventListener("click", () => {
         document.getElementById("requestQty").value
     );
 });
-const socket = io("http://localhost:5000");
+const socket = io("https://sales-tracking-system-n9am.onrender.com");
 socket.on("notification:superstockist", (p) => {
     document.getElementById("notificationBox").textContent = p.message || "New stock request.";
     loadAll();

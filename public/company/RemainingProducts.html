@@ -378,7 +378,7 @@ id="remainingProductsDateTime"></div>
 
 /* ================= STORAGE (MySQL via API) ================= */
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://sales-tracking-system-n9am.onrender.com/api";
 let companies = [];
 let inventorySocket = null;
 
@@ -415,7 +415,7 @@ return;
 }
 
 inventorySocket = io(
-"http://localhost:5000",
+"https://sales-tracking-system-n9am.onrender.com",
 {
 transports:["websocket","polling"]
 }

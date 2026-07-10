@@ -109,7 +109,7 @@ button:disabled{opacity:.65;cursor:not-allowed}
 <a class="back-link" href="EmployeesDashboard.html">Back to Dashboard</a>
 </div>
 <script>
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://sales-tracking-system-n9am.onrender.com/api";
 const loggedInUser = JSON.parse(sessionStorage.getItem("stsUser") || "{}");
 if (!loggedInUser.email) window.location.replace("../login/loginPage.html");
 

@@ -93,7 +93,7 @@ function stsLogout() {
   sessionStorage.clear();
   location.replace("../login/loginPage.html");
 }
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://sales-tracking-system-n9am.onrender.com/api";
 let allReports = [];
 
 function delBtn(url) {
@@ -148,7 +148,7 @@ async function loadReports() {
 
 document.getElementById("searchInput").addEventListener("input", () => renderReports(allReports));
 
-const socket = io("http://localhost:5000/");
+const socket = io("https://sales-tracking-system-n9am.onrender.com/");
 socket.on("admin:reportSubmitted", () => loadReports());
 
 loadReports();

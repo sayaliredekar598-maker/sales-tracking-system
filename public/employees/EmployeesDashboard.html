@@ -82,7 +82,7 @@ td{border:1px solid #ddd;padding:12px;text-align:center}
 <script src="../js/sts-delete.js"></script>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://sales-tracking-system-n9am.onrender.com/api";
 const loggedInUser = JSON.parse(sessionStorage.getItem("stsUser") || "{}");
 if (!loggedInUser.email) window.location.replace("../login/loginPage.html");
 
@@ -135,7 +135,7 @@ async function loadDashboard() {
     });
 }
 
-const socket = io("http://localhost:5000");
+const socket = io("https://sales-tracking-system-n9am.onrender.com");
 function sendLocation(position) {
     document.getElementById("gpsLiveStatus").textContent = "GPS Active";
     document.getElementById("gpsCardStatus").textContent = "Active";

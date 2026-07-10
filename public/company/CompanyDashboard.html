@@ -1960,7 +1960,7 @@ function stsLogout() {
       : '<tr><td colspan="9" style="text-align:center;color:#64748b;">No distributor data yet</td></tr>';
   }
 
-  const API_BASE = "http://localhost:5000/api";
+  const API_BASE = "https://sales-tracking-system-n9am.onrender.com/api";
 
   function delBtn(url, refreshFn) {
     return StsDelete.buttonHtml(url, StsDelete.DEFAULT_CONFIRM, refreshFn || "refreshManagerTables");
@@ -2492,7 +2492,7 @@ function stsLogout() {
     renderActivity();
   }
 
-  const socket =io("http://localhost:5000/");
+  const socket =io("https://sales-tracking-system-n9am.onrender.com/");
   socket.on("connect", () => {
     socket.emit("admin:join");
   });
