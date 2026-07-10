@@ -8,6 +8,7 @@
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="../css/mobile.css"/>
 
 <!-- PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -163,7 +164,7 @@ input{
 
 <div class="top">
 
-<h1>Products Report</h1>
+<h1>Parle Products Report</h1>
 
 <div class="btnBox">
 
@@ -200,16 +201,16 @@ hidden>
 <thead>
 
 <tr>
-<th>Sr.No</th>
-<th>P.Name</th>
-<th>D.Name</th>
-<th>Date</th>
-<th>Time</th>
-<th>Exit Product</th>
-<th>Product Amount</th>
-<th>Remaining Amount</th>
-<th>Total Amount</th>
-<th>Action</th>
+    <th>Sr.No</th>
+    <th>P.Name</th>
+    <th>D.Name</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Exit Product</th>
+    <th>Product Amount</th>
+    <th>Remaining Amount</th>
+    <th>Total Amount</th>
+    <th>Action</th>
 </tr>
 
 </thead>
@@ -222,130 +223,59 @@ hidden>
 
 </div>
 
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
 <script>
+const API_BASE = "http://localhost:5000/api";
 
-/* SAVE DATA */
+async function loadProducts() {
+    const params = new URLSearchParams(window.location.search);
+    const company = params.get("company") || "";
 
-function saveTableData(){
+    if (company) {
+        document.querySelector(".top h1").textContent = company + " Product Report";
+    }
 
-let rows = [];
+    const table = document.getElementById("tableBody");
+    table.innerHTML = "";
 
-document.querySelectorAll("#tableBody tr")
-.forEach((tr)=>{
+    if (!company) {
+        return;
+    }
 
-let inputs = tr.querySelectorAll("input");
+    try {
+        const res = await fetch(`${API_BASE}/orders/product/${encodeURIComponent(company)}`);
+        const orders = await res.json();
 
-rows.push({
+        if (!orders.length) {
+            table.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;">No orders found for this product.</td></tr>`;
+            return;
+        }
 
-pname: inputs[0].value,
-dname: inputs[1].value,
-date: inputs[2].value,
-time: inputs[3].value,
-exit: inputs[4].value,
-amount: inputs[5].value,
-remaining: inputs[6].value,
-total: inputs[7].value
+        orders.forEach((order, index) => {
+            const created = String(order.created_at || "");
+            const date = created.slice(0, 10);
+            const time = created.slice(11, 16);
+            const total = Number(order.quantity || 0);
 
-});
-
-});
-
-localStorage.setItem(
-"companyTableData",
-JSON.stringify(rows)
-);
-
-}
-
-/* LOAD DATA */
-
-function loadTableData(){
-
-let savedData = JSON.parse(
-localStorage.getItem("companyTableData")
-);
-
-let table =
-document.getElementById("tableBody");
-
-table.innerHTML = "";
-
-if(!savedData || savedData.length === 0){
-
-addRow();
-return;
-
-}
-
-savedData.forEach((item,index)=>{
-
-let row = `
-
-<tr>
-
-<td>${index + 1}</td>
-
-<td>
-<input type="text"
-value="${item.pname || ''}">
-</td>
-
-<td>
-<input type="text"
-value="${item.dname || ''}">
-</td>
-
-<td>
-<input type="text"
-value="${item.date || ''}"
-readonly>
-</td>
-
-<td>
-<input type="text"
-value="${item.time || ''}"
-readonly>
-</td>
-
-<td>
-<input type="number"
-value="${item.exit || ''}">
-</td>
-
-<td>
-<input type="number"
-value="${item.amount || ''}">
-</td>
-
-<td>
-<input type="number"
-value="${item.remaining || ''}">
-</td>
-
-<td>
-<input type="number"
-class="totalAmount"
-value="${item.total || ''}"
-readonly>
-</td>
-
-<td>
-<button class="deleteBtn"
-onclick="deleteRow(this)">
-Delete
-</button>
-</td>
-
-</tr>
-
-`;
-
-table.insertAdjacentHTML("beforeend", row);
-
-});
-
-autoSaveInputs();
-
+            table.insertAdjacentHTML("beforeend", `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><input type="text" value="${order.product_name}" readonly></td>
+                    <td><input type="text" value="${order.distributor_name}" readonly></td>
+                    <td><input type="text" value="${date}" readonly></td>
+                    <td><input type="text" value="${time}" readonly></td>
+                    <td><input type="number" value="${order.quantity}" readonly></td>
+                    <td><input type="number" value="${order.quantity}" readonly></td>
+                    <td><input type="number" value="0" readonly></td>
+                    <td><input type="number" class="totalAmount" value="${total}" readonly></td>
+                    <td>${StsDelete.buttonHtml(`${API_BASE}/orders/${order.id}`, StsDelete.DEFAULT_CONFIRM, "loadProducts")}</td>
+                </tr>
+            `);
+        });
+    } catch (err) {
+        table.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;">Could not load product orders.</td></tr>`;
+    }
 }
 
 /* AUTO SAVE + TOTAL */
@@ -361,16 +291,12 @@ inputs.forEach((input)=>{
 
 input.oninput = function(){
 
-let amount =
-parseFloat(inputs[5].value) || 0;
+let amount = parseFloat(inputs[5].value) || 0;
+let remaining = parseFloat(inputs[6].value) || 0;
 
-let remaining =
-parseFloat(inputs[6].value) || 0;
+inputs[7].value = amount + remaining;
 
-inputs[7].value =
-amount + remaining;
 
-saveTableData();
 
 };
 
@@ -396,13 +322,11 @@ let row = `
 <td>${rowCount}</td>
 
 <td>
-<input type="text"
-placeholder="Enter Product">
+    <input type="text" placeholder="Enter Product">
 </td>
 
 <td>
-<input type="text"
-placeholder="Enter Distributor">
+    <input type="text" placeholder="Enter Distributor">
 </td>
 
 <td>
@@ -455,7 +379,6 @@ table.insertAdjacentHTML("beforeend", row);
 
 autoSaveInputs();
 
-saveTableData();
 
 }
 
@@ -467,7 +390,7 @@ btn.parentElement.parentElement.remove();
 
 updateSerialNumbers();
 
-saveTableData();
+
 
 }
 
@@ -524,19 +447,16 @@ document.querySelectorAll("#tableBody tr")
 let inputs = tr.querySelectorAll("input");
 
 tableData.push([
-
-tr.cells[0].innerText,
-inputs[0].value,
-inputs[1].value,
-inputs[2].value,
-inputs[3].value,
-inputs[4].value,
-inputs[5].value,
-inputs[6].value,
-inputs[7].value
-
+    tr.cells[0].innerText,
+    inputs[0].value,
+    inputs[1].value,
+    inputs[2].value,
+    inputs[3].value,
+    inputs[4].value,
+    inputs[5].value,
+    inputs[6].value,
+    inputs[7].value
 ]);
-
 });
 
 doc.autoTable({
@@ -546,7 +466,6 @@ startY:30,
 head:[[
 "Sr.No",
 "P.Name",
-"D.Name",
 "Date",
 "Time",
 "Exit Product",
@@ -574,275 +493,133 @@ doc.save("Company_Report.pdf");
 
 }
 
-/* EXCEL — flexible column headers (D.Name, Date, legacy sheets) */
-
-const EXCEL_ALIASES = {
-  pname: ["pname", "productname", "product", "productname"],
-  dname: ["dname", "distributorname", "distributor", "distname"],
-  date: ["date", "reportdate", "orderdate"],
-  time: ["time", "reporttime"],
-  exit: ["exitproduct", "exit", "exitqty", "exitquantity"],
-  amount: ["productamount", "amount", "product amount", "soldamount"],
-  remaining: ["remainingamount", "remaining", "remaining amount"],
-  total: ["totalamount", "total", "total amount"]
-};
-
-function normalizeHeaderKey(key) {
-  return String(key || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[\s._-]+/g, "");
-}
-
-function escapeHtml(str) {
-  return String(str ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function parseExcelDate(value) {
-  if (value === undefined || value === null || String(value).trim() === "") {
-    return getCurrentDate();
-  }
-  if (value instanceof Date && !isNaN(value.getTime())) {
-    return value.toISOString().split("T")[0];
-  }
-  const num = Number(value);
-  if (!isNaN(num) && num > 20000 && num < 60000 && typeof XLSX !== "undefined" && XLSX.SSF) {
-    const parts = XLSX.SSF.parse_date_code(num);
-    if (parts) {
-      const m = String(parts.m).padStart(2, "0");
-      const d = String(parts.d).padStart(2, "0");
-      return `${parts.y}-${m}-${d}`;
-    }
-  }
-  const text = String(value).trim();
-  if (/^\d{4}-\d{2}-\d{2}/.test(text)) {
-    return text.slice(0, 10);
-  }
-  const parsed = new Date(text);
-  if (!isNaN(parsed.getTime())) {
-    return parsed.toISOString().split("T")[0];
-  }
-  return text;
-}
-
-function getExcelFieldFromObject(obj, field, fallback) {
-  const lookup = {};
-  Object.keys(obj || {}).forEach((k) => {
-    lookup[normalizeHeaderKey(k)] = obj[k];
-  });
-  const aliases = EXCEL_ALIASES[field] || [field];
-  for (let i = 0; i < aliases.length; i++) {
-    const v = lookup[aliases[i]];
-    if (v !== undefined && v !== null && String(v).trim() !== "") {
-      return v;
-    }
-  }
-  return fallback;
-}
-
-function mapExcelHeaders(headerRow) {
-  const norm = headerRow.map((h) => normalizeHeaderKey(h));
-  const map = {};
-
-  norm.forEach((nh, i) => {
-    if (!nh || nh === "srno" || nh === "sr" || nh === "sno" || nh === "serialno") {
-      return;
-    }
-    Object.keys(EXCEL_ALIASES).forEach((field) => {
-      if (EXCEL_ALIASES[field].some((a) => nh === a)) {
-        if (map[field] === undefined) {
-          map[field] = i;
-        }
-      }
-    });
-  });
-
-  if (map.pname === undefined && norm.length >= 2) {
-    map.pname = norm[0] === "srno" || norm[0] === "sr" ? 1 : 0;
-  }
-
-  if (map.dname === undefined && map.pname !== undefined) {
-    const afterP = map.pname + 1;
-    const afterKey = norm[afterP];
-    if (afterKey && EXCEL_ALIASES.date.some((a) => afterKey === a)) {
-      map.date = afterP;
-      map._legacyNoDname = true;
-    } else if (afterKey && EXCEL_ALIASES.dname.some((a) => afterKey === a)) {
-      map.dname = afterP;
-    }
-  }
-
-  if (map.date === undefined && map.dname !== undefined) {
-    map.date = map.dname + 1;
-  }
-  if (map.time === undefined && map.date !== undefined) {
-    map.time = map.date + 1;
-  }
-  if (map.exit === undefined && map.time !== undefined) {
-    map.exit = map.time + 1;
-  }
-  if (map.amount === undefined && map.exit !== undefined) {
-    map.amount = map.exit + 1;
-  }
-  if (map.remaining === undefined && map.amount !== undefined) {
-    map.remaining = map.amount + 1;
-  }
-  if (map.total === undefined && map.remaining !== undefined) {
-    map.total = map.remaining + 1;
-  }
-
-  return map;
-}
-
-function rowArrayToRecord(row, colMap) {
-  const cell = (field, def) => {
-    const i = colMap[field];
-    if (i === undefined) return def;
-    const v = row[i];
-    return v === undefined || v === null ? def : v;
-  };
-
-  const amount = Number(cell("amount", 0)) || 0;
-  const remaining = Number(cell("remaining", 0)) || 0;
-  const totalRaw = cell("total", "");
-  const total =
-    totalRaw !== "" && !isNaN(Number(totalRaw))
-      ? Number(totalRaw)
-      : amount + remaining;
-
-  return {
-    pname: String(cell("pname", "")).trim(),
-    dname: colMap._legacyNoDname ? "" : String(cell("dname", "")).trim(),
-    date: parseExcelDate(cell("date", "")),
-    time: String(cell("time", getCurrentTime())).trim() || getCurrentTime(),
-    exit: cell("exit", ""),
-    amount: cell("amount", ""),
-    remaining: cell("remaining", ""),
-    total
-  };
-}
-
-function objectToRecord(item) {
-  const amount =
-    Number(getExcelFieldFromObject(item, "amount", 0)) || 0;
-  const remaining =
-    Number(getExcelFieldFromObject(item, "remaining", 0)) || 0;
-  const totalRaw = getExcelFieldFromObject(item, "total", "");
-  const total =
-    totalRaw !== "" && !isNaN(Number(totalRaw))
-      ? Number(totalRaw)
-      : amount + remaining;
-
-  return {
-    pname: String(getExcelFieldFromObject(item, "pname", "")).trim(),
-    dname: String(getExcelFieldFromObject(item, "dname", "")).trim(),
-    date: parseExcelDate(getExcelFieldFromObject(item, "date", getCurrentDate())),
-    time:
-      String(getExcelFieldFromObject(item, "time", getCurrentTime())).trim() ||
-      getCurrentTime(),
-    exit: getExcelFieldFromObject(item, "exit", ""),
-    amount: getExcelFieldFromObject(item, "amount", ""),
-    remaining: getExcelFieldFromObject(item, "remaining", ""),
-    total
-  };
-}
-
-function parseExcelWorksheet(worksheet) {
-  const grid = XLSX.utils.sheet_to_json(worksheet, {
-    header: 1,
-    defval: "",
-    raw: false
-  });
-
-  if (!grid.length) {
-    return [];
-  }
-
-  const headerRow = grid[0].map((c) => String(c ?? "").trim());
-  const dataRows = grid
-    .slice(1)
-    .filter((row) => row.some((c) => String(c ?? "").trim() !== ""));
-
-  if (!dataRows.length) {
-    return [];
-  }
-
-  const colMap = mapExcelHeaders(headerRow);
-  const hasMappedField =
-    colMap.pname !== undefined ||
-    colMap.date !== undefined ||
-    colMap.dname !== undefined;
-
-  if (hasMappedField) {
-    return dataRows.map((row) => rowArrayToRecord(row, colMap));
-  }
-
-  return XLSX.utils.sheet_to_json(worksheet).map((item) => objectToRecord(item));
-}
-
-function buildTableRowFromRecord(item, index) {
-  return `
-<tr>
-<td>${index + 1}</td>
-<td><input type="text" value="${escapeHtml(item.pname)}"></td>
-<td><input type="text" value="${escapeHtml(item.dname)}"></td>
-<td><input type="text" value="${escapeHtml(item.date)}" readonly></td>
-<td><input type="text" value="${escapeHtml(item.time)}" readonly></td>
-<td><input type="number" value="${escapeHtml(item.exit)}"></td>
-<td><input type="number" value="${escapeHtml(item.amount)}"></td>
-<td><input type="number" value="${escapeHtml(item.remaining)}"></td>
-<td><input type="number" class="totalAmount" value="${escapeHtml(item.total)}" readonly></td>
-<td><button class="deleteBtn" onclick="deleteRow(this)">Delete</button></td>
-</tr>`;
-}
+/* EXCEL */
 
 document.getElementById("excelFile")
 .addEventListener("change", handleExcel, false);
 
-function handleExcel(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+function handleExcel(e){
 
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const data = new Uint8Array(event.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-    const records = parseExcelWorksheet(worksheet);
-    insertExcelData(records);
-    e.target.value = "";
-  };
-  reader.readAsArrayBuffer(file);
+const file = e.target.files[0];
+
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(event){
+
+const data =
+new Uint8Array(event.target.result);
+
+const workbook =
+XLSX.read(data, { type:'array' });
+
+const sheetName =
+workbook.SheetNames[0];
+
+const worksheet =
+workbook.Sheets[sheetName];
+
+const excelData =
+XLSX.utils.sheet_to_json(worksheet);
+
+insertExcelData(excelData);
+
+};
+
+reader.readAsArrayBuffer(file);
+
 }
 
-function insertExcelData(records) {
-  const table = document.getElementById("tableBody");
-  table.innerHTML = "";
+/* INSERT EXCEL */
 
-  if (!records || !records.length) {
-    addRow();
-    return;
-  }
+function insertExcelData(data){
 
-  records.forEach((item, index) => {
-    table.insertAdjacentHTML("beforeend", buildTableRowFromRecord(item, index));
-  });
+let table =
+document.getElementById("tableBody");
 
-  autoSaveInputs();
-  saveTableData();
+table.innerHTML = "";
+
+data.forEach((item,index)=>{
+
+let total =
+Number(item['Product Amount'] || 0)
++
+Number(item['Remaining Amount'] || 0);
+
+let row = `
+
+<tr>
+
+<td>${index + 1}</td>
+
+<td>
+<input type="text"
+value="${item['P.Name'] || ''}">
+</td>
+
+<td>
+<input type="text"
+value="${item['D.Name'] || ''}">
+</td>
+<td>
+<input type="text"
+value="${item['Date'] || getCurrentDate()}"
+readonly>
+</td>
+
+<td>
+<input type="text"
+value="${item['Time'] || getCurrentTime()}"
+readonly>
+</td>
+
+<td>
+<input type="number"
+value="${item['Exit Product'] || ''}">
+</td>
+
+<td>
+<input type="number"
+value="${item['Product Amount'] || ''}">
+</td>
+
+<td>
+<input type="number"
+value="${item['Remaining Amount'] || ''}">
+</td>
+
+<td>
+<input type="number"
+class="totalAmount"
+value="${total}"
+readonly>
+</td>
+
+<td>
+<button class="deleteBtn"
+onclick="deleteRow(this)">
+Delete
+</button>
+</td>
+
+</tr>
+
+`;
+
+table.insertAdjacentHTML("beforeend", row);
+
+});
+
+autoSaveInputs();
+
+
+
 }
 
-/* PAGE LOAD */
-
-window.onload = function(){
-
-loadTableData();
-
+window.onload = () => {
+    loadProducts();
+window.loadProducts = loadProducts;
 }
 
 </script>

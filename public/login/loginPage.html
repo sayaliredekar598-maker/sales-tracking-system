@@ -8,6 +8,8 @@
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 />
+<link rel="stylesheet" href="../css/mobile.css" />
+<script src="../js/auth.js"></script>
 <style>
 :root {
   --navy-deep: #0c1228;
@@ -260,7 +262,7 @@ select:focus {
 
 .role-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
@@ -501,6 +503,14 @@ select:focus {
               <i class="fas fa-building"></i>
               <span>Company</span>
             </div>
+            <div class="role-card" data-role="distributor">
+              <i class="fas fa-truck"></i>
+              <span>Distributor</span>
+            </div>
+            <div class="role-card" data-role="superstockist">
+              <i class="fas fa-warehouse"></i>
+              <span>Super Stockist</span>
+            </div>
           </div>
           <div class="helper" id="roleHelper">
             Managers get full access to the Company Dashboard.
@@ -590,20 +600,54 @@ select:focus {
   /* ============================================================
      CONFIG
      ============================================================ */
-  const API_BASE ="https://sales-tracking-system-n9am.onrender.com";
+  const API_BASE = "http://localhost:5000/api";
 
   const ROLE_DESTINATIONS = {
     manager: "../company/CompanyDashboard.html",
     employee: "../employees/EmployeesDashboard.html",
-    company: "../company/AddRemainingProducts.html"
+    company: "../company/AddRemainingProducts.html",
+    distributor: "../Distributer/DistributerDashboard.html",
+    superstockist: "../superstockist/superstockistDashboard.html"
   };
+
+  const ALLOWED_ROLES = new Set([
+    "manager",
+    "employee",
+    "company",
+    "distributor",
+    "superstockist"
+  ]);
+
+  function normalizeRole(role) {
+    return StsAuth.normalizeRole(role);
+  }
+
+  function dashboardForRole(role) {
+    return ROLE_DESTINATIONS[normalizeRole(role)] || null;
+  }
+
+  const isRelogin = new URLSearchParams(window.location.search).get("relogin") === "1";
+
+  if (isRelogin) {
+    try {
+      sessionStorage.removeItem("stsUser");
+      sessionStorage.removeItem("employeeId");
+      sessionStorage.removeItem("employeeName");
+    } catch (_err) {
+      /* ignore */
+    }
+  }
 
   const ROLE_HELPERS = {
     manager: "Managers get full access to the Company Dashboard.",
     employee:
       "Employees can submit daily reports and share live location with managers.",
     company:
-      "Company accounts land directly on the Add Remaining Products page."
+      "Company accounts land directly on the Add Remaining Products page.",
+    distributor:
+      "Distributors receive and manage orders from Sales Executives.",
+    superstockist:
+      "Super Stockists manage inventory and supply stock to distributors."
   };
 
   /* ============================================================
@@ -626,8 +670,10 @@ select:focus {
      ============================================================ */
   try {
     const existing = JSON.parse(sessionStorage.getItem("stsUser") || "null");
-    if (existing && existing.role && ROLE_DESTINATIONS[existing.role]) {
-      window.location.replace(ROLE_DESTINATIONS[existing.role]);
+    const existingRole = existing && existing.role ? normalizeRole(existing.role) : "";
+    const existingDest = existingRole ? dashboardForRole(existingRole) : null;
+    if (!isRelogin && existing && existing.email && existingDest) {
+      window.location.replace(existingDest);
       return;
     }
   } catch (_err) {
@@ -754,6 +800,12 @@ select:focus {
       return;
     }
 
+    const signupRole = normalizeRole(selectedRole);
+    if (!ALLOWED_ROLES.has(signupRole)) {
+      showAlert("Please select a valid account type.", "error");
+      return;
+    }
+
     const btn = document.getElementById("signupBtn");
     setLoading(btn, true);
 
@@ -765,7 +817,7 @@ select:focus {
           name,
           email,
           password,
-          role: selectedRole,
+          role: signupRole,
           companyName
         })
       });
@@ -773,7 +825,11 @@ select:focus {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data.error || "Could not create account.");
+        throw new Error(data.error || data.message || "Could not create account.");
+      }
+
+      if (!data.user) {
+        throw new Error("Account created but login data is missing. Please sign in.");
       }
 
       showAlert(
@@ -818,7 +874,11 @@ select:focus {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data.error || "Invalid email or password.");
+        throw new Error(data.error || data.message || "Invalid email or password.");
+      }
+
+      if (!data.user) {
+        throw new Error("Login succeeded but user data is missing. Please try again.");
       }
 
       showAlert("Login successful! Redirecting...", "success");
@@ -842,6 +902,14 @@ select:focus {
       return;
     }
 
+    const normalizedRole = normalizeRole(user.role);
+    if (!ALLOWED_ROLES.has(normalizedRole)) {
+      showAlert("This account type is not supported. Contact your administrator.", "error");
+      return;
+    }
+
+    user.role = normalizedRole;
+
     try {
       sessionStorage.clear();
     } catch (_err) {
@@ -849,17 +917,17 @@ select:focus {
     }
 
     sessionStorage.setItem("stsUser", JSON.stringify(user));
-    if (user.role === "employee") {
+    if (normalizedRole === "employee") {
       sessionStorage.setItem("employeeName", user.name);
       if (user.empId) sessionStorage.setItem("employeeId", user.empId);
     }
 
-    const dest = ROLE_DESTINATIONS[user.role];
+    const dest = dashboardForRole(normalizedRole);
     if (!dest) {
       showAlert("No dashboard configured for this account type.", "error");
       return;
     }
-    setTimeout(() => window.location.replace(dest), 400);
+    window.location.replace(dest);
   }
 })();
 </script>

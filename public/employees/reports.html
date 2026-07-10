@@ -3,532 +3,227 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Employee Reports</title>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="../css/mobile.css"/>
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Poppins,sans-serif;
-}
-
-body{
-    background:#f1f5f9;
-    padding:30px;
-}
-
-/* CONTAINER */
-
-.container{
-    background:white;
-    border-radius:16px;
-    padding:25px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.1);
-    animation:fade 0.5s ease;
-    width:100%;
-    overflow:hidden;
-}
-
-@keyframes fade{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-/* EMPLOYEE HEADER */
-
-.employee-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
-    flex-wrap:wrap;
-    gap:15px;
-}
-
-.profile{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.profile-img{
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    background:#2563eb;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:24px;
-    font-weight:600;
-    flex-shrink:0;
-}
-
-.profile h2{
-    font-size:22px;
-    color:#111827;
-}
-
-.profile p{
-    color:#6b7280;
-    font-size:14px;
-}
-
-/* TITLE */
-
-.title{
-    font-size:24px;
-    font-weight:600;
-    margin-bottom:20px;
-    color:#111827;
-}
-
-/* TABLE */
-
-.table-wrapper{
-    width:100%;
-    overflow-x:auto;
-    border-radius:12px;
-}
-
-table{
-    width:100%;
-    min-width:850px;
-    border-collapse:collapse;
-}
-
-table th{
-    background:#2563eb;
-    color:white;
-    padding:14px;
-    font-size:14px;
-    white-space:nowrap;
-}
-
-table td{
-    border:1px solid #ddd;
-    padding:12px;
-    text-align:center;
-    font-size:14px;
-    white-space:nowrap;
-}
-
-.status{
-    color:green;
-    font-weight:600;
-}
-
-/* DELETE BUTTON */
-
-.delete-btn{
-    background:#ef4444;
-    color:white;
-    border:none;
-    padding:8px 14px;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-    font-size:13px;
-}
-
-.delete-btn:hover{
-    background:#dc2626;
-    transform:scale(1.05);
-}
-
-/* NO DATA */
-
-.no-data{
-    text-align:center;
-    margin-top:20px;
-    color:#777;
-}
-
-/* BUTTON */
-
-.back-btn{
-    margin-top:20px;
-    padding:12px 18px;
-    border:none;
-    background:#2563eb;
-    color:white;
-    border-radius:10px;
-    cursor:pointer;
-    transition:0.3s;
-    font-size:14px;
-}
-
-.back-btn:hover{
-    transform:scale(1.03);
-}
-
-/* ================= MOBILE VIEW ================= */
-
-@media(max-width:768px){
-
-    body{
-        padding:15px;
-    }
-
-    .container{
-        padding:18px;
-    }
-
-    .employee-header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .profile{
-        width:100%;
-    }
-
-    .profile h2{
-        font-size:20px;
-    }
-
-    .title{
-        font-size:22px;
-    }
-
-    .profile-img{
-        width:52px;
-        height:52px;
-        font-size:20px;
-    }
-
-    table th,
-    table td{
-        padding:10px;
-        font-size:13px;
-    }
-
-    .back-btn{
-        width:100%;
-    }
-
-}
-
-/* EXTRA SMALL MOBILE */
-
-@media(max-width:480px){
-
-    body{
-        padding:10px;
-    }
-
-    .container{
-        padding:15px;
-        border-radius:12px;
-    }
-
-    .profile{
-        gap:10px;
-    }
-
-    .profile-img{
-        width:45px;
-        height:45px;
-        font-size:18px;
-    }
-
-    .profile h2{
-        font-size:18px;
-    }
-
-    .profile p{
-        font-size:12px;
-    }
-
-    .title{
-        font-size:20px;
-    }
-
-    table th,
-    table td{
-        font-size:12px;
-        padding:8px;
-    }
-
-    .back-btn{
-        padding:10px;
-        font-size:13px;
-    }
-
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#f1f5f9;padding:30px}
+.container{max-width:1400px;margin:auto;background:#fff;border-radius:18px;padding:25px;box-shadow:0 8px 25px rgba(0,0,0,.08)}
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:25px;gap:15px}
+.profile{display:flex;align-items:center;gap:15px}
+.profile-img{width:60px;height:60px;border-radius:50%;background:#2563eb;color:#fff;display:flex;justify-content:center;align-items:center;font-size:24px;font-weight:bold}
+.tabs{display:flex;gap:10px;margin-bottom:20px}
+.tab{padding:10px 18px;border:none;border-radius:10px;background:#e5e7eb;cursor:pointer;font-weight:600}
+.tab.active{background:#2563eb;color:#fff}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.filters input,.filters select{padding:10px 12px;border:1px solid #d1d5db;border-radius:10px}
+.table-box{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1000px}
+th{background:#2563eb;color:white;padding:14px}
+td{padding:12px;border:1px solid #ddd;text-align:center}
+.delete-btn{background:#ef4444;color:white;border:none;padding:8px 15px;border-radius:8px;cursor:pointer}
+.back-btn{margin-top:25px;padding:12px 20px;border:none;background:#2563eb;color:white;border-radius:10px;cursor:pointer}
+.no-data{text-align:center;padding:25px;color:#777;display:none}
+.status-pending{color:#dc2626;font-weight:600}
+.status-delivered{color:#16a34a;font-weight:600}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
-    <!-- EMPLOYEE HEADER -->
-
-    <div class="employee-header">
-
-        <div class="profile">
-
-            <div class="profile-img"></div>
-
-            <div>
-
-                <h2 id="employeeName"></h2>
-
-                <p>Sales Executive</p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- TITLE -->
-
-    <div class="title">
-        Employee Reports
-    </div>
-
-    <!-- TABLE -->
-
-    <div class="table-wrapper">
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>Date & Time</th>
-                    <th>Location</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Total Sales</th>
-                    <th>Status</th>
-                    <th>Action</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody id="tableBody">
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    <!-- NO DATA -->
-
-    <div class="no-data" id="noData">
-        No Reports Found
-    </div>
-
-    <!-- BUTTON -->
-
-    <button class="back-btn" onclick="goBack()">
-        Back
-    </button>
-
+<div class="header">
+<div class="profile">
+<div class="profile-img" id="profileLetter"></div>
+<div>
+<h2 id="employeeName"></h2>
+<p>Sales Executive</p>
+</div>
+</div>
 </div>
 
-<script>
+<div class="tabs">
+<button class="tab active" data-tab="reports" type="button">Daily Reports</button>
+<button class="tab" data-tab="orders" type="button">Order History</button>
+</div>
 
-const loggedInUser =
-JSON.parse(sessionStorage.getItem("stsUser") || "{}");
+<div class="filters">
+<input type="text" id="searchInput" placeholder="Search...">
+<select id="statusFilter">
+<option value="">All Statuses</option>
+<option>Pending</option>
+<option>Accepted</option>
+<option>Processing</option>
+<option>Delivered</option>
+</select>
+<button class="back-btn" id="searchBtn" type="button">Search</button>
+</div>
+
+<div class="table-box">
+<table>
+<thead id="tableHead"></thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+
+<div class="no-data" id="noData">No records found</div>
+<button class="back-btn" onclick="goBack()">Back to Dashboard</button>
+</div>
+
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
+<script>
+const API_BASE = "http://localhost:5000/api";
+const loggedInUser = JSON.parse(sessionStorage.getItem("stsUser") || "{}");
 
 if (!loggedInUser.email) {
     window.location.replace("../login/loginPage.html");
-} else if (loggedInUser.role !== "employee") {
-    if (loggedInUser.role === "manager") {
-        window.location.replace("../company/CompanyDashboard.html");
-    } else if (loggedInUser.role === "company") {
-        window.location.replace("../company/AddRemainingProducts.html");
-    } else {
-        window.location.replace("../login/loginPage.html");
-    }
-} else {
+}
 
-function nameFromEmail(email){
+function nameFromEmail(email) {
     const localPart = String(email || "").split("@")[0] || "Employee";
-    return localPart
-        .split(/[._-]+/)
-        .filter(Boolean)
-        .map((part)=>part.charAt(0).toUpperCase() + part.slice(1))
-        .join(" ");
+    return localPart.split(/[._-]+/).filter(Boolean).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
-const employeeName =
-loggedInUser.name ||
-sessionStorage.getItem("employeeName") ||
-nameFromEmail(loggedInUser.email) ||
-"Employee";
+const employeeName = loggedInUser.name || sessionStorage.getItem("employeeName") || nameFromEmail(loggedInUser.email);
+const employeeId = loggedInUser.empId || String(loggedInUser.id || employeeName);
 
-const employeeId =
-loggedInUser.empId ||
-sessionStorage.getItem("employeeId") ||
-employeeName.toLowerCase().replace(/\s+/g, "-");
+document.getElementById("employeeName").textContent = employeeName;
+document.getElementById("profileLetter").textContent = employeeName.charAt(0).toUpperCase();
 
-sessionStorage.setItem("employeeId", employeeId);
-sessionStorage.setItem("employeeName", employeeName);
-
-function stsReportsStorageKey(id) {
-    return "stsEmployeeReports:" + String(id || "");
+function delBtn(url) {
+    return StsDelete.buttonHtml(url, StsDelete.DEFAULT_CONFIRM, "loadData");
 }
+window.loadData = loadData;
 
-function stsLoadEmployeeReports(id) {
-    const key = stsReportsStorageKey(id);
-    let list = [];
-    try {
-        const raw = localStorage.getItem(key);
-        if (raw) list = JSON.parse(raw);
-    } catch (_e) {
-        list = [];
-    }
-    if (!Array.isArray(list)) list = [];
-    if (list.length) return list;
-    try {
-        const legacy = JSON.parse(localStorage.getItem("employeeReports") || "[]");
-        if (!Array.isArray(legacy) || !legacy.length) return [];
-        const mine = legacy.filter(
-            (r) => String(r.employeeId || "") === String(id)
-        );
-        if (mine.length) {
-            localStorage.setItem(key, JSON.stringify(mine));
-        }
-        return mine;
-    } catch (_e) {
-        return [];
-    }
-}
+let activeTab = new URLSearchParams(window.location.search).get("tab") || "reports";
 
-function stsSaveEmployeeReports(id, reports) {
-    localStorage.setItem(
-        stsReportsStorageKey(id),
-        JSON.stringify(reports)
-    );
-}
-
-// SHOW EMPLOYEE NAME
-
-document.getElementById("employeeName").innerHTML =
-employeeName;
-
-// FIRST LETTER
-
-const firstLetter =
-employeeName.charAt(0).toUpperCase();
-
-// SHOW FIRST LETTER
-
-document.querySelector(".profile-img").innerHTML =
-firstLetter;
-
-// TABLE
-
+const tableHead = document.getElementById("tableHead");
 const tableBody = document.getElementById("tableBody");
-
 const noData = document.getElementById("noData");
+const statusFilter = document.getElementById("statusFilter");
 
-let reports = stsLoadEmployeeReports(employeeId);
+function setActiveTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll(".tab").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tab);
+    });
+    statusFilter.style.display = tab === "orders" ? "inline-block" : "none";
+    loadData();
+}
 
-// FUNCTION TO SHOW REPORTS
+document.querySelectorAll(".tab").forEach(btn => {
+    btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
+});
 
-function displayReports(){
+document.getElementById("searchBtn").addEventListener("click", loadData);
+document.getElementById("searchInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loadData();
+});
 
+function goBack() {
+    window.location.href = "EmployeesDashboard.html";
+}
+
+async function loadData() {
+    const search = encodeURIComponent(document.getElementById("searchInput").value.trim());
     tableBody.innerHTML = "";
+    noData.style.display = "none";
 
-    if(reports.length > 0){
-
-        noData.style.display = "none";
-
-        reports.forEach((report,index)=>{
-
-            const row = `
+    try {
+        if (activeTab === "reports") {
+            tableHead.innerHTML = `
                 <tr>
-
-                    <td>${report.dateTime}</td>
-
-                    <td>${report.location}</td>
-
-                    <td>${report.product}</td>
-
-                    <td>${report.quantity}</td>
-
-                    <td>₹${report.sales}</td>
-
-                    <td class="status">
-                        Submitted
-                    </td>
-
-                    <td>
-                        <button class="delete-btn"
-                        onclick="deleteReport(${index})">
-                            Delete
-                        </button>
-                    </td>
-
+                    <th>Date & Time</th>
+                    <th>Location</th>
+                    <th>Retailer / Shop</th>
+                    <th>Shop Address</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Sales</th>
+                    <th>Visit Status</th>
+                    <th>Notes</th>
+                    <th>Action</th>
                 </tr>
             `;
 
-            tableBody.innerHTML += row;
+            const res = await fetch(`${API_BASE}/daily-reports/employee/${encodeURIComponent(employeeId)}?search=${search}`);
+            const rows = await res.json();
+            if (!rows.length) {
+                noData.style.display = "block";
+                return;
+            }
 
-        });
+            rows.forEach((report) => {
+                const productLabel = (report.products && report.products.length)
+                    ? report.products.map((p) => `${p.productName || p.product_name} (${p.quantity})`).join(", ")
+                    : (report.product || "--");
+                const totalQty = (report.products && report.products.length)
+                    ? report.products.reduce((sum, p) => sum + Number(p.quantity || 0), 0)
+                    : (report.quantity || "--");
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${String(report.date_time || "").replace("T", " ").slice(0, 16)}</td>
+                        <td>${report.location || "--"}</td>
+                        <td>${report.shop_name || "--"}</td>
+                        <td>${report.shop_address || "--"}</td>
+                        <td>${productLabel}</td>
+                        <td>${totalQty}</td>
+                        <td>₹${report.sales || 0}</td>
+                        <td>${report.visit_status || "--"}</td>
+                        <td>${report.notes || "--"}</td>
+                        <td>${delBtn(`${API_BASE}/daily-reports/${report.id}`)}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            tableHead.innerHTML = `
+                <tr>
+                    <th>Date</th>
+                    <th>Retailer</th>
+                    <th>Distributor</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Delivery Date</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            `;
 
-    }else{
+            const status = encodeURIComponent(statusFilter.value);
+            const res = await fetch(`${API_BASE}/orders/employee/${encodeURIComponent(employeeId)}?search=${search}&status=${status}`);
+            const rows = await res.json();
+            if (!rows.length) {
+                noData.style.display = "block";
+                return;
+            }
 
+            rows.forEach((order) => {
+                const statusClass = order.status === "Delivered" ? "status-delivered" : "status-pending";
+                const canDelete = order.status === "Pending";
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${String(order.created_at || "").slice(0, 10)}</td>
+                        <td>${order.retailer_name}</td>
+                        <td>${order.distributor_name}</td>
+                        <td>${order.product_name}</td>
+                        <td>${order.quantity}</td>
+                        <td>${order.expected_delivery_date || "--"}</td>
+                        <td class="${statusClass}">${order.status}</td>
+                        <td>${order.order_remarks || "--"}</td>
+                        <td>${canDelete ? delBtn(`${API_BASE}/orders/${order.id}`) : "--"}</td>
+                    </tr>
+                `;
+            });
+        }
+    } catch (err) {
+        console.error(err);
         noData.style.display = "block";
-
+        noData.textContent = "Could not load records.";
     }
-
 }
 
-// DELETE REPORT
-
-function deleteReport(index){
-
-    const confirmDelete =
-    confirm("Are you sure you want to delete this report?");
-
-    if(confirmDelete){
-
-        reports.splice(index,1);
-
-        stsSaveEmployeeReports(employeeId, reports);
-
-        displayReports();
-
-    }
-
-}
-
-// SHOW REPORTS
-
-displayReports();
-
-// BACK BUTTON
-
-function goBack(){
-
-    window.location.href = "EmployeesDashboard.html";
-
-}
-
-}
-
+setActiveTab(activeTab);
 </script>
-
 </body>
 </html>

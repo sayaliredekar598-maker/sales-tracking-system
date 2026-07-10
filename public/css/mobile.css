@@ -1,0 +1,330 @@
+/**
+ * Sales Tracking System — mobile-only layout helpers
+ * Applies at max-width: 768px / 480px only.
+ * Desktop (769px+) is unchanged.
+ */
+
+@media (max-width: 768px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    flex-direction: column !important;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ----- Sidebar + main layouts ----- */
+  body > .sidebar,
+  .main > .sidebar,
+  aside.sidebar,
+  .sidebar {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    flex-shrink: 0;
+  }
+
+  .main:has(.sidebar) {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .main,
+  main.main,
+  .content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0;
+    padding: 16px !important;
+  }
+
+  /* Scrollable horizontal nav on small screens */
+  .sidebar ul,
+  ul.menu,
+  .nav {
+    display: flex !important;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+  }
+
+  .sidebar ul::-webkit-scrollbar,
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar ul li,
+  .menu li,
+  .nav li {
+    margin: 0 !important;
+    flex-shrink: 0;
+  }
+
+  .sidebar ul li a,
+  .menu a,
+  .nav a {
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .logo {
+    margin-bottom: 16px !important;
+    font-size: 18px !important;
+  }
+
+  /* ----- Headers & profiles ----- */
+  .topbar,
+  .header,
+  .top {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  .topbar h2,
+  .header h1,
+  .top h1,
+  .main h1 {
+    font-size: 1.35rem !important;
+    line-height: 1.3;
+  }
+
+  .profile {
+    width: 100%;
+  }
+
+  /* ----- Stat cards ----- */
+  .cards,
+  .cards-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .card,
+  .metric-card,
+  .gps-card,
+  .table-box,
+  .section,
+  .panel {
+    padding: 16px !important;
+  }
+
+  .card p {
+    font-size: 1.6rem !important;
+  }
+
+  /* ----- Tables (horizontal scroll) ----- */
+  .table-box,
+  .section,
+  .container,
+  .box,
+  .card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 560px;
+  }
+
+  /* ----- Forms & containers ----- */
+  body > .container,
+  body > .box,
+  .container,
+  .box {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px !important;
+    border-radius: 12px;
+  }
+
+  body:has(> .container),
+  body:has(> .box) {
+    padding: 12px !important;
+  }
+
+  .form-grid,
+  .location-box {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ----- Filters, tabs, buttons ----- */
+  .filters {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .filters input,
+  .filters select,
+  .filters button,
+  .filters .back-btn {
+    width: 100% !important;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tab {
+    flex: 1 1 calc(50% - 4px);
+    text-align: center;
+    min-height: 44px;
+  }
+
+  .btn,
+  button:not(.password-toggle):not(.tab),
+  .delete-btn,
+  .back-btn,
+  .btn-primary {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  td .btn {
+    display: inline-block;
+    width: auto;
+    margin: 4px 4px 4px 0 !important;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .notice {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ----- Company product report ----- */
+  .top,
+  .btnBox {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .btnBox {
+    width: 100%;
+  }
+
+  .btnBox .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tableBox {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ----- Portal pages ----- */
+  .portal-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .portal-card {
+    padding: 20px !important;
+  }
+
+  /* ----- Remaining products totals ----- */
+  .top-right {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .clock,
+  #userBadge,
+  .logout-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ----- Login page ----- */
+  .shell {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+    border-radius: 16px;
+  }
+
+  .form-side {
+    padding: 28px 20px !important;
+  }
+
+  .role-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .tabs {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cards,
+  .cards-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tab {
+    flex: 1 1 100%;
+  }
+
+  .sidebar h2 {
+    font-size: 18px !important;
+  }
+
+  th,
+  td {
+    padding: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .partner-visual {
+    height: 160px !important;
+  }
+
+  .main h1,
+  .top h1 {
+    font-size: 1.2rem !important;
+  }
+
+  .role-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  .form-side {
+    padding: 22px 16px !important;
+  }
+}
+
+/* Row delete buttons (all viewports) */
+.sts-delete-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.sts-delete-btn:hover {
+  background: #fecaca;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}

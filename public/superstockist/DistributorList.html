@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distributor List</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/mobile.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#f4f7fc;display:flex}
+.sidebar{width:250px;height:100vh;background:#424c64;color:white;padding:20px;position:fixed}
+.sidebar h2{text-align:center;margin-bottom:30px}
+.sidebar ul{list-style:none}
+.sidebar ul li{margin:12px 0}
+.sidebar ul li a{display:flex;gap:10px;text-decoration:none;color:white;padding:12px;border-radius:10px}
+.sidebar ul li a:hover{background:#4338ca}
+.main{margin-left:250px;padding:20px;width:100%}
+.header{background:white;padding:20px;border-radius:15px;margin-bottom:20px;box-shadow:0 3px 10px rgba(0,0,0,.08);display:flex;justify-content:space-between;align-items:center}
+.card{background:white;padding:20px;border-radius:15px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{padding:12px;border-bottom:1px solid #eee;text-align:left}
+th{background:#f8fafc}
+.notice{background:#eff6ff;padding:12px;border-radius:10px;margin-bottom:15px;color:#1e3a8a}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h2>Super Stockist</h2>
+<ul>
+<li><a href="superstockistDashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+<li><a href="DistributorList.html"><i class="fa-solid fa-users"></i> Distributors</a></li>
+</ul>
+</div>
+<div class="main">
+<div class="header">
+<h2>Distributor Management</h2>
+</div>
+<div class="notice">Distributors register through the Login page with the <strong>Distributor</strong> role.</div>
+<div class="card">
+<table>
+<thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Status</th><th>Action</th></tr></thead>
+<tbody id="distributorTable"></tbody>
+</table>
+</div>
+</div>
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
+<script>
+(function () {
+const API_BASE = "http://localhost:5000/api";
+if (!StsAuth.requireRole("superstockist")) return;
+
+async function loadDistributors() {
+    const res = await fetch(API_BASE + "/superstockist/distributors");
+    const data = await res.json();
+    const users = data.users || [];
+    document.getElementById("distributorTable").innerHTML = users.length
+        ? users.map(u => `<tr><td>${u.name}</td><td>${u.email}</td><td>${u.company_name || "--"}</td><td>Active</td>
+        <td>${StsDelete.buttonHtml(`${API_BASE}/superstockist/distributors/${u.id}`, StsDelete.DEFAULT_CONFIRM, "loadDistributors")}</td></tr>`).join("")
+        : `<tr><td colspan="5" style="text-align:center;padding:20px;">No distributors registered yet.</td></tr>`;
+}
+window.loadDistributors = loadDistributors;
+loadDistributors();
+})();
+</script>
+</body>
+</html>

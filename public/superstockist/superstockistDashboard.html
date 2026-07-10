@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Stockist Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/mobile.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#f4f7fc;display:flex}
+.sidebar{width:250px;height:100vh;background:#424c64;color:white;padding:20px;position:fixed}
+.sidebar h2{margin-bottom:30px;text-align:center}
+.sidebar ul{list-style:none}
+.sidebar ul li{margin:15px 0}
+.sidebar ul li a{color:white;text-decoration:none;display:flex;gap:10px;padding:12px;border-radius:10px}
+.sidebar ul li a:hover{background:#4338ca}
+.main{margin-left:250px;padding:20px;width:100%}
+.header,.section{background:white;padding:20px;border-radius:15px;box-shadow:0 3px 10px rgba(0,0,0,.08);margin-bottom:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:20px}
+.card{background:white;padding:20px;border-radius:15px;box-shadow:0 3px 10px rgba(0,0,0,.08);cursor:pointer}
+.card h3{color:#64748b;font-size:15px}
+.card p{font-size:30px;font-weight:700;margin-top:10px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+input,select{padding:12px;border:1px solid #ddd;border-radius:10px;width:100%}
+button{background:#4338ca;color:white;border:none;padding:12px;border-radius:10px;cursor:pointer;margin-top:10px}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{padding:12px;border-bottom:1px solid #eee;text-align:left}
+th{background:#f8fafc}
+.pending{color:#dc2626;font-weight:bold}
+.delivered{color:#16a34a;font-weight:bold}
+.approved{color:#16a34a;font-weight:bold}
+.rejected{color:#dc2626;font-weight:bold}
+.btn-sm{background:#4338ca;color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+.btn-sm.reject{background:#dc2626}
+.dispatched{color:#16a34a;font-weight:bold}
+.flow-company{color:#7c3aed;font-weight:600}
+.flow-ss{color:#2563eb;font-weight:600}
+.flow-dist{color:#d97706;font-weight:600}
+.notice{background:#eff6ff;border:1px solid #bfdbfe;padding:12px;border-radius:10px;margin-bottom:15px;color:#1e3a8a}
+.section-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.section-title-row h2{margin:0}
+.section-title-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge-count{background:#4338ca;color:#fff;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.panel-toggle-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #e2e8f0;background:#fff;color:#475569;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s}
+.panel-toggle-btn:hover{background:#f8fafc;border-color:#cbd5e1}
+.panel-toggle-icon{font-size:11px}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<h2>Super Stockist</h2>
+<ul>
+<li><a href="superstockistDashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+<li><a href="../company/OurCompanyCardPage.html"><i class="fa-solid fa-box"></i> Our Products</a></li>
+<li><a href="DistributorList.html"><i class="fa-solid fa-users"></i> Distributors</a></li>
+<li><a href="#inventory"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a></li>
+<li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+</ul>
+</div>
+<div class="main">
+<div class="header"><h1>Super Stockist Dashboard</h1><p id="welcomeText">Manage inventory and distributor supply</p></div>
+<div class="notice" id="notificationBox">Monitoring stock requests...</div>
+<div class="cards">
+<div class="card" data-section="inventory"><h3>Total Inventory</h3><p id="totalInventory">0</p></div>
+<div class="card" data-section="replenishmentHistory"><h3>Company Requests</h3><p id="stockRequests">0</p></div>
+<div class="card" data-section="distributorRequests"><h3>Distributor Requests</h3><p id="distributorRequests">0</p></div>
+<div class="card" data-section="inventory"><h3>Restocked (7 days)</h3><p id="restockedCount">0</p></div>
+<div class="card" data-section="lowstock"><h3>Low Stock Products</h3><p id="lowStockCount">0</p></div>
+
+</div>
+<div class="section" id="inventory">
+<div class="section-title-row"><h2>Super Stockist Inventory</h2><span class="badge-count" id="ssInventoryBadge">Live</span></div>
+<div class="form-grid">
+<select id="restockProduct"></select>
+<input type="number" id="restockQty" placeholder="Quantity to add" min="1">
+<button type="button" id="restockBtn">Restock Product</button>
+</div>
+<table><thead><tr><th>Product</th><th>Remaining Stock</th><th>Min Stock</th><th>Status</th><th>Action</th></tr></thead>
+<tbody id="inventoryTable"></tbody></table>
+</div>
+<div class="section" id="distributorRequests">
+<div class="section-title-row">
+<h2>Pending Distributor Stock Requests</h2>
+<span class="badge-count" id="pendingDistBadge">0 pending</span>
+</div>
+<table><thead><tr><th>Distributor</th><th>Product</th><th>Qty</th><th>Requested</th><th>Action</th></tr></thead>
+<tbody id="distributorRequestsTable"></tbody></table>
+</div>
+<div class="section" id="distributorInventory">
+<div class="section-title-row"><h2>Distributor Stock Overview</h2></div>
+<table><thead><tr><th>Distributor</th><th>Product</th><th>Total Received</th><th>Dispatched</th><th>Remaining</th></tr></thead>
+<tbody id="distributorInventoryTable"></tbody></table>
+</div>
+<div class="section" id="inventoryFlow">
+<div class="section-title-row">
+<h2>Real-Time Inventory Flow</h2>
+<div class="section-title-actions">
+<span class="badge-count">Company → SS → Distributor → Employee</span>
+<button type="button" id="inventoryFlowToggleBtn" class="panel-toggle-btn" aria-expanded="false" title="Show full inventory flow table">
+<i class="fas fa-chevron-down panel-toggle-icon" aria-hidden="true"></i>
+<span class="panel-toggle-text">Show</span>
+</button>
+</div>
+</div>
+<table><thead><tr><th>Time</th><th>Flow</th><th>Product</th><th>Qty</th><th>From</th><th>To</th><th>SS Remaining</th><th>Dist. Remaining</th><th>Action</th></tr></thead>
+<tbody id="inventoryFlowTable"></tbody></table>
+</div>
+<div class="section" id="orders">
+<div class="section-title-row">
+<h2>Order Pipeline</h2>
+<div class="section-title-actions">
+<button type="button" id="orderPipelineToggleBtn" class="panel-toggle-btn" aria-expanded="false" title="Show full order pipeline table">
+<i class="fas fa-chevron-down panel-toggle-icon" aria-hidden="true"></i>
+<span class="panel-toggle-text">Show</span>
+</button>
+</div>
+</div>
+<table><thead><tr><th>Distributor</th><th>Executive</th><th>Product</th><th>Qty</th><th>Status</th><th>Action</th></tr></thead>
+<tbody id="deliveryTable"></tbody></table>
+</div>
+<div class="section" id="lowstock" style="display:none">
+<h2>Low Stock Alerts</h2>
+<div class="form-grid" style="margin-bottom:15px">
+<select id="requestProduct"></select>
+<input type="number" id="requestQty" placeholder="Quantity to request" min="1">
+<button type="button" id="requestStockBtn">Request Stock</button>
+</div>
+<table><tbody id="lowStockTable"></tbody></table>
+</div>
+<div class="section" id="replenishmentHistory">
+<h2>Stock Request History</h2>
+<table><thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Status</th><th>Reviewed By</th><th>Action</th></tr></thead>
+<tbody id="requestHistoryTable"></tbody></table>
+</div>
+</div>
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+(function () {
+const API_BASE = "http://localhost:5000/api";
+const loggedInUser = StsAuth.requireRole("superstockist");
+if (!loggedInUser) return;
+
+document.getElementById("welcomeText").textContent = `Welcome, ${loggedInUser.name}`;
+
+function delBtn(url) {
+    return StsDelete.buttonHtml(url, StsDelete.DEFAULT_CONFIRM, "loadAll");
+}
+
+window.loadAll = null;
+document.getElementById("logoutBtn").addEventListener("click", (e) => {
+    e.preventDefault(); sessionStorage.clear(); window.location.replace("../login/loginPage.html");
+});
+document.querySelectorAll(".card[data-section]").forEach(card => {
+    card.addEventListener("click", () => {
+        const id = card.dataset.section;
+        if (id === "lowstock") document.getElementById("lowstock").style.display = "block";
+        document.getElementById(id === "lowstock" ? "lowstock" : id)?.scrollIntoView({ behavior: "smooth" });
+    });
+});
+
+const INVENTORY_FLOW_PREVIEW_ROWS = 4;
+const ORDER_PIPELINE_PREVIEW_ROWS = 4;
+const inventoryFlowRows = [];
+const orderPipelineRows = [];
+let inventoryFlowExpanded = false;
+let orderPipelineExpanded = false;
+
+function flowLabelForEvent(eventType) {
+    if (eventType === "company_to_superstockist") return "Company → SS";
+    if (eventType === "superstockist_to_distributor") return "SS → Distributor";
+    return "Distributor → Employee";
+}
+
+function buildInventoryFlowRowHtml(f) {
+    const flowClass = f.eventType === "company_to_superstockist" ? "flow-company"
+        : f.eventType === "superstockist_to_distributor" ? "flow-ss" : "flow-dist";
+    const flowLabel = flowLabelForEvent(f.eventType);
+    return `<tr>
+      <td>${f.createdAt ? new Date(f.createdAt).toLocaleString() : "--"}</td>
+      <td class="${flowClass}">${flowLabel}</td>
+      <td>${f.productName}</td><td>${f.quantity}</td>
+      <td>${f.fromName}</td><td>${f.toName}</td>
+      <td>${f.ssRemainingAfter ?? "--"}</td><td>${f.distributorRemainingAfter ?? "--"}</td>
+      <td>${f.id ? delBtn(`${API_BASE}/superstockist/inventory/flow/${f.id}`) : ""}</td></tr>`;
+}
+
+function paintInventoryFlowTable() {
+    const visibleRows = inventoryFlowExpanded
+        ? inventoryFlowRows
+        : inventoryFlowRows.slice(0, INVENTORY_FLOW_PREVIEW_ROWS);
+
+    document.getElementById("inventoryFlowTable").innerHTML = inventoryFlowRows.length
+        ? visibleRows.map(buildInventoryFlowRowHtml).join("")
+        : `<tr><td colspan="8" style="text-align:center;padding:16px;">No inventory flow recorded yet</td></tr>`;
+}
+
+function setInventoryFlowExpanded(expanded) {
+    inventoryFlowExpanded = expanded;
+    paintInventoryFlowTable();
+
+    const btn = document.getElementById("inventoryFlowToggleBtn");
+    if (!btn) return;
+
+    btn.setAttribute("aria-expanded", String(expanded));
+    btn.title = expanded ? "Show first 4 rows only" : "Show full inventory flow table";
+    const text = btn.querySelector(".panel-toggle-text");
+    const icon = btn.querySelector(".panel-toggle-icon");
+    if (text) text.textContent = expanded ? "Hide" : "Show";
+    if (icon) {
+        icon.classList.toggle("fa-chevron-down", !expanded);
+        icon.classList.toggle("fa-chevron-up", expanded);
+    }
+}
+
+function renderInventoryFlow(flowLog) {
+    const rows = Array.isArray(flowLog) ? flowLog : [];
+    inventoryFlowRows.length = 0;
+    inventoryFlowRows.push(...rows);
+    paintInventoryFlowTable();
+}
+
+function initInventoryFlowToggle() {
+    const btn = document.getElementById("inventoryFlowToggleBtn");
+    if (!btn) return;
+
+    setInventoryFlowExpanded(false);
+
+    btn.addEventListener("click", () => {
+        setInventoryFlowExpanded(btn.getAttribute("aria-expanded") !== "true");
+    });
+}
+
+function buildOrderPipelineRowHtml(o) {
+    const action = o.status === "Accepted"
+        ? `<button onclick="markProcessing(${o.id})">Mark Processing</button>`
+        : "--";
+    return `<tr><td>${o.distributor_name}</td><td>${o.employee_name}</td><td>${o.product_name}</td><td>${o.quantity}</td>
+        <td class="${o.status === "Delivered" ? "delivered" : "pending"}">${o.status}</td><td>${action} ${delBtn(`${API_BASE}/orders/${o.id}`)}</td></tr>`;
+}
+
+function paintOrderPipelineTable() {
+    const visibleRows = orderPipelineExpanded
+        ? orderPipelineRows
+        : orderPipelineRows.slice(0, ORDER_PIPELINE_PREVIEW_ROWS);
+
+    document.getElementById("deliveryTable").innerHTML = orderPipelineRows.length
+        ? visibleRows.map(buildOrderPipelineRowHtml).join("")
+        : "";
+}
+
+function setOrderPipelineExpanded(expanded) {
+    orderPipelineExpanded = expanded;
+    paintOrderPipelineTable();
+
+    const btn = document.getElementById("orderPipelineToggleBtn");
+    if (!btn) return;
+
+    btn.setAttribute("aria-expanded", String(expanded));
+    btn.title = expanded ? "Show first 4 rows only" : "Show full order pipeline table";
+    const text = btn.querySelector(".panel-toggle-text");
+    const icon = btn.querySelector(".panel-toggle-icon");
+    if (text) text.textContent = expanded ? "Hide" : "Show";
+    if (icon) {
+        icon.classList.toggle("fa-chevron-down", !expanded);
+        icon.classList.toggle("fa-chevron-up", expanded);
+    }
+}
+
+function renderOrderPipeline(orders) {
+    const rows = Array.isArray(orders) ? orders : [];
+    orderPipelineRows.length = 0;
+    orderPipelineRows.push(...rows);
+    paintOrderPipelineTable();
+}
+
+function initOrderPipelineToggle() {
+    const btn = document.getElementById("orderPipelineToggleBtn");
+    if (!btn) return;
+
+    setOrderPipelineExpanded(false);
+
+    btn.addEventListener("click", () => {
+        setOrderPipelineExpanded(btn.getAttribute("aria-expanded") !== "true");
+    });
+}
+
+async function loadAll() {
+    const [dashRes, invRes, ordersRes, lowRes, historyRes, distPendingRes, overviewRes, flowRes] = await Promise.all([
+        fetch(`${API_BASE}/superstockist/dashboard`),
+        fetch(`${API_BASE}/superstockist/inventory`),
+        fetch(`${API_BASE}/orders/all`),
+        fetch(`${API_BASE}/superstockist/inventory/low-stock`),
+        fetch(`${API_BASE}/stock-requests?superstockist_id=${loggedInUser.id}`),
+        fetch(`${API_BASE}/superstockist/distributor-requests/pending`),
+        fetch(`${API_BASE}/superstockist/inventory/distributor-overview`),
+        fetch(`${API_BASE}/superstockist/inventory/flow?limit=30`)
+    ]);
+    const dash = await dashRes.json();
+    const inventory = await invRes.json();
+    const orders = await ordersRes.json();
+    const lowStock = await lowRes.json();
+    const requestHistory = await historyRes.json();
+    const distPending = await distPendingRes.json();
+    const overview = await overviewRes.json();
+    const flowLog = await flowRes.json();
+
+    document.getElementById("totalInventory").textContent = dash.totalInventory || 0;
+    document.getElementById("lowStockCount").textContent = dash.lowStockProducts || 0;
+    document.getElementById("stockRequests").textContent = dash.stockRequests || 0;
+    document.getElementById("distributorRequests").textContent = dash.distributorRequests || 0;
+    document.getElementById("restockedCount").textContent = dash.restockedProducts || 0;
+    document.getElementById("pendingDistBadge").textContent = `${distPending.length} pending`;
+
+    document.getElementById("inventoryTable").innerHTML = inventory.map(i =>
+        `<tr><td>${i.product_name}</td><td>${i.quantity}</td><td>${i.min_stock}</td>
+        <td class="${i.quantity <= i.min_stock ? 'pending' : 'delivered'}">${i.quantity <= i.min_stock ? 'Low' : 'OK'}</td>
+        <td>${delBtn(`${API_BASE}/superstockist/inventory/${i.id}`)}</td></tr>`).join("");
+
+    document.getElementById("distributorRequestsTable").innerHTML = distPending.length
+        ? distPending.map(r => `<tr>
+            <td>${r.distributorName}</td><td>${r.productName}</td><td>${r.quantity}</td>
+            <td>${r.createdAt ? new Date(r.createdAt).toLocaleString() : "--"}</td>
+            <td>
+              <button type="button" class="btn-sm" data-action="approve" data-id="${r.id}">Dispatch</button>
+              <button type="button" class="btn-sm reject" data-action="reject" data-id="${r.id}">Reject</button>
+              ${delBtn(`${API_BASE}/superstockist/distributor-requests/${r.id}`)}
+            </td></tr>`).join("")
+        : `<tr><td colspan="5" style="text-align:center;padding:16px;">No pending distributor requests</td></tr>`;
+
+    const distStock = overview.distributorStock || [];
+    document.getElementById("distributorInventoryTable").innerHTML = distStock.length
+        ? distStock.map(d => `<tr>
+            <td>${d.distributorName}</td><td>${d.productName}</td><td>${d.totalStock}</td>
+            <td>${d.dispatchedStock}</td><td>${d.remainingStock}</td>
+            <td>${d.id ? delBtn(`${API_BASE}/superstockist/distributor-inventory/${d.id}`) : ""}</td></tr>`).join("")
+        : `<tr><td colspan="5" style="text-align:center;padding:16px;">No distributor stock records yet</td></tr>`;
+
+    renderInventoryFlow(flowLog);
+
+    document.getElementById("lowStockTable").innerHTML = lowStock.length
+        ? lowStock.map(i => {
+            const deficit = Math.max(1, Number(i.min_stock) - Number(i.quantity));
+            return `<tr><td>${i.product_name}</td><td>${i.quantity}</td><td>${i.min_stock}</td>
+            <td><button type="button" class="btn-sm" data-product="${i.product_name}" data-qty="${deficit}">Request Stock</button>
+            ${delBtn(`${API_BASE}/superstockist/inventory/${i.id}`)}</td></tr>`;
+        }).join("")
+        : `<tr><td colspan="4" style="text-align:center;padding:16px;">No low stock products</td></tr>`;
+    const requestSelect = document.getElementById("requestProduct");
+    requestSelect.innerHTML = lowStock.length
+        ? lowStock.map(i => `<option value="${i.product_name}">${i.product_name}</option>`).join("")
+        : inventory.map(i => `<option value="${i.product_name}">${i.product_name}</option>`).join("");
+    if (lowStock.length) {
+        const first = lowStock[0];
+        document.getElementById("requestQty").value = Math.max(1, Number(first.min_stock) - Number(first.quantity));
+    }
+    document.getElementById("requestHistoryTable").innerHTML = requestHistory.length
+        ? requestHistory.map(r => {
+            const statusClass = r.status === "Approved" ? "approved" : r.status === "Rejected" ? "rejected" : "pending";
+            const date = r.createdAt ? new Date(r.createdAt).toLocaleString() : "--";
+            return `<tr><td>${date}</td><td>${r.productName}</td><td>${r.quantity}</td>
+            <td class="${statusClass}">${r.status}</td><td>${r.reviewedBy || "--"}</td>
+            <td>${delBtn(`${API_BASE}/stock-requests/${r.id}`)}</td></tr>`;
+        }).join("")
+        : `<tr><td colspan="5" style="text-align:center;padding:16px;">No stock requests yet</td></tr>`;
+    const select = document.getElementById("restockProduct");
+    select.innerHTML = inventory.map(i => `<option value="${i.product_name}">${i.product_name}</option>`).join("");
+    renderOrderPipeline(orders);
+
+    document.querySelectorAll("#lowStockTable .btn-sm").forEach(btn => {
+        btn.onclick = () => submitStockRequest(btn.dataset.product, btn.dataset.qty);
+    });
+    document.querySelectorAll("#distributorRequestsTable [data-action]").forEach(btn => {
+        btn.onclick = () => handleDistributorRequest(btn.dataset.id, btn.dataset.action);
+    });
+}
+async function handleDistributorRequest(id, action) {
+    const endpoint = action === "approve" ? "approve" : "reject";
+    const res = await fetch(`${API_BASE}/superstockist/distributor-requests/${id}/${endpoint}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviewed_by: loggedInUser.name })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        alert(data.message || `Could not ${action} request.`);
+        return;
+    }
+    document.getElementById("notificationBox").textContent = action === "approve"
+        ? `Dispatched ${data.request.quantity} units of ${data.request.productName} to ${data.request.distributorName}. SS remaining: ${data.ssRemaining}`
+        : `Rejected stock request from ${data.request.distributorName}.`;
+    loadAll();
+}
+async function submitStockRequest(productName, quantity) {
+    const qty = Number(quantity || document.getElementById("requestQty").value);
+    if (!productName || !qty || qty <= 0) {
+        alert("Please select a product and enter a valid quantity.");
+return;
+}
+    const res = await fetch(`${API_BASE}/stock-requests`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            superstockist_id: loggedInUser.id,
+            superstockist_name: loggedInUser.name,
+            product_name: productName,
+            quantity: qty
+        })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        alert(data.message || "Could not submit stock request.");
+        return;
+    }
+    document.getElementById("notificationBox").textContent = `Stock request submitted for ${productName} (${qty} units).`;
+    loadAll();
+}
+async function markProcessing(id) {
+    await fetch(`${API_BASE}/orders/${id}/status`, { method: "PATCH", headers: {"Content-Type":"application/json"}, body: JSON.stringify({status:"Processing"}) });
+    loadAll();
+}
+document.getElementById("restockBtn").addEventListener("click", async () => {
+    await fetch(`${API_BASE}/superstockist/inventory/restock`, {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ product_name: document.getElementById("restockProduct").value, add_quantity: document.getElementById("restockQty").value })
+    });
+    alert("Product restocked."); loadAll();
+});
+document.getElementById("requestStockBtn").addEventListener("click", () => {
+    submitStockRequest(
+        document.getElementById("requestProduct").value,
+        document.getElementById("requestQty").value
+    );
+});
+const socket = io("http://localhost:5000");
+socket.on("notification:superstockist", (p) => {
+    document.getElementById("notificationBox").textContent = p.message || "New stock request.";
+    loadAll();
+});
+socket.on("order:submitted", loadAll);
+socket.on("inventory:updated", loadAll);
+socket.on("stock:requestUpdated", loadAll);
+socket.on("stock:requestCreated", loadAll);
+socket.on("distributorStock:requestCreated", loadAll);
+socket.on("distributorStock:dispatched", loadAll);
+socket.on("distributorStock:requestUpdated", loadAll);
+socket.on("distributorStock:updated", loadAll);
+socket.on("inventory:flowUpdated", loadAll);
+initInventoryFlowToggle();
+initOrderPipelineToggle();
+loadAll();
+window.loadAll = loadAll;
+})();
+</script>
+</body>
+</html>

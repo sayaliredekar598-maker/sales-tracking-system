@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Completed Deliveries</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/mobile.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+background:#f4f7fc;
+display:flex;
+}
+
+.sidebar{
+width:250px;
+height:100vh;
+background:#0f172a;
+color:white;
+padding:20px;
+position:fixed;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:30px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin:12px 0;
+}
+
+.sidebar ul li a{
+display:flex;
+align-items:center;
+gap:10px;
+text-decoration:none;
+color:white;
+padding:12px;
+border-radius:10px;
+}
+
+.sidebar ul li a:hover{
+background:#4338ca;
+}
+
+.main{
+margin-left:250px;
+padding:20px;
+width:100%;
+}
+
+.header{
+background:white;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 3px 10px rgba(0,0,0,.08);
+margin-bottom:20px;
+}
+
+.card h3{
+color:#64748b;
+font-size:16px;
+}
+
+.card p{
+font-size:32px;
+font-weight:700;
+margin-top:10px;
+color:#16a34a;
+}
+
+.section{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
+
+th{
+background:#f8fafc;
+}
+
+.delivered{
+color:#16a34a;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>Distributor</h2>
+
+<ul>
+
+<li>
+<a href="DistributerDashboard.html">
+<i class="fa-solid fa-chart-line"></i>
+Dashboard
+</a>
+</li>
+
+<li>
+<a href="CompletedDeliveries.html">
+<i class="fa-solid fa-circle-check"></i>
+Completed Deliveries
+</a>
+</li>
+
+<li>
+<a href="#">
+<i class="fa-solid fa-user"></i>
+Profile
+</a>
+</li>
+
+<li>
+<a href="#">
+<i class="fa-solid fa-right-from-bracket"></i>
+Logout
+</a>
+</li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="header">
+<h1>Completed Deliveries</h1>
+<p>View all delivered orders</p>
+</div>
+
+<div class="card">
+<h3>Total Completed Deliveries</h3>
+<p id="completedCount">0</p>
+</div>
+
+<div class="section">
+
+<h2>Delivered Orders</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Sales Executive</th>
+<th>Location</th>
+<th>Product</th>
+<th>Quantity</th>
+<th>Delivery Date</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="completedTable">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
+<script>
+const API_BASE = "http://localhost:5000/api";
+
+function delBtn(url) {
+    return StsDelete.buttonHtml(url, StsDelete.DEFAULT_CONFIRM, "loadCompleted");
+}
+
+async function loadCompleted() {
+    const res = await fetch(`${API_BASE}/orders/all?status=Delivered`);
+    const completedDeliveries = await res.json();
+
+    document.getElementById("completedCount").innerText = completedDeliveries.length;
+
+    const table = document.getElementById("completedTable");
+    table.innerHTML = "";
+
+    if (!completedDeliveries.length) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center;padding:20px;">
+                    No completed deliveries found
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    completedDeliveries.forEach((item) => {
+        table.innerHTML += `
+            <tr>
+                <td>${item.employee_name}</td>
+                <td>${item.retailer_name}</td>
+                <td>${item.product_name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.expected_delivery_date || "--"}</td>
+                <td class="delivered">Delivered</td>
+                <td>${delBtn(`${API_BASE}/orders/${item.id}`)}</td>
+            </tr>
+        `;
+    });
+}
+
+window.loadCompleted = loadCompleted;
+loadCompleted();
+</script>
+
+</body>
+</html>

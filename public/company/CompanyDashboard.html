@@ -6,6 +6,7 @@
 <title>Sales Tracking System</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="../css/mobile.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
@@ -336,6 +337,11 @@ body {
   font-weight: 600;
 }
 
+.trend-down {
+  color: #ef4444;
+  font-weight: 600;
+}
+
 .dot-live {
   width: 8px;
   height: 8px;
@@ -381,6 +387,73 @@ body {
   font-weight: 600;
   text-decoration: none;
 }
+
+.flow-badge {
+  background: var(--purple);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.panel-h-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.panel-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.panel-toggle-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.panel-toggle-icon {
+  font-size: 11px;
+}
+
+.collapsible-panel-body.is-collapsed {
+  display: none;
+}
+
+.download-excel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: #16a34a;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.download-excel-btn:hover {
+  background: #15803d;
+}
+
+.flow-company { color: #7c3aed; font-weight: 600; }
+.flow-ss { color: #2563eb; font-weight: 600; }
+.flow-dist { color: #d97706; font-weight: 600; }
 
 .map-wrap {
   height: 360px;
@@ -631,6 +704,210 @@ table.report-table {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
+}
+
+.badge-pending {
+  background: #fef3c7;
+  color: #b45309;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.action-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 6px;
+}
+
+.action-btn.approve {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.action-btn.reject {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.action-btn.approve:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.stock-ok {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.stock-low {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.stock-insufficient {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.low-stock-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 12px 16px 6px;
+}
+
+.table-panel + .table-panel {
+  margin-top: 20px;
+}
+
+.supply-chain-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 1100px) {
+  .supply-chain-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .supply-chain-row { grid-template-columns: 1fr; }
+}
+
+.sc-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--card-shadow);
+}
+
+.sc-card h4 {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sc-card .sc-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.sc-card .sc-meta {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 6px;
+}
+
+.dual-panel-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 1000px) {
+  .dual-panel-row { grid-template-columns: 1fr; }
+}
+
+.notification-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.notif-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.notif-item:last-child { border-bottom: none; }
+
+.notif-meta {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.notif-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.notif-filters button {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.notif-filters button.active {
+  background: var(--purple-soft);
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.order-aging {
+  color: #b45309;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.target-edit-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.target-edit-btn {
+  border: none;
+  background: transparent;
+  color: var(--purple);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.badge-delivered { background: #dcfce7; color: #15803d; }
+.badge-accepted { background: #dbeafe; color: #1d4ed8; }
+.badge-rejected { background: #fee2e2; color: #b91c1c; }
+.badge-processing { background: #ede9fe; color: #6d28d9; }
+
+.low-stock-list {
+  list-style: none;
+  padding: 0 16px 12px;
+}
+
+.low-stock-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
 }
 
 .fab {
@@ -894,9 +1171,9 @@ table.report-table {
   <ul class="nav">
     <li class="active"><i class="fas fa-home"></i> Dashboard</li>
     <li onclick="location.href='OurCompany.html'" style="cursor:pointer;"><i class="fas fa-building"></i> Business portal</li>
-    <li><i class="fas fa-location-crosshairs"></i> Live Tracking</li>
-    <li><i class="fas fa-users"></i> Employees</li>
-    <li><i class="fas fa-file-lines"></i> Reports</li>
+    <li onclick="location.href='CompanyDashboard.html#live-map'" style="cursor:pointer;"><i class="fas fa-location-crosshairs"></i> Live Tracking</li>
+    <li onclick="location.href='ManagerEmployees.html'" style="cursor:pointer;"><i class="fas fa-users"></i> Employees</li>
+    <li onclick="location.href='ManagerReports.html'" style="cursor:pointer;"><i class="fas fa-file-lines"></i> Reports</li>
     
     <li onclick="stsLogout()" style="cursor:pointer;"><i class="fas fa-right-from-bracket"></i> Logout</li>
   </ul>
@@ -939,7 +1216,7 @@ table.report-table {
         </div>
         <div class="mc-icon mc-green"><i class="fas fa-indian-rupee-sign"></i></div>
       </div>
-      <div class="metric-meta"><span class="trend-up">↑ 18.5%</span> vs yesterday</div>
+      <div class="metric-meta" id="todaySalesTrend"><span class="trend-up">--</span> vs yesterday</div>
     </div>
     <div class="metric-card">
       <div class="metric-head">
@@ -949,7 +1226,7 @@ table.report-table {
         </div>
         <div class="mc-icon mc-blue"><i class="fas fa-box-archive"></i></div>
       </div>
-      <div class="metric-meta"><span class="trend-up">↑ 12.7%</span> vs yesterday</div>
+      <div class="metric-meta" id="productsSoldTrend"><span class="trend-up">--</span> vs yesterday</div>
     </div>
     <div class="metric-card">
   <div class="metric-head">
@@ -966,10 +1243,9 @@ table.report-table {
     </div>
   </div>
 
-  <div class="metric-meta">
-    <span id="targetStatusText">
-      Live Progress
-    </span>
+  <div class="metric-meta target-edit-wrap">
+    <span id="targetStatusText">Live Progress</span>
+    <button type="button" class="target-edit-btn" id="editTargetBtn" title="Set daily sales target">Edit target</button>
   </div>
 </div>
         
@@ -1001,7 +1277,7 @@ table.report-table {
     </div>
   </div>
 
-  <div class="map-activity-row">
+  <div class="map-activity-row" id="live-map">
     <div class="panel">
       <div class="panel-h">
         <h3>Live Employee Status</h3>
@@ -1050,31 +1326,189 @@ table.report-table {
     </div>
   </div>
 
+  <div class="supply-chain-row" id="supplyChainHealth">
+    <div class="sc-card">
+      <h4>Company Stock</h4>
+      <div class="sc-value" id="scCompanyRemaining">--</div>
+      <div class="sc-meta" id="scCompanyMeta">Remaining units</div>
+    </div>
+    <div class="sc-card">
+      <h4>Super Stockist</h4>
+      <div class="sc-value" id="scSsStock">--</div>
+      <div class="sc-meta" id="scSsMeta">Warehouse units</div>
+    </div>
+    <div class="sc-card">
+      <h4>Distributors</h4>
+      <div class="sc-value" id="scDistRemaining">--</div>
+      <div class="sc-meta" id="scDistMeta">Remaining units</div>
+    </div>
+    <div class="sc-card">
+      <h4>Pending Requests</h4>
+      <div class="sc-value" id="scPendingTotal">--</div>
+      <div class="sc-meta" id="scPendingMeta">SS→Company / Dist→SS</div>
+    </div>
+  </div>
+
+  <div class="dual-panel-row">
+    <div class="table-panel">
+      <div class="panel-h">
+        <h3>Notification Center</h3>
+        <div class="notif-filters" id="notifFilters">
+          <button type="button" class="active" data-filter="all">All</button>
+          <button type="button" data-filter="order">Orders</button>
+          <button type="button" data-filter="stock">Stock</button>
+          <button type="button" data-filter="other">Other</button>
+        </div>
+      </div>
+      <div class="notification-list" id="notificationList">
+        <div class="notif-item" style="color:#64748b;text-align:center;">Loading notifications...</div>
+      </div>
+    </div>
+    <div class="table-panel">
+      <div class="panel-h">
+        <h3>Low Stock Alerts</h3>
+      </div>
+      <div class="low-stock-section-title">Company Inventory</div>
+      <ul class="low-stock-list" id="companyLowStockList">
+        <li style="color:#64748b;">Loading...</li>
+      </ul>
+      <div class="low-stock-section-title">Super Stockist</div>
+      <ul class="low-stock-list" id="lowStockList">
+        <li style="color:#64748b;">Loading...</li>
+      </ul>
+    </div>
+  </div>
+
   <div class="table-panel">
     <div class="panel-h">
-      <h3>Recent Reports</h3>
+      <h3>Order Lifecycle Tracker</h3>
+      <div class="panel-h-actions">
+        <span class="flow-badge">Pending → Accepted → Processing → Delivered</span>
+        <button type="button" id="orderLifecycleToggleBtn" class="panel-toggle-btn" aria-expanded="false" title="Show full order lifecycle table">
+          <i class="fas fa-chevron-down panel-toggle-icon" aria-hidden="true"></i>
+          <span class="panel-toggle-text">Show</span>
+        </button>
+      </div>
+    </div>
+    <div class="collapsible-panel-body" id="orderLifecycleCollapse">
+    <div class="table-scroll">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Employee</th>
+            <th>Retailer</th>
+            <th>Distributor</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="orderLifecycleBody">
+          <tr><td colspan="9" style="text-align:center;color:#64748b;">Loading orders...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="panel-h">
+      <h3>Distributor Performance</h3>
     </div>
     <div class="table-scroll">
       <table class="report-table">
         <thead>
           <tr>
-            <th>Employee</th>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Products Sold</th>
-            <th>Total Sales</th>
-            <th>Status</th>
+            <th>Distributor</th>
+            <th>Orders</th>
+            <th>Pending</th>
+            <th>Delivered</th>
+            <th>Rejected</th>
+            <th>Sales</th>
+            <th>Accept %</th>
+            <th>Fulfill %</th>
+            <th>Action</th>
           </tr>
         </thead>
-        <tbody id="recentReportsBody"></tbody>
+        <tbody id="distributorScorecardBody">
+          <tr><td colspan="9" style="text-align:center;color:#64748b;">Loading scorecard...</td></tr>
+        </tbody>
       </table>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="panel-h">
+      <h3>Downstream Stock Requests (Read-only)</h3>
+      <span class="flow-badge">Distributor → Super Stockist</span>
+    </div>
+    <div class="table-scroll">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Distributor</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Requested</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="downstreamStockBody">
+          <tr><td colspan="6" style="text-align:center;color:#64748b;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="table-panel" id="inventoryFlow">
+    <div class="panel-h">
+      <h3>Real-Time Inventory Flow</h3>
+      <div class="panel-h-actions">
+        <button type="button" id="downloadInventoryFlowBtn" class="download-excel-btn" title="Download current table as Excel">
+          <i class="fas fa-file-excel" aria-hidden="true"></i> Download Excel
+        </button>
+        <span class="flow-badge">Company → SS → Distributor → Employee</span>
+        <button type="button" id="inventoryFlowToggleBtn" class="panel-toggle-btn" aria-expanded="false" title="Show full inventory flow table">
+          <i class="fas fa-chevron-down panel-toggle-icon" aria-hidden="true"></i>
+          <span class="panel-toggle-text">Show</span>
+        </button>
+      </div>
+    </div>
+    <div class="collapsible-panel-body" id="inventoryFlowCollapse">
+    <div class="table-scroll">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Flow</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>From</th>
+            <th>To</th>
+            <th>SS Remaining</th>
+            <th>Dist. Remaining</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryFlowBody">
+          <tr><td colspan="9" style="text-align:center;color:#64748b;">Loading inventory flow...</td></tr>
+        </tbody>
+      </table>
+    </div>
     </div>
   </div>
 </main>
 
 <button type="button" class="fab" aria-label="Add"><i class="fas fa-plus"></i></button>
 
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
 <script>
 
@@ -1094,13 +1528,30 @@ table.report-table {
     return;
   }
 
-  if (user.role === "employee") {
+  const role = String(user.role || "").trim().toLowerCase().replace(/[\s_-]+/g, "");
+
+  if (role === "employee") {
     window.location.replace("../employees/EmployeesDashboard.html");
     return;
   }
 
-  if (user.role === "company") {
+  if (role === "company") {
     window.location.replace("AddRemainingProducts.html");
+    return;
+  }
+
+  if (role === "distributor") {
+    window.location.replace("../Distributer/DistributerDashboard.html");
+    return;
+  }
+
+  if (role === "superstockist") {
+    window.location.replace("../superstockist/superstockistDashboard.html");
+    return;
+  }
+
+  if (role !== "manager") {
+    window.location.replace("../login/loginPage.html");
     return;
   }
 })();
@@ -1175,6 +1626,15 @@ function stsLogout() {
   const markerByEmployee = new Map();
   const activityFeed = [];
   const reports = [];
+  const orders = [];
+  const notifications = [];
+  const inventoryFlowRows = [];
+  const INVENTORY_FLOW_PREVIEW_ROWS = 4;
+  const ORDER_LIFECYCLE_PREVIEW_ROWS = 4;
+  let inventoryFlowExpanded = false;
+  let orderLifecycleExpanded = false;
+  let DAILY_TARGET = 100000;
+  let notifFilter = "all";
 
   const els = {
     totalEmployees: document.getElementById("totalEmployeesValue"),
@@ -1184,11 +1644,19 @@ function stsLogout() {
     reportsSubmitted: document.getElementById("reportsSubmittedValue"),
     targetAchievement: document.getElementById("targetAchievementValue"),
     targetStatusText: document.getElementById("targetStatusText"),
+    todaySalesTrend: document.getElementById("todaySalesTrend"),
+    productsSoldTrend: document.getElementById("productsSoldTrend"),
     donutTotalProducts: document.getElementById("donutTotalProducts"),
     activeUsersList: document.getElementById("activeUsersList"),
     activityList: document.getElementById("activityList"),
-    recentReportsBody: document.getElementById("recentReportsBody"),
-    topPerformersList: document.getElementById("topPerformersList")
+    inventoryFlowBody: document.getElementById("inventoryFlowBody"),
+    topPerformersList: document.getElementById("topPerformersList"),
+    orderLifecycleBody: document.getElementById("orderLifecycleBody"),
+    distributorScorecardBody: document.getElementById("distributorScorecardBody"),
+    notificationList: document.getElementById("notificationList"),
+    lowStockList: document.getElementById("lowStockList"),
+    companyLowStockList: document.getElementById("companyLowStockList"),
+    downstreamStockBody: document.getElementById("downstreamStockBody")
   };
 
   const lineChartLabels = [
@@ -1302,6 +1770,321 @@ function stsLogout() {
     }).format(Number(value || 0));
   }
 
+  function updateTrendBadge(el, pct) {
+    if (!el) return;
+    const change = Number(pct || 0);
+    const up = change >= 0;
+    el.innerHTML = `<span class="${up ? "trend-up" : "trend-down"}">${up ? "↑" : "↓"} ${Math.abs(change)}%</span> vs yesterday`;
+  }
+
+  function setDailyTarget(value) {
+    DAILY_TARGET = Number(value) || 100000;
+    updateTargetAchievement(sumTodayReportSales());
+  }
+
+  function orderStatusBadge(status) {
+    const s = String(status || "Pending");
+    if (s === "Delivered") return `<span class="badge badge-delivered">${s}</span>`;
+    if (s === "Accepted") return `<span class="badge badge-accepted">${s}</span>`;
+    if (s === "Processing") return `<span class="badge badge-processing">${s}</span>`;
+    if (s === "Rejected") return `<span class="badge badge-rejected">${s}</span>`;
+    return `<span class="badge badge-pending">${s}</span>`;
+  }
+
+  function notifCategory(message) {
+    const msg = String(message || "").toLowerCase();
+    if (msg.includes("order")) return "order";
+    if (msg.includes("stock") || msg.includes("request") || msg.includes("replenish")) return "stock";
+    return "other";
+  }
+
+  function upsertOrder(order) {
+    if (!order || order.id == null) return;
+    const idx = orders.findIndex((o) => Number(o.id) === Number(order.id));
+    if (idx >= 0) orders[idx] = order;
+    else {
+      orders.unshift(order);
+      if (orders.length > 50) orders.pop();
+    }
+    renderOrderLifecycle();
+  }
+
+  function pushNotification(item) {
+    if (!item) return;
+    notifications.unshift(item);
+    if (notifications.length > 80) notifications.pop();
+    renderNotifications();
+  }
+
+  function buildOrderLifecycleRowHtml(o, now) {
+    const created = o.created_at ? new Date(o.created_at) : new Date();
+    const ageHours = (now - created.getTime()) / 3600000;
+    const aging = o.status === "Pending" && ageHours > 24;
+    return `<tr>
+      <td>#${o.id}${aging ? ' <span class="order-aging">Aging</span>' : ""}</td>
+      <td>${o.employee_name || "--"}</td>
+      <td>${o.retailer_name || "--"}</td>
+      <td>${o.distributor_name || "--"}</td>
+      <td>${o.product_name || "--"}</td>
+      <td>${o.quantity ?? "--"}</td>
+      <td>${orderStatusBadge(o.status)}</td>
+      <td>${created.toLocaleString("en-IN")}</td>
+      <td>${delBtn(`${API_BASE}/orders/${o.id}`)}</td>
+    </tr>`;
+  }
+
+  function paintOrderLifecycleTable() {
+    const body = els.orderLifecycleBody;
+    if (!body) return;
+    const now = Date.now();
+    const visibleOrders = orderLifecycleExpanded
+      ? orders
+      : orders.slice(0, ORDER_LIFECYCLE_PREVIEW_ROWS);
+
+    body.innerHTML = orders.length
+      ? visibleOrders.map((o) => buildOrderLifecycleRowHtml(o, now)).join("")
+      : '<tr><td colspan="9" style="text-align:center;color:#64748b;">No orders yet</td></tr>';
+  }
+
+  function setOrderLifecycleExpanded(expanded) {
+    orderLifecycleExpanded = expanded;
+    paintOrderLifecycleTable();
+
+    const btn = document.getElementById("orderLifecycleToggleBtn");
+    if (!btn) return;
+
+    btn.setAttribute("aria-expanded", String(expanded));
+    btn.title = expanded ? "Show first 4 rows only" : "Show full order lifecycle table";
+    const text = btn.querySelector(".panel-toggle-text");
+    const icon = btn.querySelector(".panel-toggle-icon");
+    if (text) text.textContent = expanded ? "Hide" : "Show";
+    if (icon) {
+      icon.classList.toggle("fa-chevron-down", !expanded);
+      icon.classList.toggle("fa-chevron-up", expanded);
+    }
+  }
+
+  function renderOrderLifecycle() {
+    paintOrderLifecycleTable();
+  }
+
+  function renderNotifications() {
+    const list = els.notificationList;
+    if (!list) return;
+
+    const filtered = notifications.filter((n) => {
+      if (notifFilter === "all") return true;
+      return notifCategory(n.message) === notifFilter;
+    });
+
+    list.innerHTML = filtered.length
+      ? filtered.map((n) => {
+          const when = n.created_at ? new Date(n.created_at).toLocaleString("en-IN") : "just now";
+          const who = n.sender_name ? ` · ${n.sender_name}` : "";
+          return `<div class="notif-item">
+            <div>${n.message || "Notification"}</div>
+            <div class="notif-meta">${when}${who}</div>
+          </div>`;
+        }).join("")
+      : '<div class="notif-item" style="color:#64748b;text-align:center;">No notifications in this filter</div>';
+  }
+
+  function renderLowStock(items) {
+    const list = els.lowStockList;
+    if (!list) return;
+    const rows = Array.isArray(items) ? items : [];
+    list.innerHTML = rows.length
+      ? rows.map((p) => `<li><span>${p.product_name || p.productName}</span><span>${p.quantity ?? p.available} / min ${p.min_stock ?? p.minStock}</span></li>`).join("")
+      : '<li style="color:#64748b;">No low stock alerts</li>';
+  }
+
+  function renderCompanyLowStock(items) {
+    const list = els.companyLowStockList;
+    if (!list) return;
+    const rows = Array.isArray(items) ? items : [];
+    list.innerHTML = rows.length
+      ? rows.map((p) => `<li><span>${p.productName || p.product_name}</span><span>${p.available} / min ${p.minStock ?? p.min_stock ?? 10}</span></li>`).join("")
+      : '<li style="color:#64748b;">No company low stock alerts</li>';
+  }
+
+  function renderSupplyChainHealth(data) {
+    if (!data) return;
+    const el = (id, val) => {
+      const node = document.getElementById(id);
+      if (node) node.textContent = val;
+    };
+    el("scCompanyRemaining", String(data.companyRemaining ?? 0));
+    el("scCompanyMeta", `${data.companySkuCount ?? 0} SKU rows`);
+    el("scSsStock", String(data.ssTotalStock ?? 0));
+    el("scSsMeta", `${data.ssLowStockCount ?? 0} low stock items`);
+    el("scDistRemaining", String(data.distributorRemaining ?? 0));
+    el("scDistMeta", `${data.distributorCount ?? 0} distributors`);
+    el("scPendingTotal", String((data.pendingSsToCompany ?? 0) + (data.pendingDistToSs ?? 0)));
+    el("scPendingMeta", `${data.pendingSsToCompany ?? 0} SS→Co / ${data.pendingDistToSs ?? 0} Dist→SS`);
+
+    const downstream = els.downstreamStockBody;
+    if (downstream) {
+      const pending = data.pendingDistributorRequests || [];
+      downstream.innerHTML = pending.length
+        ? pending.map((r) => `<tr>
+            <td>${r.distributor_name}</td>
+            <td>${r.product_name}</td>
+            <td>${r.quantity}</td>
+            <td>${r.created_at ? new Date(r.created_at).toLocaleString("en-IN") : "--"}</td>
+            <td><span class="badge badge-pending">Pending</span></td>
+            <td>${delBtn(`${API_BASE}/superstockist/distributor-requests/${r.id}`)}</td>
+          </tr>`).join("")
+        : '<tr><td colspan="6" style="text-align:center;color:#64748b;">No pending distributor requests</td></tr>';
+    }
+
+    if (data.ssLowStock) renderLowStock(data.ssLowStock);
+    if (data.companyLowStock) renderCompanyLowStock(data.companyLowStock);
+  }
+
+  function renderDistributorScorecard(rows) {
+    const body = els.distributorScorecardBody;
+    if (!body) return;
+    const list = Array.isArray(rows) ? rows : [];
+    body.innerHTML = list.length
+      ? list.map((d) => `<tr>
+          <td>${d.distributorName}</td>
+          <td>${d.totalOrders}</td>
+          <td>${d.pending}</td>
+          <td>${d.delivered}</td>
+          <td>${d.rejected}</td>
+          <td>${formatINR(d.totalSales)}</td>
+          <td>${d.acceptanceRate}%</td>
+          <td>${d.fulfillmentRate}%</td>
+          <td>${delBtn(`${API_BASE}/orders/distributor/${encodeURIComponent(d.distributorName)}`, "refreshManagerTables")}</td>
+        </tr>`).join("")
+      : '<tr><td colspan="9" style="text-align:center;color:#64748b;">No distributor data yet</td></tr>';
+  }
+
+  const API_BASE = "http://localhost:5000/api";
+
+  function delBtn(url, refreshFn) {
+    return StsDelete.buttonHtml(url, StsDelete.DEFAULT_CONFIRM, refreshFn || "refreshManagerTables");
+  }
+
+  window.refreshManagerTables = function () {
+    loadCompanyAnalytics();
+    loadSupplyChainHealth();
+    loadInventoryFlow();
+    loadDistributorScorecard();
+  };
+
+  document.addEventListener("sts:deleted", () => {
+    window.refreshManagerTables();
+  });
+
+  async function loadCompanyAnalytics() {
+    try {
+      const res = await fetch(`${API_BASE}/company/analytics`);
+      const data = await res.json();
+      if (data.trends) {
+        updateTrendBadge(els.todaySalesTrend, data.trends.salesChangePercent);
+        updateTrendBadge(els.productsSoldTrend, data.trends.productsChangePercent);
+      }
+      if (data.dailyTarget) setDailyTarget(data.dailyTarget);
+      orders.length = 0;
+      orders.push(...(data.recentOrders || []));
+      renderOrderLifecycle();
+      renderLowStock(data.lowStock);
+    } catch (_err) {
+      if (els.orderLifecycleBody) {
+        els.orderLifecycleBody.innerHTML =
+          '<tr><td colspan="8" style="text-align:center;color:#b91c1c;">Could not load analytics</td></tr>';
+      }
+    }
+  }
+
+  async function loadCompanySettings() {
+    try {
+      const res = await fetch(`${API_BASE}/company/settings`);
+      const data = await res.json();
+      if (data.dailyTarget) setDailyTarget(data.dailyTarget);
+    } catch (_err) {
+      /* keep default */
+    }
+  }
+
+  async function saveDailyTarget() {
+    const input = prompt("Enter daily sales target (INR):", String(DAILY_TARGET));
+    if (input == null) return;
+    const value = Number(input);
+    if (!Number.isFinite(value) || value <= 0) {
+      alert("Please enter a valid positive number.");
+      return;
+    }
+    const res = await fetch(`${API_BASE}/company/settings`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dailyTarget: value })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      alert(data.message || "Could not save target.");
+      return;
+    }
+    setDailyTarget(data.dailyTarget || value);
+  }
+
+  async function loadNotifications() {
+    try {
+      const res = await fetch(`${API_BASE}/company/notifications?limit=50`);
+      const rows = await res.json();
+      notifications.length = 0;
+      notifications.push(...(Array.isArray(rows) ? rows : []));
+      renderNotifications();
+    } catch (_err) {
+      if (els.notificationList) {
+        els.notificationList.innerHTML =
+          '<div class="notif-item" style="color:#b91c1c;text-align:center;">Could not load notifications</div>';
+      }
+    }
+  }
+
+  async function loadSupplyChainHealth() {
+    try {
+      const res = await fetch(`${API_BASE}/company/supply-chain-health`);
+      renderSupplyChainHealth(await res.json());
+    } catch (_err) {
+      renderSupplyChainHealth(null);
+    }
+  }
+
+  async function loadDistributorScorecard() {
+    try {
+      const res = await fetch(`${API_BASE}/company/distributor-scorecard`);
+      renderDistributorScorecard(await res.json());
+    } catch (_err) {
+      if (els.distributorScorecardBody) {
+        els.distributorScorecardBody.innerHTML =
+          '<tr><td colspan="8" style="text-align:center;color:#b91c1c;">Could not load scorecard</td></tr>';
+      }
+    }
+  }
+
+  const editTargetBtn = document.getElementById("editTargetBtn");
+  if (editTargetBtn) editTargetBtn.addEventListener("click", saveDailyTarget);
+
+  const notifFilters = document.getElementById("notifFilters");
+  if (notifFilters) {
+    notifFilters.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        notifFilters.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        notifFilter = btn.dataset.filter || "all";
+        renderNotifications();
+      });
+    });
+  }
+
+  if (location.hash === "#live-map") {
+    const mapEl = document.getElementById("live-map");
+    if (mapEl) mapEl.scrollIntoView({ behavior: "smooth" });
+  }
+
   function timeAgo(ts) {
     const delta = Math.max(1, Math.floor((Date.now() - Number(ts || Date.now())) / 60000));
     if (delta < 60) return `${delta} min ago`;
@@ -1387,31 +2170,170 @@ function stsLogout() {
     map.setView([emp.lat, emp.lng], 15);
   }
 
-  function renderReports() {
-    if (!reports.length) {
-      els.recentReportsBody.innerHTML = `<tr><td colspan="6">No live reports yet</td></tr>`;
+  function flowLabelForEvent(eventType) {
+    if (eventType === "company_to_superstockist") return "Company → SS";
+    if (eventType === "superstockist_to_distributor") return "SS → Distributor";
+    return "Distributor → Employee";
+  }
+
+  function buildInventoryFlowRowHtml(f) {
+    const flowClass = f.eventType === "company_to_superstockist" ? "flow-company"
+      : f.eventType === "superstockist_to_distributor" ? "flow-ss" : "flow-dist";
+    const flowLabel = flowLabelForEvent(f.eventType);
+    return `<tr>
+      <td>${f.createdAt ? new Date(f.createdAt).toLocaleString("en-IN") : "--"}</td>
+      <td class="${flowClass}">${flowLabel}</td>
+      <td>${f.productName}</td>
+      <td>${f.quantity}</td>
+      <td>${f.fromName}</td>
+      <td>${f.toName}</td>
+      <td>${f.ssRemainingAfter ?? "--"}</td>
+      <td>${f.distributorRemainingAfter ?? "--"}</td>
+      <td>${delBtn(`${API_BASE}/company/inventory/flow/${f.id}`)}</td>
+    </tr>`;
+  }
+
+  function paintInventoryFlowTable() {
+    const rows = inventoryFlowRows;
+    const visibleRows = inventoryFlowExpanded
+      ? rows
+      : rows.slice(0, INVENTORY_FLOW_PREVIEW_ROWS);
+
+    els.inventoryFlowBody.innerHTML = rows.length
+      ? visibleRows.map(buildInventoryFlowRowHtml).join("")
+      : `<tr><td colspan="9" style="text-align:center;color:#64748b;">No inventory flow recorded yet</td></tr>`;
+  }
+
+  function setInventoryFlowExpanded(expanded) {
+    inventoryFlowExpanded = expanded;
+    paintInventoryFlowTable();
+
+    const btn = document.getElementById("inventoryFlowToggleBtn");
+    if (!btn) return;
+
+    btn.setAttribute("aria-expanded", String(expanded));
+    btn.title = expanded ? "Show first 4 rows only" : "Show full inventory flow table";
+    const text = btn.querySelector(".panel-toggle-text");
+    const icon = btn.querySelector(".panel-toggle-icon");
+    if (text) text.textContent = expanded ? "Hide" : "Show";
+    if (icon) {
+      icon.classList.toggle("fa-chevron-down", !expanded);
+      icon.classList.toggle("fa-chevron-up", expanded);
+    }
+  }
+
+  function renderInventoryFlow(flowLog) {
+    const rows = Array.isArray(flowLog) ? flowLog : [];
+    inventoryFlowRows.length = 0;
+    inventoryFlowRows.push(...rows);
+    paintInventoryFlowTable();
+  }
+
+  function downloadInventoryFlowExcel() {
+    if (typeof XLSX === "undefined") {
+      alert("Excel library is still loading. Please try again in a moment.");
       return;
     }
 
-    els.recentReportsBody.innerHTML = reports.slice(0, 20).map((r) => {
-      return `<tr>
-        <td><div class="emp-cell"><div class="tiny-av">${initialsOf(r.employeeName)}</div> ${r.employeeName}</div></td>
-        <td>${new Date(r.dateTime).toLocaleString("en-IN")}</td>
-        <td>${r.location}</td>
-        <td>${Number(r.quantity || 0)}</td>
-        <td>${formatINR(r.sales)}</td>
-        <td><span class="badge-sub">${r.status || "Submitted"}</span></td>
-      </tr>`;
-    }).join("");
+    if (!inventoryFlowRows.length) {
+      alert("No inventory flow data to export.");
+      return;
+    }
+
+    const headers = [
+      "Time",
+      "Flow",
+      "Product",
+      "Qty",
+      "From",
+      "To",
+      "SS Remaining",
+      "Dist. Remaining"
+    ];
+
+    const sheetData = [
+      headers,
+      ...inventoryFlowRows.map((f) => [
+        f.createdAt ? new Date(f.createdAt).toLocaleString("en-IN") : "--",
+        flowLabelForEvent(f.eventType),
+        f.productName ?? "",
+        f.quantity ?? "",
+        f.fromName ?? "",
+        f.toName ?? "",
+        f.ssRemainingAfter ?? "--",
+        f.distributorRemainingAfter ?? "--"
+      ])
+    ];
+
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory Flow");
+
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+    XLSX.writeFile(workbook, `inventory-flow-${stamp}.xlsx`);
+  }
+
+  async function loadInventoryFlow() {
+    try {
+      const res = await fetch(`${API_BASE}/company/inventory/flow?limit=30`);
+      const flowLog = await res.json();
+      renderInventoryFlow(Array.isArray(flowLog) ? flowLog : []);
+    } catch (_err) {
+      inventoryFlowRows.length = 0;
+      els.inventoryFlowBody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#64748b;">Unable to load inventory flow</td></tr>`;
+    }
   }
 
   function reportDate(r) {
-    const dt = new Date(r.dateTime || r.createdAt || Date.now());
+    const dt = new Date(r.dateTime || r.date_time || r.createdAt || r.created_at || Date.now());
     return Number.isNaN(dt.getTime()) ? new Date() : dt;
   }
 
   function salesValue(r) {
-    return Number(r.sales || r.totalSales || 0);
+    return Number(r.sales ?? r.totalSales ?? r.sales_amount ?? 0);
+  }
+
+  function normalizeReport(report) {
+    if (!report) return report;
+    return {
+      ...report,
+      dateTime: report.dateTime || report.date_time,
+      employeeName: report.employeeName || report.employee_name,
+      shopName: report.shopName || report.shop_name,
+      sales: report.sales ?? report.totalSales ?? null
+    };
+  }
+
+  function updateTargetAchievement(todaySalesAmount) {
+    const amount = Number(todaySalesAmount || 0);
+    const targetPercent = DAILY_TARGET > 0
+      ? Math.min(100, Math.round((amount / DAILY_TARGET) * 100))
+      : 0;
+
+    els.targetAchievement.textContent = `${targetPercent}%`;
+
+    if (targetPercent >= 100) {
+      els.targetStatusText.textContent = "Today's Target Completed 🎉";
+    } else {
+      els.targetStatusText.textContent = `${formatINR(DAILY_TARGET - amount)} remaining today`;
+    }
+  }
+
+  function sumTodayReportSales() {
+    const now = new Date();
+    const todayY = now.getFullYear();
+    const todayM = now.getMonth();
+    const todayD = now.getDate();
+
+    return reports.reduce((sum, report) => {
+      const dt = reportDate(report);
+      const isToday =
+        dt.getFullYear() === todayY &&
+        dt.getMonth() === todayM &&
+        dt.getDate() === todayD;
+
+      return isToday ? sum + salesValue(report) : sum;
+    }, 0);
   }
 
   function productQty(r) {
@@ -1477,52 +2399,7 @@ function stsLogout() {
     const totalSold = [...productTotals.values()].reduce((sum, total) => sum + Number(total || 0), 0);
     els.donutTotalProducts.textContent = String(totalSold);
 
-    /*/* ===============================
-   DAILY TARGET ACHIEVEMENT
-================================ */
-
-const dailyTarget = 100000; // Daily target amount
-
-const todaySalesAmount = reports
-  .filter((report) => {
-    const dt = reportDate(report);
-
-    return (
-      dt.getFullYear() === todayY &&
-      dt.getMonth() === todayM &&
-      dt.getDate() === todayD
-    );
-  })
-  .reduce((sum, report) => {
-    return sum + salesValue(report);
-  }, 0);
-
-const targetPercent =
-  dailyTarget > 0
-    ? Math.min(
-        100,
-        Math.round(
-          (todaySalesAmount / dailyTarget) * 100
-        )
-      )
-    : 0;
-
-els.targetAchievement.textContent =
-  `${targetPercent}%`;
-
-if (targetPercent >= 100) {
-
-  els.targetStatusText.textContent =
-    "Today's Target Completed 🎉";
-
-} else {
-
-  const remaining =
-    dailyTarget - todaySalesAmount;
-
-  els.targetStatusText.textContent =
-    `${formatINR(remaining)} remaining today`;
-}
+    updateTargetAchievement(sumTodayReportSales());
 
     const performers = [...performerSales.entries()]
       .sort((a, b) => b[1] - a[1])
@@ -1578,6 +2455,11 @@ if (targetPercent >= 100) {
     els.productsSold.textContent = products;
     els.donutTotalProducts.textContent = products;
     els.reportsSubmitted.textContent = Number(summary.todayReports || 0);
+
+    const reportSales = summary.todayReportSales ?? summary.todaySales;
+    if (reportSales != null) {
+      updateTargetAchievement(reportSales);
+    }
   }
 
   function goBusinessPortalPage() {
@@ -1610,7 +2492,7 @@ if (targetPercent >= 100) {
     renderActivity();
   }
 
-  const socket =io("https://sales-tracking-system-n9am.onrender.com");
+  const socket =io("http://localhost:5000/");
   socket.on("connect", () => {
     socket.emit("admin:join");
   });
@@ -1619,9 +2501,8 @@ if (targetPercent >= 100) {
     employeeById.clear();
     (payload.employees || []).forEach(upsertEmployee);
     reports.length = 0;
-    reports.push(...(payload.recentReports || []));
+    reports.push(...(payload.recentReports || []).map(normalizeReport));
     applySummary(payload.summary);
-    renderReports();
     renderAnalyticsFromReports();
     renderActivity();
     renderActiveUsers();
@@ -1646,14 +2527,133 @@ if (targetPercent >= 100) {
   socket.on("admin:summary", applySummary);
   socket.on("admin:activity", addActivityFromServer);
   socket.on("admin:reportSubmitted", (report) => {
-    reports.unshift(report);
-    if (reports.length > 50) reports.pop();
-    renderReports();
+    const normalized = normalizeReport(report);
+    const existingIdx = reports.findIndex((r) => Number(r.id) === Number(normalized.id));
+    if (existingIdx >= 0) {
+      reports[existingIdx] = normalized;
+    } else {
+      reports.unshift(normalized);
+      if (reports.length > 50) reports.pop();
+    }
     renderAnalyticsFromReports();
+    loadCompanyAnalytics();
   });
 
+  socket.on("notification:manager", (payload) => {
+    pushNotification({
+      message: payload.message || "New notification",
+      created_at: new Date().toISOString(),
+      sender_name: payload.order?.employee_name || "System"
+    });
+    addActivityFromServer({
+      type: "order",
+      employee: { name: payload.order?.employee_name || "Sales Executive" },
+      message: payload.message || "New order received",
+      timestamp: Date.now()
+    });
+  });
+
+  socket.on("order:submitted", (order) => {
+    upsertOrder(order);
+    pushNotification({
+      message: `${order.employee_name} ordered ${order.product_name} for ${order.retailer_name}`,
+      created_at: order.created_at || new Date().toISOString(),
+      sender_name: order.employee_name
+    });
+    addActivityFromServer({
+      type: "order",
+      employee: { name: order.employee_name || "Sales Executive" },
+      message: `${order.employee_name} ordered ${order.product_name} for ${order.retailer_name}`,
+      timestamp: Date.now()
+    });
+    loadDistributorScorecard();
+    loadCompanyAnalytics();
+  });
+
+  socket.on("order:statusChanged", (order) => {
+    upsertOrder(order);
+    loadDistributorScorecard();
+  });
+
+  socket.on("stock:requestCreated", (request) => {
+    pushNotification({
+      message: `${request.superstockistName} requested ${request.quantity} units of ${request.productName}`,
+      created_at: request.createdAt || new Date().toISOString(),
+      sender_name: request.superstockistName
+    });
+    addActivityFromServer({
+      type: "stock_request",
+      employee: { name: request.superstockistName || "Super Stockist" },
+      message: `${request.superstockistName} requested ${request.quantity} units of ${request.productName}`,
+      timestamp: Date.now()
+    });
+    loadSupplyChainHealth();
+  });
+
+  socket.on("stock:requestUpdated", () => {
+    loadInventoryFlow();
+    loadSupplyChainHealth();
+  });
+
+  socket.on("inventory:flowUpdated", loadInventoryFlow);
+  socket.on("inventory:updated", loadInventoryFlow);
+  socket.on("distributorStock:dispatched", () => {
+    loadInventoryFlow();
+    loadSupplyChainHealth();
+    loadDistributorScorecard();
+  });
+  socket.on("distributorStock:updated", () => {
+    loadInventoryFlow();
+    loadSupplyChainHealth();
+  });
+  socket.on("distributorStock:requestUpdated", () => {
+    loadInventoryFlow();
+    loadSupplyChainHealth();
+  });
+  socket.on("distributorStock:requestCreated", () => {
+    loadSupplyChainHealth();
+    loadNotifications();
+  });
+  socket.on("order:submitted", loadInventoryFlow);
+
+  loadInventoryFlow();
+  loadCompanyAnalytics();
+
+  function initInventoryFlowToggle() {
+    const btn = document.getElementById("inventoryFlowToggleBtn");
+    if (!btn) return;
+
+    setInventoryFlowExpanded(false);
+
+    btn.addEventListener("click", () => {
+      setInventoryFlowExpanded(btn.getAttribute("aria-expanded") !== "true");
+    });
+  }
+
+  function initOrderLifecycleToggle() {
+    const btn = document.getElementById("orderLifecycleToggleBtn");
+    if (!btn) return;
+
+    setOrderLifecycleExpanded(false);
+
+    btn.addEventListener("click", () => {
+      setOrderLifecycleExpanded(btn.getAttribute("aria-expanded") !== "true");
+    });
+  }
+
+  initInventoryFlowToggle();
+  initOrderLifecycleToggle();
+
+  const downloadInventoryFlowBtn = document.getElementById("downloadInventoryFlowBtn");
+  if (downloadInventoryFlowBtn) {
+    downloadInventoryFlowBtn.addEventListener("click", downloadInventoryFlowExcel);
+  }
+  loadCompanySettings();
+  loadNotifications();
+  loadSupplyChainHealth();
+  loadDistributorScorecard();
+
   renderActivity();
-  renderReports();
   renderAnalyticsFromReports();
   renderActiveUsers();
 

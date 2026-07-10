@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employees — Sales Tracking System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="../css/mobile.css"/>
+<style>
+:root { --navy-deep:#0c1228; --navy:#151d3d; --purple:#6a5cff; --card-shadow:0 4px 24px rgba(15,23,42,.06); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:"Segoe UI",system-ui,sans-serif; background:#f0f4fb; color:#1e293b; min-height:100vh; display:flex; }
+.sidebar { width:260px; min-height:100vh; background:linear-gradient(180deg,var(--navy-deep),var(--navy)); color:#fff; padding:24px 16px; display:flex; flex-direction:column; flex-shrink:0; }
+.brand { display:flex; align-items:center; gap:12px; padding:8px 8px 24px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:16px; }
+.brand-icon { width:40px; height:40px; background:linear-gradient(135deg,#3b82f6,var(--purple)); border-radius:10px; display:flex; align-items:center; justify-content:center; }
+.brand-title { font-size:15px; font-weight:700; }
+.nav { list-style:none; flex:1; }
+.nav li { padding:12px 14px; border-radius:10px; margin-bottom:4px; font-size:14px; display:flex; align-items:center; gap:10px; color:rgba(255,255,255,.75); }
+.nav li.active { background:rgba(106,92,255,.25); color:#fff; }
+.main { flex:1; padding:28px 32px; overflow-x:auto; }
+.top-bar h1 { font-size:26px; margin-bottom:6px; }
+.top-bar p { color:#64748b; margin-bottom:24px; }
+.panel { background:#fff; border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
+.panel-h { padding:18px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; }
+.panel-h h3 { font-size:16px; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th, td { padding:12px 16px; text-align:left; border-bottom:1px solid #f8fafc; }
+th { font-size:12px; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
+.badge { padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; }
+.badge-live { background:#dcfce7; color:#15803d; }
+.badge-off { background:#f1f5f9; color:#64748b; }
+@media (max-width:900px) { body { flex-direction:column; } .sidebar { width:100%; min-height:auto; } }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i class="fas fa-chart-bar"></i></div>
+    <div class="brand-title">Sales Tracking System</div>
+  </div>
+  <ul class="nav">
+    <li style="cursor:pointer;" onclick="location.href='CompanyDashboard.html'"><i class="fas fa-home"></i> Dashboard</li>
+    <li style="cursor:pointer;" onclick="location.href='OurCompany.html'"><i class="fas fa-building"></i> Business portal</li>
+    <li style="cursor:pointer;" onclick="location.href='CompanyDashboard.html#live-map'"><i class="fas fa-location-crosshairs"></i> Live Tracking</li>
+    <li class="active"><i class="fas fa-users"></i> Employees</li>
+    <li style="cursor:pointer;" onclick="location.href='ManagerReports.html'"><i class="fas fa-file-lines"></i> Reports</li>
+    <li style="cursor:pointer;" onclick="stsLogout()"><i class="fas fa-right-from-bracket"></i> Logout</li>
+  </ul>
+</aside>
+<main class="main">
+  <div class="top-bar">
+    <h1>Employees</h1>
+    <p>Field sales team roster and today's activity.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-h"><h3>Sales Executives</h3><span id="employeeCount">--</span></div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Employee ID</th>
+            <th>Today's Reports</th>
+            <th>Today's Orders</th>
+            <th>GPS</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="employeesBody">
+          <tr><td colspan="6" style="text-align:center;color:#64748b;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+(function authGuard() {
+  const user = JSON.parse(sessionStorage.getItem("stsUser") || "null");
+  if (!user?.email || String(user.role || "").toLowerCase().replace(/[\s_-]+/g, "") !== "manager") {
+    location.replace("../login/loginPage.html");
+  }
+})();
+function stsLogout() {
+  sessionStorage.clear();
+  location.replace("../login/loginPage.html");
+}
+const API_BASE = "http://localhost:5000/api";
+const liveIds = new Set();
+
+function delBtn(url) {
+  return StsDelete.buttonHtml(url, StsDelete.DEFAULT_CONFIRM, "loadEmployees");
+}
+window.loadEmployees = loadEmployees;
+
+async function loadEmployees() {
+  const body = document.getElementById("employeesBody");
+  try {
+    const res = await fetch(`${API_BASE}/company/employees`);
+    const rows = await res.json();
+    document.getElementById("employeeCount").textContent = `${rows.length} total`;
+    body.innerHTML = rows.length ? rows.map((e) => {
+      const key = String(e.empId || e.id);
+      const live = liveIds.has(key) || liveIds.has(String(e.id));
+      return `<tr>
+        <td>${e.name || "--"}</td>
+        <td>${e.email || "--"}</td>
+        <td>${e.empId || "--"}</td>
+        <td>${e.today_reports ?? 0}</td>
+        <td>${e.today_orders ?? 0}</td>
+        <td><span class="badge ${live ? "badge-live" : "badge-off"}">${live ? "Live" : "Offline"}</span></td>
+        <td>${delBtn(`${API_BASE}/company/employees/${e.id}`)}</td>
+      </tr>`;
+    }).join("") : '<tr><td colspan="7" style="text-align:center;color:#64748b;">No employees registered</td></tr>';
+  } catch (_err) {
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#b91c1c;">Could not load employees</td></tr>';
+  }
+}
+
+const socket = io("http://localhost:5000/");
+socket.on("connect", () => socket.emit("admin:join"));
+socket.on("admin:snapshot", (p) => {
+  liveIds.clear();
+  (p.employees || []).forEach((e) => liveIds.add(String(e.id)));
+  loadEmployees();
+});
+socket.on("admin:employeeUpdate", (e) => {
+  if (e?.id) liveIds.add(String(e.id));
+  loadEmployees();
+});
+socket.on("admin:employeeOffline", (d) => {
+  if (d?.id) liveIds.delete(String(d.id));
+  loadEmployees();
+});
+
+loadEmployees();
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../css/mobile.css">
+<title>Create Order</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#f1f5f9;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.container{width:520px;background:#fff;padding:25px;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,.12)}
+.title{text-align:center;font-size:24px;font-weight:600;margin-bottom:20px;color:#1f2937}
+label{display:block;margin-top:15px;margin-bottom:6px;font-size:14px;font-weight:500}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;outline:none;font-size:14px}
+input:focus,select:focus,textarea:focus{border-color:#2563eb}
+textarea{resize:none;height:80px}
+button{width:100%;margin-top:20px;padding:14px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;cursor:pointer}
+button:hover{background:#1d4ed8}
+button:disabled{opacity:.65;cursor:not-allowed}
+.back-link{display:block;text-align:center;margin-top:14px;color:#2563eb;text-decoration:none;font-size:14px}
+@media(max-width:600px){.container{width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="title">Create Order</div>
+<form id="orderForm">
+<label>Retailer Name</label>
+<input type="text" id="retailerName" placeholder="Enter retailer name" required>
+
+<label>Distributor Name</label>
+<input type="text" id="distributorName" placeholder="Enter distributor name" required>
+
+<label>Product Name</label>
+<select id="productName" required>
+<option value="">Select Product</option>
+<option>GRAVY BASE MIX</option>
+<option>GINGER POWDER</option>
+<option>TURMERIC POWDER</option>
+<option>GARLIC POWDER</option>
+<option>TOMATO POWDER</option>
+<option>ONION POWDER</option>
+<option>CORIANDER POWDER</option>
+<option>CHICKEN MASALA</option>
+<option>RED CHILLI POWDER</option>
+<option>KASURI METHI</option>
+<option>PANEER MASALA</option>
+<option>GINGER GARLIC MIX</option>
+<option>BEETROOT POWDER</option>
+<option>MORINGA POWDER</option>
+<option>SHAHISABZI MASALA</option>
+</select>
+
+<label>Quantity</label>
+<input type="number" id="quantity" min="1" placeholder="Enter quantity" required>
+
+<label>Expected Delivery Date</label>
+<input type="date" id="expectedDeliveryDate" required>
+
+<label>Order Remarks</label>
+<textarea id="orderRemarks" placeholder="Additional order notes"></textarea>
+
+<button type="submit" id="submitBtn">Submit Order</button>
+</form>
+<a class="back-link" href="EmployeesDashboard.html">Back to Dashboard</a>
+</div>
+
+<script>
+const API_BASE = "http://localhost:5000/api";
+const loggedInUser = JSON.parse(sessionStorage.getItem("stsUser") || "{}");
+
+if (!loggedInUser.email) {
+    window.location.replace("../login/loginPage.html");
+}
+
+const employeeName = loggedInUser.name || "Employee";
+const employeeId = loggedInUser.empId || String(loggedInUser.id || employeeName);
+
+document.getElementById("orderForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const payload = {
+        user_id: loggedInUser.id,
+        employee_id: employeeId,
+        employee_name: employeeName,
+        retailer_name: document.getElementById("retailerName").value.trim(),
+        distributor_name: document.getElementById("distributorName").value.trim(),
+        product_name: document.getElementById("productName").value,
+        quantity: document.getElementById("quantity").value,
+        expected_delivery_date: document.getElementById("expectedDeliveryDate").value,
+        order_remarks: document.getElementById("orderRemarks").value.trim()
+    };
+
+    if (!payload.retailer_name || !payload.distributor_name || !payload.product_name || !payload.quantity || !payload.expected_delivery_date) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    try {
+        const res = await fetch(API_BASE + "/orders/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || "Could not submit order.");
+
+        alert("Order submitted successfully. Distributor and manager have been notified.");
+        window.location.href = "reports.html?tab=orders";
+    } catch (err) {
+        alert(err.message || "Could not submit order.");
+        btn.disabled = false;
+        btn.textContent = "Submit Order";
+    }
+});
+</script>
+</body>
+</html>

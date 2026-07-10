@@ -3,369 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Report Form</title>
-
+<link rel="stylesheet" href="../css/mobile.css">
+<title>Daily Report</title>
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Poppins,sans-serif;
-}
-
-body{
-    background:#f1f5f9;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    padding:20px;
-}
-
-.container{
-    width:400px;
-    background:#fff;
-    padding:22px;
-    border-radius:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
-    animation:fade 0.5s ease;
-}
-
-@keyframes fade{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.title{
-    text-align:center;
-    font-size:22px;
-    font-weight:600;
-    margin-bottom:20px;
-    color:#111827;
-}
-
-label{
-    display:block;
-    margin-top:14px;
-    margin-bottom:6px;
-    font-size:14px;
-    color:#374151;
-}
-
-input,
-select,
-textarea{
-    width:100%;
-    padding:12px;
-    border:1px solid #d1d5db;
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:#f1f5f9;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.container{width:540px;max-height:95vh;overflow-y:auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,.12)}
+.title{text-align:center;font-size:24px;font-weight:600;margin-bottom:20px;color:#1f2937}
+label{display:block;margin-top:12px;margin-bottom:6px;font-size:14px;font-weight:500}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;outline:none;font-size:14px}
+input:focus,select:focus,textarea:focus{border-color:#2563eb}
+textarea{resize:none;height:70px}
+button{width:100%;margin-top:20px;padding:14px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;cursor:pointer}
+button:hover{background:#1d4ed8}
+button:disabled{opacity:.65;cursor:not-allowed}
+.back-link{display:block;text-align:center;margin-top:14px;color:#2563eb;text-decoration:none;font-size:14px}
+.section-title{margin-top:18px;font-size:15px;font-weight:700;color:#1e40af;border-bottom:2px solid #dbeafe;padding-bottom:6px}
+.product-row{
+    border:1px solid #ddd;
+    padding:15px;
     border-radius:10px;
-    outline:none;
-    font-size:14px;
-    transition:0.3s;
+    margin-bottom:15px;
+    background:#f8fafc;
 }
 
-input:focus,
-select:focus,
-textarea:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+.remove-btn{
+    margin-top:10px;
+    background:#ef4444;
 }
 
-textarea{
-    resize:none;
-    height:80px;
+.remove-btn:hover{
+    background:#dc2626;
 }
-
-.error{
-    color:red;
-    font-size:12px;
-    margin-top:4px;
-}
-
-button{
-    width:100%;
-    padding:13px;
-    border:none;
-    border-radius:10px;
-    background:linear-gradient(to right,#2563eb,#1d4ed8);
-    color:white;
-    font-size:15px;
-    cursor:pointer;
-    margin-top:20px;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:scale(1.02);
-}
-
 </style>
 </head>
-
 <body>
-
 <div class="container">
+<div class="title">Daily Report & Order</div>
+<form id="reportForm">
+<div class="section-title">Visit Details</div>
+<label>Date & Time</label>
+<input type="datetime-local" id="dateTime" required>
+<label>Current Location</label>
+<input type="text" id="location" placeholder="Detecting location..." required>
+<label>Retailer Name</label>
+<input type="text" id="retailerName" placeholder="Enter retailer name" required>
+<label>Shop Name</label>
+<input type="text" id="shopName" placeholder="Enter shop name" required>
+<label>Shop Address</label>
+<textarea id="shopAddress" placeholder="Enter shop delivery address" required></textarea>
+<label>Visit Status</label>
+<select id="visitStatus" required>
+<option value="">Select Status</option>
+<option>Visited</option>
+<option>Not Available</option>
+<option>Follow Up Required</option>
+<option>Order Placed</option>
+</select>
 
-    <div class="title">Submit Daily Report</div>
+<div class="section-title">Order Details (sent to Distributor)</div>
+<label>Distributor Name</label>
+<input type="text" id="distributorName" placeholder="Enter distributor name" required>
+<div class="section-title">Products</div>
 
-    <form id="reportForm">
+<div id="productContainer">
 
-        <!-- DATE + TIME -->
-
-        <label>Date & Time</label>
-
-        <input type="datetime-local" id="dateTime">
-
-        <div class="error" id="dateTimeError"></div>
-
-        <!-- LOCATION -->
-
-        <label>Location</label>
-
-        <input type="text" id="location" placeholder="Enter location">
-
-        <div class="error" id="locationError"></div>
-
-        <!-- PRODUCT -->
-
+    <div class="product-row">
         <label>Select Product</label>
-
-        <select id="product">
-
+        <select class="product" required>
             <option value="">Select Product</option>
-            <option>Product A</option>
-            <option>Product B</option>
-            <option>Product C</option>
-
+            <option>GRAVY BASE MIX</option>
+            <option>GINGER POWDER</option>
+            <option>TURMERIC POWDER</option>
+            <option>GARLIC POWDER</option>
+            <option>TOMATO POWDER</option>
+            <option>ONION POWDER</option>
+            <option>CORIANDER POWDER</option>
+            <option>CHICKEN MASALA</option>
+            <option>RED CHILLI POWDER</option>
+            <option>KASURI METHI</option>
+            <option>PANEER MASALA</option>
+            <option>GINGER GARLIC MIX</option>
+            <option>BEETROOT POWDER</option>
+            <option>MORINGA POWDER</option>
+            <option>SHAHISABZI MASALA</option>
         </select>
 
-        <div class="error" id="productError"></div>
-
-        <!-- QUANTITY -->
-
-        <label>Quantity Sold</label>
-
-        <input type="number" id="quantity" placeholder="Enter quantity">
-
-        <div class="error" id="quantityError"></div>
-
-        <!-- SALES -->
-
-        <label>Total Sales (₹)</label>
-
-        <input type="number" id="sales" placeholder="Enter total sales">
-
-        <div class="error" id="salesError"></div>
-
-        <!-- NOTES -->
-
-        <label>Notes</label>
-
-        <textarea id="notes" placeholder="Enter notes"></textarea>
-
-        <!-- BUTTON -->
-
-        <button type="submit">Submit Report</button>
-
-    </form>
+        <label>Quantity</label>
+        <input type="number" class="quantity" min="1" placeholder="Enter quantity" required>
+    </div>
 
 </div>
 
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<button type="button" id="addProductBtn">
++ Add Product
+</button>
+<label>Delivery Date</label>
+<input type="date" id="deliveryDate" required>
+<label>Total Sales (₹)</label>
+<input type="number" id="sales" min="0" placeholder="Enter sales amount" required>
+<label>Notes</label>
+<textarea id="notes" placeholder="Additional notes"></textarea>
+<button type="submit" id="submitBtn">Submit Report & Send to Distributor</button>
+</form>
+<a class="back-link" href="EmployeesDashboard.html">Back to Dashboard</a>
+</div>
 <script>
+const API_BASE = "http://localhost:5000/api";
+const loggedInUser = JSON.parse(sessionStorage.getItem("stsUser") || "{}");
+if (!loggedInUser.email) window.location.replace("../login/loginPage.html");
 
-const loggedInUser =
-JSON.parse(sessionStorage.getItem("stsUser") || "{}");
+const employeeName = loggedInUser.name || "Employee";
+const employeeId = loggedInUser.empId || String(loggedInUser.id || employeeName);
 
-if (!loggedInUser.email) {
-    window.location.replace("../login/loginPage.html");
-} else if (loggedInUser.role !== "employee") {
-    if (loggedInUser.role === "manager") {
-        window.location.replace("../company/CompanyDashboard.html");
-    } else if (loggedInUser.role === "company") {
-        window.location.replace("../company/AddRemainingProducts.html");
-    } else {
-        window.location.replace("../login/loginPage.html");
-    }
-} else {
-
-function nameFromEmail(email){
-    const localPart = String(email || "").split("@")[0] || "Employee";
-    return localPart
-        .split(/[._-]+/)
-        .filter(Boolean)
-        .map((part)=>part.charAt(0).toUpperCase() + part.slice(1))
-        .join(" ");
-}
-
-const employeeName =
-loggedInUser.name ||
-sessionStorage.getItem("employeeName") ||
-nameFromEmail(loggedInUser.email) ||
-"Employee";
-
-const employeeId =
-loggedInUser.empId ||
-sessionStorage.getItem("employeeId") ||
-employeeName.toLowerCase().replace(/\s+/g, "-");
-
-sessionStorage.setItem("employeeId", employeeId);
-sessionStorage.setItem("employeeName", employeeName);
-
-function stsReportsStorageKey(id) {
-    return "stsEmployeeReports:" + String(id || "");
-}
-
-function stsLoadEmployeeReports(id) {
-    const key = stsReportsStorageKey(id);
-    let list = [];
-    try {
-        const raw = localStorage.getItem(key);
-        if (raw) list = JSON.parse(raw);
-    } catch (_e) {
-        list = [];
-    }
-    if (!Array.isArray(list)) list = [];
-    if (list.length) return list;
-    try {
-        const legacy = JSON.parse(localStorage.getItem("employeeReports") || "[]");
-        if (!Array.isArray(legacy) || !legacy.length) return [];
-        const mine = legacy.filter(
-            (r) => String(r.employeeId || "") === String(id)
-        );
-        if (mine.length) {
-            localStorage.setItem(key, JSON.stringify(mine));
-        }
-        return mine;
-    } catch (_e) {
-        return [];
-    }
-}
-
-function stsSaveEmployeeReports(id, reports) {
-    localStorage.setItem(
-        stsReportsStorageKey(id),
-        JSON.stringify(reports)
-    );
-}
-
-const form = document.getElementById("reportForm");
-const socket = io("https://sales-tracking-system-n9am.onrender.com");
-
-// AUTO CURRENT DATE & TIME
-
-window.onload = function(){
-
+window.onload = function () {
     const now = new Date();
-
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-    document.getElementById("dateTime").value =
-    now.toISOString().slice(0,16);
-
+    document.getElementById("dateTime").value = now.toISOString().slice(0, 16);
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                document.getElementById("location").value =
+                    `Lat ${pos.coords.latitude.toFixed(5)}, Lng ${pos.coords.longitude.toFixed(5)}`;
+            },
+            () => { document.getElementById("location").placeholder = "Enter location manually"; },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    }
 };
+document.getElementById("addProductBtn").addEventListener("click", () => {
 
-// FORM SUBMIT
+    const container = document.getElementById("productContainer");
 
-form.addEventListener("submit", function(e){
+    const row = document.createElement("div");
 
-    e.preventDefault();
+    row.className = "product-row";
 
-    // INPUT VALUES
+    row.innerHTML = `
+        <label>Select Product</label>
 
-    const dateTime = document.getElementById("dateTime").value;
-    const location = document.getElementById("location").value.trim();
-    const product = document.getElementById("product").value;
-    const quantity = document.getElementById("quantity").value;
-    const sales = document.getElementById("sales").value;
-    const notes = document.getElementById("notes").value;
+        <select class="product" required>
+            <option value="">Select Product</option>
+            <option>GRAVY BASE MIX</option>
+            <option>GINGER POWDER</option>
+            <option>TURMERIC POWDER</option>
+            <option>GARLIC POWDER</option>
+            <option>TOMATO POWDER</option>
+            <option>ONION POWDER</option>
+            <option>CORIANDER POWDER</option>
+            <option>CHICKEN MASALA</option>
+            <option>RED CHILLI POWDER</option>
+            <option>KASURI METHI</option>
+            <option>PANEER MASALA</option>
+            <option>GINGER GARLIC MIX</option>
+            <option>BEETROOT POWDER</option>
+            <option>MORINGA POWDER</option>
+            <option>SHAHISABZI MASALA</option>
+        </select>
 
-    // CLEAR ERRORS
+        <label>Quantity</label>
 
-    document.getElementById("dateTimeError").innerHTML = "";
-    document.getElementById("locationError").innerHTML = "";
-    document.getElementById("productError").innerHTML = "";
-    document.getElementById("quantityError").innerHTML = "";
-    document.getElementById("salesError").innerHTML = "";
+        <input type="number" class="quantity" min="1" required>
 
-    let isValid = true;
+        <button type="button" class="remove-btn">Remove</button>
+    `;
 
-    // VALIDATION
+    container.appendChild(row);
 
-    if(dateTime === ""){
-        document.getElementById("dateTimeError").innerHTML =
-        "Please select date & time";
-        isValid = false;
-    }
-
-    if(location === ""){
-        document.getElementById("locationError").innerHTML =
-        "Please enter location";
-        isValid = false;
-    }
-
-    if(product === ""){
-        document.getElementById("productError").innerHTML =
-        "Please select product";
-        isValid = false;
-    }
-
-    if(quantity === "" || quantity <= 0){
-        document.getElementById("quantityError").innerHTML =
-        "Enter valid quantity";
-        isValid = false;
-    }
-
-    if(sales === "" || sales <= 0){
-        document.getElementById("salesError").innerHTML =
-        "Enter valid sales amount";
-        isValid = false;
-    }
-
-    if(!isValid){
-        return;
-    }
-
-    // SAVE DATA
-
-    const reportData = {
-        employeeId,
-        employeeName,
-        dateTime,
-        location,
-        product,
-        quantity,
-        sales,
-        notes
-    };
-
-    let reports = stsLoadEmployeeReports(employeeId);
-
-    reports.push(reportData);
-
-    stsSaveEmployeeReports(employeeId, reports);
-
-    // SUCCESS MESSAGE
-    socket.emit("employee:report", reportData);
-
-    alert("Report Submitted Successfully");
-
-    // REDIRECT TO REPORT PAGE
-
-    window.location.href = "reports.html";
+    row.querySelector(".remove-btn").addEventListener("click", () => {
+        row.remove();
+    });
 
 });
 
-}
+document.getElementById("reportForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
 
+    const productRows = document.querySelectorAll("#productContainer .product-row");
+    const products = [];
+    const seen = new Set();
+
+    for (const row of productRows) {
+        const product = row.querySelector(".product")?.value.trim();
+        const quantity = Number(row.querySelector(".quantity")?.value);
+        if (!product || !quantity || quantity <= 0) {
+            alert("Please select a product and enter a valid quantity for every product row.");
+            btn.disabled = false;
+            btn.textContent = "Submit Report & Send to Distributor";
+            return;
+        }
+        const key = product.toUpperCase();
+        if (seen.has(key)) {
+            alert(`"${product}" is listed more than once. Combine quantities into one row.`);
+            btn.disabled = false;
+            btn.textContent = "Submit Report & Send to Distributor";
+            return;
+        }
+        seen.add(key);
+        products.push({ product_name: product, quantity });
+    }
+
+    const payload = {
+        user_id: loggedInUser.id,
+        employee_id: employeeId,
+        employee_name: employeeName,
+        date_time: document.getElementById("dateTime").value,
+        location: document.getElementById("location").value.trim(),
+        retailer_name: document.getElementById("retailerName").value.trim(),
+        shop_name: document.getElementById("shopName").value.trim(),
+        shop_address: document.getElementById("shopAddress").value.trim(),
+        visit_status: document.getElementById("visitStatus").value,
+        distributor_name: document.getElementById("distributorName").value.trim(),
+        products,
+        delivery_date: document.getElementById("deliveryDate").value,
+        sales: document.getElementById("sales").value,
+        notes: document.getElementById("notes").value.trim()
+    };
+
+    try {
+        const res = await fetch(API_BASE + "/daily-reports/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || "Could not submit report.");
+        alert(data.message || "Report submitted and order sent to distributor.");
+        window.location.href = "reports.html?tab=reports";
+    } catch (err) {
+        alert(err.message || "Could not submit report.");
+        btn.disabled = false;
+        btn.textContent = "Submit Report & Send to Distributor";
+    }
+});
 </script>
-
 </body>
 </html>

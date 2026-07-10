@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports — Sales Tracking System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="../css/mobile.css"/>
+<style>
+:root { --navy-deep:#0c1228; --navy:#151d3d; --purple:#6a5cff; --card-shadow:0 4px 24px rgba(15,23,42,.06); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:"Segoe UI",system-ui,sans-serif; background:#f0f4fb; color:#1e293b; min-height:100vh; display:flex; }
+.sidebar { width:260px; min-height:100vh; background:linear-gradient(180deg,var(--navy-deep),var(--navy)); color:#fff; padding:24px 16px; display:flex; flex-direction:column; flex-shrink:0; }
+.brand { display:flex; align-items:center; gap:12px; padding:8px 8px 24px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:16px; }
+.brand-icon { width:40px; height:40px; background:linear-gradient(135deg,#3b82f6,var(--purple)); border-radius:10px; display:flex; align-items:center; justify-content:center; }
+.brand-title { font-size:15px; font-weight:700; }
+.nav { list-style:none; flex:1; }
+.nav li { padding:12px 14px; border-radius:10px; margin-bottom:4px; font-size:14px; display:flex; align-items:center; gap:10px; color:rgba(255,255,255,.75); }
+.nav li.active { background:rgba(106,92,255,.25); color:#fff; }
+.main { flex:1; padding:28px 32px; overflow-x:auto; }
+.top-bar h1 { font-size:26px; margin-bottom:6px; }
+.top-bar p { color:#64748b; margin-bottom:16px; }
+.search-row { margin-bottom:20px; }
+.search-row input { width:100%; max-width:400px; padding:12px 14px; border:1px solid #e2e8f0; border-radius:10px; font-size:14px; }
+.panel { background:#fff; border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
+.panel-h { padding:18px 20px; border-bottom:1px solid #f1f5f9; }
+.panel-h h3 { font-size:16px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th, td { padding:10px 14px; text-align:left; border-bottom:1px solid #f8fafc; vertical-align:top; }
+th { font-size:11px; color:#64748b; text-transform:uppercase; }
+.table-scroll { overflow-x:auto; }
+@media (max-width:900px) { body { flex-direction:column; } .sidebar { width:100%; min-height:auto; } }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i class="fas fa-chart-bar"></i></div>
+    <div class="brand-title">Sales Tracking System</div>
+  </div>
+  <ul class="nav">
+    <li style="cursor:pointer;" onclick="location.href='CompanyDashboard.html'"><i class="fas fa-home"></i> Dashboard</li>
+    <li style="cursor:pointer;" onclick="location.href='OurCompany.html'"><i class="fas fa-building"></i> Business portal</li>
+    <li style="cursor:pointer;" onclick="location.href='CompanyDashboard.html#live-map'"><i class="fas fa-location-crosshairs"></i> Live Tracking</li>
+    <li style="cursor:pointer;" onclick="location.href='ManagerEmployees.html'"><i class="fas fa-users"></i> Employees</li>
+    <li class="active"><i class="fas fa-file-lines"></i> Reports</li>
+    <li style="cursor:pointer;" onclick="stsLogout()"><i class="fas fa-right-from-bracket"></i> Logout</li>
+  </ul>
+</aside>
+<main class="main">
+  <div class="top-bar">
+    <h1>Daily Reports</h1>
+    <p>Browse field visit reports submitted by sales executives.</p>
+  </div>
+  <div class="search-row">
+    <input type="search" id="searchInput" placeholder="Search by employee, shop, location, product..." />
+  </div>
+  <div class="panel">
+    <div class="panel-h"><h3>Recent Reports</h3></div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Employee</th>
+            <th>Shop</th>
+            <th>Location</th>
+            <th>Visit Status</th>
+            <th>Product</th>
+            <th>Sales</th>
+            <th>Notes</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="reportsBody">
+          <tr><td colspan="8" style="text-align:center;color:#64748b;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+(function authGuard() {
+  const user = JSON.parse(sessionStorage.getItem("stsUser") || "null");
+  if (!user?.email || String(user.role || "").toLowerCase().replace(/[\s_-]+/g, "") !== "manager") {
+    location.replace("../login/loginPage.html");
+  }
+})();
+function stsLogout() {
+  sessionStorage.clear();
+  location.replace("../login/loginPage.html");
+}
+const API_BASE = "http://localhost:5000/api";
+let allReports = [];
+
+function delBtn(url) {
+  return StsDelete.buttonHtml(url, StsDelete.DEFAULT_CONFIRM, "loadReports");
+}
+window.loadReports = loadReports;
+
+function formatINR(v) {
+  return new Intl.NumberFormat("en-IN", { style:"currency", currency:"INR", maximumFractionDigits:0 }).format(Number(v || 0));
+}
+
+function productLabel(r) {
+  if (Array.isArray(r.products) && r.products.length) {
+    return r.products.map((p) => `${p.productName} (${p.quantity})`).join(", ");
+  }
+  return r.product || "--";
+}
+
+function renderReports(rows) {
+  const body = document.getElementById("reportsBody");
+  const q = String(document.getElementById("searchInput").value || "").trim().toLowerCase();
+  const filtered = q ? rows.filter((r) => {
+    const hay = [r.employee_name, r.shop_name, r.location, r.product, r.visit_status, r.notes]
+      .concat((r.products || []).map((p) => p.productName))
+      .join(" ").toLowerCase();
+    return hay.includes(q);
+  }) : rows;
+
+  body.innerHTML = filtered.length ? filtered.map((r) => `<tr>
+    <td>${r.date_time ? new Date(r.date_time).toLocaleString("en-IN") : "--"}</td>
+    <td>${r.employee_name || "--"}</td>
+    <td>${r.shop_name || "--"}</td>
+    <td>${r.location || "--"}</td>
+    <td>${r.visit_status || "--"}</td>
+    <td>${productLabel(r)}</td>
+    <td>${r.sales != null ? formatINR(r.sales) : "--"}</td>
+    <td>${r.notes || "--"}</td>
+    <td>${delBtn(`${API_BASE}/daily-reports/${r.id}`)}</td>
+  </tr>`).join("") : '<tr><td colspan="9" style="text-align:center;color:#64748b;">No reports found</td></tr>';
+}
+
+async function loadReports() {
+  try {
+    const res = await fetch(`${API_BASE}/daily-reports/recent/all`);
+    allReports = await res.json();
+    renderReports(Array.isArray(allReports) ? allReports : []);
+  } catch (_err) {
+    document.getElementById("reportsBody").innerHTML =
+      '<tr><td colspan="8" style="text-align:center;color:#b91c1c;">Could not load reports</td></tr>';
+  }
+}
+
+document.getElementById("searchInput").addEventListener("input", () => renderReports(allReports));
+
+const socket = io("http://localhost:5000/");
+socket.on("admin:reportSubmitted", () => loadReports());
+
+loadReports();
+</script>
+</body>
+</html>

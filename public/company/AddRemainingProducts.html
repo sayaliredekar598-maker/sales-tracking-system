@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../css/mobile.css">
 
 <title>Remaining Products</title>
 
@@ -272,15 +273,28 @@ type="text"
 id="companyName"
 placeholder="Company Name">
 
+<select id="productName" required>
+<option value="">Select Product</option>
+</select>
+
 <input
 type="number"
 id="soldProducts"
-placeholder="Sold Products">
+placeholder="Sold Products"
+min="0">
 
 <input
 type="number"
 id="totalProducts"
-placeholder="Total Products">
+placeholder="Total Products"
+min="1">
+
+<input
+type="number"
+id="minStock"
+placeholder="Minimum Stock Level"
+min="1"
+value="10">
 
 <button onclick="saveData()">
 Save Data
@@ -302,9 +316,13 @@ Save Data
 
 <th>Company Name</th>
 
+<th>Product</th>
+
 <th>Sold Products</th>
 
 <th>Remaining Products</th>
+
+<th>Min Stock</th>
 
 <th>Total Products</th>
 
@@ -324,6 +342,8 @@ Save Data
 
 </div>
 
+<script src="../js/auth.js"></script>
+<script src="../js/sts-delete.js"></script>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
 <script>
@@ -362,6 +382,26 @@ if(user.role === "employee"){
 
 window.location.replace(
 "../employees/EmployeesDashboard.html"
+);
+
+return;
+
+}
+
+if(user.role === "distributor"){
+
+window.location.replace(
+"../Distributer/DistributerDashboard.html"
+);
+
+return;
+
+}
+
+if(user.role === "superstockist"){
+
+window.location.replace(
+"../superstockist/superstockistDashboard.html"
 );
 
 return;
@@ -473,15 +513,23 @@ updateClock();
 setInterval(updateClock,1000);
 
 /* ============================================================
-STORAGE
+STORAGE (MySQL via API)
 ============================================================ */
 
-let companies =
-JSON.parse(
-localStorage.getItem("companies")
-) || [];
-
+const API_BASE = "http://localhost:5000/api";
+let companies = [];
 let inventorySocket = null;
+
+async function loadCompaniesFromApi() {
+    try {
+        const res = await fetch(API_BASE + "/superstockist/company-inventory/snapshot");
+        companies = await res.json();
+        renderTable();
+    } catch (_err) {
+        companies = [];
+        renderTable();
+    }
+}
 
 /* ============================================================
 REALTIME SOCKET
@@ -494,7 +542,7 @@ return;
 }
 
 inventorySocket = io(
-"https://sales-tracking-system-n9am.onrender.com",
+"http://localhost:5000",
 {
 transports:["websocket","polling"]
 }
@@ -518,15 +566,6 @@ companies =
 Array.isArray(list)
 ? list.slice()
 : [];
-
-try{
-
-localStorage.setItem(
-"companies",
-JSON.stringify(companies)
-);
-
-}catch(_e){}
 
 renderTable();
 
@@ -580,7 +619,12 @@ function saveData(){
 const companyName =
 document.getElementById(
 "companyName"
-).value;
+).value.trim();
+
+const productName =
+document.getElementById(
+"productName"
+).value.trim();
 
 const soldProducts =
 Number(
@@ -596,13 +640,21 @@ document.getElementById(
 ).value
 );
 
+const minStock =
+Number(
+document.getElementById(
+"minStock"
+).value || 10
+);
+
 if(
 !companyName ||
+!productName ||
 !totalProducts
 ){
 
 alert(
-"Please fill all fields"
+"Please select a company name, product, and total products"
 );
 
 return;
@@ -610,57 +662,30 @@ return;
 }
 
 const remainingProducts =
-totalProducts - soldProducts;
+totalProducts - (Number.isFinite(soldProducts) ? soldProducts : 0);
 
-const currentDateTime =
-new Date().toLocaleString();
-
-const newCompany = {
-
-id: Date.now(),
-
-dateTime: currentDateTime,
-
-companyName,
-
-soldProducts,
-
-remainingProducts,
-
-totalProducts
-
-};
-
-if(
-inventorySocket &&
-inventorySocket.connected
-){
-
-inventorySocket.emit(
-"inventory:add",
-newCompany
-);
-
-}else{
-
-companies.push(newCompany);
-
-localStorage.setItem(
-"companies",
-JSON.stringify(companies)
-);
-
-renderTable();
-
+if (remainingProducts < 0) {
+alert("Sold products cannot exceed total products.");
+return;
 }
 
-document.getElementById(
-"soldProducts"
-).value = "";
-
-document.getElementById(
-"totalProducts"
-).value = "";
+fetch(API_BASE + "/superstockist/company-inventory", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        company_name: companyName,
+        product_name: productName,
+        sold_products: Number.isFinite(soldProducts) ? soldProducts : 0,
+        remaining_products: remainingProducts,
+        min_stock: minStock,
+        total_products: totalProducts,
+        date_time: new Date()
+    })
+}).then(() => {
+    document.getElementById("soldProducts").value = "";
+    document.getElementById("totalProducts").value = "";
+    loadCompaniesFromApi();
+}).catch(() => alert("Could not save inventory record."));
 
 }
 
@@ -683,7 +708,7 @@ tableBody.innerHTML = `
 
 <tr>
 
-<td colspan="7"
+<td colspan="9"
 class="no-data">
 
 No Data Found
@@ -710,23 +735,17 @@ tableBody.innerHTML += `
 
 <td>${company.companyName}</td>
 
+<td>${company.productName || "--"}</td>
+
 <td>${company.soldProducts}</td>
 
 <td>${company.remainingProducts}</td>
 
+<td>${company.minStock ?? 10}</td>
+
 <td>${company.totalProducts}</td>
 
-<td>
-
-<button
-class="delete-btn"
-onclick="deleteData(${company.id})">
-
-Delete
-
-</button>
-
-</td>
+<td>${StsDelete.buttonHtml(API_BASE + "/superstockist/company-inventory/" + company.id, StsDelete.DEFAULT_CONFIRM, "loadCompaniesFromApi")}</td>
 
 </tr>
 
@@ -737,47 +756,35 @@ Delete
 }
 
 /* ============================================================
-DELETE
-============================================================ */
-
-function deleteData(id){
-
-if(
-inventorySocket &&
-inventorySocket.connected
-){
-
-inventorySocket.emit(
-"inventory:delete",
-{ id }
-);
-
-return;
-
-}
-
-companies =
-companies.filter(
-(company)=>
-company.id !== id
-);
-
-localStorage.setItem(
-"companies",
-JSON.stringify(companies)
-);
-
-renderTable();
-
-}
-
-/* ============================================================
 START
 ============================================================ */
 
-renderTable();
-
+window.loadCompaniesFromApi = loadCompaniesFromApi;
+loadCompaniesFromApi();
 initInventoryRealtime();
+loadProductOptions();
+
+async function loadProductOptions() {
+  try {
+    const res = await fetch(API_BASE + "/superstockist/inventory");
+    const products = await res.json();
+    const select = document.getElementById("productName");
+    if (!select) return;
+    const current = select.value;
+    select.innerHTML = '<option value="">Select Product</option>';
+    (Array.isArray(products) ? products : []).forEach((item) => {
+      const name = item.product_name || item.productName;
+      if (!name) return;
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+    if (current) select.value = current;
+  } catch (_err) {
+    /* product list optional on load failure */
+  }
+}
 
 </script>
 
