@@ -23,42 +23,13 @@ app.use(cors());
 app.use(express.json());
 
 // Database
-const db = require("./config/db");
+require("./config/db");
 const { runMigrations } = require("./config/migrate");
 
 // Static frontend + assets
 app.use("/images", express.static(path.join(PUBLIC_DIR, "images")));
 app.use("/images", express.static(path.join(ROOT_DIR, "images")));
 app.use(express.static(PUBLIC_DIR));
-
-// Health check (used to diagnose Render DB connectivity)
-app.get("/api/health", async (req, res) => {
-    const status = db.getStatus();
-    try {
-        await db.ping();
-        return res.json({
-            ok: true,
-            service: "sales-tracking-system",
-            database: { ...status, connected: true, lastError: null }
-        });
-    } catch (error) {
-        return res.status(503).json({
-            ok: false,
-            service: "sales-tracking-system",
-            database: {
-                ...status,
-                connected: false,
-                lastError: {
-                    code: error.code || null,
-                    message: error.message
-                }
-            },
-            hint: status.hostIsLocal
-                ? "DB_HOST points to localhost. On Render, set DB_HOST to your cloud MySQL hostname (not localhost)."
-                : "Check DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, and set DB_SSL=true if your MySQL provider requires TLS."
-        });
-    }
-});
 
 // API routes
 app.use("/api/auth", require("./routes/authRoutes"));

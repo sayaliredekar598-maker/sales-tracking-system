@@ -1,36 +1,8 @@
 const db = require("../config/db");
 const bcrypt = require("bcrypt");
 
-function sendError(res, status, message, extra = {}) {
-    return res.status(status).json({ message, error: message, ...extra });
-}
-
-function isDatabaseError(error) {
-    const code = String(error?.code || "");
-    return (
-        code.startsWith("ER_") ||
-        code.startsWith("PROTOCOL_") ||
-        [
-            "ECONNREFUSED",
-            "ECONNRESET",
-            "ETIMEDOUT",
-            "ENOTFOUND",
-            "EAI_AGAIN",
-            "DB_NOT_CONNECTED",
-            "ER_ACCESS_DENIED_ERROR",
-            "ER_BAD_DB_ERROR"
-        ].includes(code) ||
-        /MySQL is not connected/i.test(String(error?.message || ""))
-    );
-}
-
-function sendDatabaseError(res, error) {
-    console.log(error);
-    return sendError(res, 500, "Database unavailable", {
-        code: error.code || null,
-        detail:
-            "The API could not query MySQL. On Render, set DB_HOST to a reachable cloud MySQL host (not localhost) and use DB_SSL=true if required."
-    });
+function sendError(res, status, message) {
+    return res.status(status).json({ message, error: message });
 }
 
 function normalizeRole(role) {
@@ -115,9 +87,6 @@ exports.register = async (req, res) => {
             user: toPublicUser(newUsers[0])
         });
     } catch (error) {
-        if (isDatabaseError(error)) {
-            return sendDatabaseError(res, error);
-        }
         console.log(error);
         return sendError(res, 500, "Server error");
     }
@@ -153,9 +122,6 @@ exports.login = async (req, res) => {
             user: toPublicUser(user)
         });
     } catch (error) {
-        if (isDatabaseError(error)) {
-            return sendDatabaseError(res, error);
-        }
         console.log(error);
         return sendError(res, 500, "Server error");
     }
@@ -175,9 +141,6 @@ exports.getProfile = async (req, res) => {
 
         return res.json({ user: toPublicUser(users[0]) });
     } catch (error) {
-        if (isDatabaseError(error)) {
-            return sendDatabaseError(res, error);
-        }
         console.log(error);
         return sendError(res, 500, "Server error");
     }
