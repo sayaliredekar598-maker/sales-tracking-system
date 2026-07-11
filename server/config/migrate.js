@@ -24,18 +24,20 @@ async function tableExists(table) {
 }
 
 async function runMigrations() {
-    if (!(await columnExists("daily_reports", "visit_status"))) {
-        await db.promise().query(
-            "ALTER TABLE daily_reports ADD COLUMN visit_status VARCHAR(50) NULL AFTER shop_address"
-        );
-    }
+    if (await tableExists("daily_reports")) {
+        if (!(await columnExists("daily_reports", "visit_status"))) {
+            await db.promise().query(
+                "ALTER TABLE daily_reports ADD COLUMN visit_status VARCHAR(50) NULL AFTER shop_address"
+            );
+        }
 
-    await db.promise().query(`
-        ALTER TABLE daily_reports
-            MODIFY product VARCHAR(255) NULL,
-            MODIFY quantity INT NULL,
-            MODIFY sales DECIMAL(12,2) NULL DEFAULT NULL
-    `);
+        await db.promise().query(`
+            ALTER TABLE daily_reports
+                MODIFY product VARCHAR(255) NULL,
+                MODIFY quantity INT NULL,
+                MODIFY sales DECIMAL(12,2) NULL DEFAULT NULL
+        `);
+    }
 
     if (!(await tableExists("sales_orders"))) {
         await db.promise().query(`
@@ -56,7 +58,7 @@ async function runMigrations() {
                 KEY idx_orders_employee (employee_id),
                 KEY idx_orders_product (product_name),
                 KEY idx_orders_status (status)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     } else {
         if (!(await columnExists("sales_orders", "shop_address"))) {
@@ -88,7 +90,7 @@ async function runMigrations() {
                 date_time DATETIME DEFAULT NULL,
                 created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     } else if (!(await columnExists("company_inventory", "min_stock"))) {
         await db.promise().query(
@@ -106,7 +108,7 @@ async function runMigrations() {
                 updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (id),
                 UNIQUE KEY uniq_product (product_name)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
 
         const products = [
@@ -142,7 +144,7 @@ async function runMigrations() {
                 KEY idx_stock_req_status (status),
                 KEY idx_stock_req_superstockist (superstockist_id),
                 KEY idx_stock_req_product (product_name)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     }
 
@@ -161,7 +163,7 @@ async function runMigrations() {
                 PRIMARY KEY (id),
                 UNIQUE KEY uniq_dist_product (distributor_id, product_name),
                 KEY idx_dist_inv_name (distributor_name)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     }
 
@@ -184,7 +186,7 @@ async function runMigrations() {
                 KEY idx_dist_req_status (status),
                 KEY idx_dist_req_distributor (distributor_id),
                 KEY idx_dist_req_product (product_name)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     }
 
@@ -206,7 +208,7 @@ async function runMigrations() {
                 PRIMARY KEY (id),
                 KEY idx_flow_event (event_type),
                 KEY idx_flow_created (created_at)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     }
 
@@ -222,7 +224,7 @@ async function runMigrations() {
                 PRIMARY KEY (id),
                 KEY idx_drp_report (report_id),
                 KEY idx_drp_product (product_name)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     }
 
@@ -245,7 +247,7 @@ async function runMigrations() {
                 created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (id),
                 KEY idx_notifications_created (created_at)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
     }
 
@@ -256,7 +258,7 @@ async function runMigrations() {
                 daily_target DECIMAL(12,2) NOT NULL DEFAULT 100000,
                 updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
         await db.promise().query(
             "INSERT IGNORE INTO company_settings (id, daily_target) VALUES (1, 100000)"
